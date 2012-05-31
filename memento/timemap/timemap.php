@@ -10,7 +10,7 @@ $wgExtensionCredits['specialpage'][] = array(
 	'url' => 'http://www.mediawiki.org/wiki/Extension:Memento',
 	'description' => 'Memento TimeMap',
 	'descriptionmsg' => 'timemap-desc',
-	'version' => '0.7',
+	'version' => '1.0',
 );
  
 $dir = dirname(__FILE__) . '/';

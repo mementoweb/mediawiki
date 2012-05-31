@@ -9,24 +9,21 @@ if( $wgCommandLineMode ) {
 require_once "$IP/extensions/memento/timegate/timegate.php";
 require_once "$IP/extensions/memento/timemap/timemap.php";
 
-$mmScriptPath = $wgScriptPath . '/extensions/memento';
 $wgExtensionFunctions[] = 'mmSetupExtension';
 $wgExtensionCredits['specialpage'][] = array(
         'name' => 'Special:Memento',
         'description' => 'Retrieve archived versions of the article using HTTP datetime headers.',
 	    'url' => 'http://www.mediawiki.org/wiki/Extension:Memento',
         'author' => 'Harihar Shankar, Herbert Van de Sompel, Robert Sanderson',
-        'version' => '0.7',
+        'version' => '1.0',
         );
 $wgExtensionMessagesFiles['memento'] = dirname( __FILE__ ) . '/memento.i18n.php';
 
-$historyuri;
 
 function mmSetupExtension() {
     global $wgHooks;
 
     $wgHooks['BeforePageDisplay'][] = 'mmAcceptDateTime';
-
     return true;
 }
 
@@ -36,15 +33,15 @@ function mmConstructLinkHeader( $first, $last, $mem='', $next='', $prev='' ) {
     $mflag = false;
     $rel = "first";
 
-    if( $last && $last['uri'] == $uri ) {
+    if( isset($last['uri']) && $last['uri'] == $uri ) {
         $rel .= " last";
         unset($last);
     }
-    if( $prev && $prev['uri'] == $uri ) {
+    if( isset($prev['uri']) && $prev['uri'] == $uri ) {
         $rel .= " prev predecessor-version";
         unset($prev);
     }
-    elseif( $mem && $mem['uri'] == $uri ) {
+    elseif( isset($mem['uri']) && $mem['uri'] == $uri ) {
         $rel .= " memento";
         $mflag = true;
         unset($mem);
@@ -60,12 +57,12 @@ function mmConstructLinkHeader( $first, $last, $mem='', $next='', $prev='' ) {
         $rel = "last";
         $mflag = false;
 
-        if( $mem && $mem['uri'] == $uri ) {
+        if( isset($mem['uri']) && $mem['uri'] == $uri ) {
             $rel .= " memento";
             $mflag = true;
             unset($mem);
         }
-        elseif( $next && $next['uri'] == $uri ) {
+        elseif( isset($next['uri']) && $next['uri'] == $uri ) {
             $rel .= " next successor-version";
             unset($next);
         }
@@ -103,59 +100,45 @@ function mmSend( $statusCode=200, $headers=array(), $msg=null ) {
 }
 
 
-function mmConvertTimestamp( $timestamp ) {
-    $year = substr($timestamp, 0, 4);
-    $month = substr($timestamp, 4, 2);
-    $day = substr($timestamp, 6, 2);
-    $hour = substr($timestamp, 8, 2);
-    $minute = substr($timestamp, 10, 2);
-    $second = substr($timestamp, 12, 2);
-    $timestamp = gmdate('D, d M Y H:i:s T', mktime($hour, $minute, $second, $month, $day, $year));
-    return $timestamp;
-}
 
 function mmAcceptDateTime() {
-    global $wgTitle;
-    global $wgMementoNamespace;
     global $wgArticlePath;
     global $wgServer;
     global $wgRequest;
 
-    $Server = $wgServer;
-
     $requestURL = $wgRequest->getRequestURL();
+    $waddress = preg_replace( '/\/\$1/', '', $wgArticlePath );
+    $tgURL = SpecialPage::getTitleFor('TimeGate')->getPrefixedText();
 
-    //Making sure the header is checked only in the main title page.  
-    if( !stripos( $requestURL, '?' ) && !stripos( $requestURL, 'Special:TimeGate' ) ) {
-        $timegate; $parameter; $uri;
+    $context = new RequestContext();
+    $objTitle = $context->getTitle();
+    $title = preg_replace('/ /', "_", $objTitle->getPrefixedText());
 
-        //getting the namespaceid. 
-        $wgMementoNamespace = $wgTitle->getNamespace();
 
-        $waddress = preg_replace( '/\$1/', '', $wgArticlePath );
-
-        $timegate = $Server . $waddress . "Special:TimeGate/";
-        $parameter = $Server . $requestURL;
-
-        $uri = $timegate . $parameter;
-
+    //Making sure the header is checked only in the main article.  
+    if( !isset($_GET['oldid']) && !$objTitle->isSpecialPage() ) {
+        $uri='';
+        $uri = wfExpandUrl($waddress . "/" . $tgURL) . "/" . wfExpandUrl($requestURL);
 
         $mementoResponse = $wgRequest->response();
         $mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
     }
-    elseif( stripos( $requestURL, 'oldid=' ) ) {
+    elseif( isset($_GET['oldid']) ) {
         $last = array(); $first = array(); $next = array(); $prev = array(); $mem = array();
-
-        date_default_timezone_set('GMT');
 
         //creating a db object to retrieve the old revision id from the db. 
         $dbr = wfGetDB( DB_SLAVE );
         $dbr->begin();
 
-        $param = explode( 'oldid=', $requestURL );
-        $oldid = intval($param[1]);
+        $oldid = intval($_GET['oldid']);
 
-        $res_pg = $dbr->select( 'revision', array('rev_page', 'rev_timestamp'), array("rev_id=$oldid"), __METHOD__, array() );
+        $res_pg = $dbr->select( 
+                                'revision', 
+                                array('rev_page', 'rev_timestamp'), 
+                                array("rev_id=$oldid"), 
+                                __METHOD__, 
+                                array() 
+                            );
 
         if ( !$res_pg ) {
             return true;
@@ -169,78 +152,89 @@ function mmAcceptDateTime() {
             return true;
         }
 
-        $alt_header = '';
-        //getting the title of the page from the request uri
-        $requri = explode( "title=", $requestURL );
-        $t = explode( "&", $requri[1] );
-        $title = $t[0];
+        // previous version
+        $xares = $dbr->select( 
+                                'revision', 
+                                array('rev_id', 'rev_timestamp'), 
+                                array("rev_page=$pg_id","rev_timestamp<$pg_ts"), 
+                                __METHOD__, 
+                                array('DISTINCT', 'ORDER BY'=>'rev_timestamp DESC', 'LIMIT'=>'1') 
+                            );
 
-        $alturi = $Server; 
+        if( $xarow = $dbr->fetchObject( $xares ) ) {
+            $prevRevID = $xarow->rev_id;
+            $prevRevTS = $xarow->rev_timestamp;
+            $prevRevTS = wfTimestamp( TS_RFC2822,  $prevRevTS );
 
-        $wikiaddr = explode( "?", $requestURL );
-        $alturi .= $wikiaddr[0];
-
-        #if( substr($alturi, -1) != '/' )
-        #    $alturi .= '/';
-
-        $xares = $dbr->select( 'revision', array('rev_id', 'rev_timestamp'), array("rev_page=$pg_id"), __METHOD__, array('DISTINCT', 'ORDER BY'=>'rev_id DESC') );
-
-        while( $xarow = $dbr->fetchObject( $xares ) ) {
-            $revTS[] = $xarow->rev_timestamp;
-            $revID[] = $xarow->rev_id;
-        }
-
-        $cnt = count($revTS);
-
-        //the most recent version's timestamp and id.
-        $recentRevID = $revID[0];
-        $recentRevTS = $revTS[0];
-        $recentRevTS = mmConvertTimestamp( $recentRevTS );
-
-        $last['uri'] = $alturi . "?title=" . $title . "&oldid=" . $recentRevID;
-        $last['dt'] = $recentRevTS;
-
-        //the oldest version's timestamp and id.
-        $oldestRevID = $revID[$cnt-1];
-        $oldestRevTS = $revTS[$cnt-1];
-        $oldestRevTS = mmConvertTimestamp( $oldestRevTS );
-
-        $first['uri'] = $alturi . "?title=" . $title . "&oldid=" . $oldestRevID;
-        $first['dt'] = $oldestRevTS;
-
-        for( $i=0; $i<$cnt; $i++ ) 
-            if( $pg_ts == $revTS[$i] )
-                break;
-
-        //previous version's timestamp and id. 
-        if( $revTS[$i+1] ) {
-            $prevRevID = $revID[$i+1];
-            $prevRevTS = $revTS[$i+1]; #The timestamps are arranged in descending order!
-            $prevRevTS = mmConvertTimestamp( $prevRevTS );
-
-            $prev['uri'] = $alturi . "?title=" . $title . "&oldid=" . $prevRevID;
+            $prev['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array("title"=>$title, "oldid"=>$prevRevID) );
             $prev['dt'] = $prevRevTS;
         }
 
-        //next version's timestamp and id.
-        if( $i-1 >= 0 && $revTS[$i-1] ) {
-            $nextRevID = $revID[$i-1];
-            $nextRevTS = $revTS[$i-1];
-            $nextRevTS = mmConvertTimestamp( $nextRevTS );
+        // first version
+        $xares = $dbr->select( 
+                                'revision', 
+                                array('rev_id', 'rev_timestamp'), 
+                                array("rev_page=$pg_id","rev_timestamp<=$pg_ts"), 
+                                __METHOD__, 
+                                array('DISTINCT', 'ORDER BY'=> 'rev_timestamp ASC', 'LIMIT'=>'1') 
+                            );
 
-            $next['uri'] = $alturi . "?title=" . $title . "&oldid=" . $nextRevID;
+        if( $xarow = $dbr->fetchObject( $xares ) ) {
+
+            $oldestRevID = $xarow->rev_id;
+            $oldestRevTS = $xarow->rev_timestamp;
+            $oldestRevTS = wfTimestamp( TS_RFC2822,  $oldestRevTS );
+
+            $first['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array("title"=>$title, "oldid"=>$oldestRevID) );
+            $first['dt'] = $oldestRevTS;
+        }
+
+        // last version
+        $xares = $dbr->select( 
+                                'revision', 
+                                array('rev_id', 'rev_timestamp'), 
+                                array("rev_page=$pg_id","rev_timestamp>=$pg_ts"), 
+                                __METHOD__, 
+                                array('DISTINCT', 'ORDER BY'=> 'rev_timestamp DESC', 'LIMIT'=>'1') 
+                            );
+
+        if( $xarow = $dbr->fetchObject( $xares ) ) {
+            $recentRevID = $xarow->rev_id;
+            $recentRevTS = $xarow->rev_timestamp;
+            $recentRevTS = wfTimestamp( TS_RFC2822,  $recentRevTS );
+
+            $last['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array("title"=>$title, "oldid"=>$recentRevID) );
+            $last['dt'] = $recentRevTS;
+        }
+
+        // next version
+        $xares = $dbr->select( 
+                                'revision', 
+                                array('rev_id', 'rev_timestamp'), 
+                                array("rev_page=$pg_id","rev_timestamp>$pg_ts"), 
+                                __METHOD__, 
+                                array('DISTINCT', 'ORDER BY'=> 'rev_timestamp ASC', 'LIMIT'=>'1') 
+                            );
+
+        if( $xarow = $dbr->fetchObject( $xares ) ) {
+            $nextRevID = $xarow->rev_id;
+            $nextRevTS = $xarow->rev_timestamp;
+            $nextRevTS = wfTimestamp( TS_RFC2822,  $nextRevTS );
+
+            $next['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array("title"=>$title, "oldid"=>$nextRevID) );
             $next['dt'] = $nextRevTS;
         }
 
+
         //original version in the link header... 
-        $link = "<" . $alturi . "/" . $title .">; rel=\"original latest-version\", ";
-        $link .= "<" . $alturi."/Special:TimeGate/".$alturi . "/" . $title .">; rel=\"timegate\", ";
-        $link .= "<" . $alturi."/Special:TimeMap/".$alturi . "/" . $title .">; rel=\"timemap\"; type=\"application/link-format\"";
+        $link = "<" . wfExpandUrl( $waddress . '/' . $title ).">; rel=\"original latest-version\", ";
+        $link .= "<" . wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $waddress . "/" . $title ) .">; rel=\"timegate\", ";
+        $link .= "<" . wfExpandUrl( $waddress . "/" . SpecialPage::getTitleFor('TimeMap') ) . "/" . wfExpandUrl( $waddress . "/" . $title ) .">; rel=\"timemap\"; type=\"application/link-format\"";
 
 
-        $pg_ts = mmConvertTimestamp( $pg_ts );
+        $pg_ts = wfTimestamp( TS_RFC2822, $pg_ts );
 
-        $mem['uri'] = $alturi . "?title=" . $title . "&oldid=" . $oldid;
+        $mem['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array("title"=>$title, "oldid"=>$oldid) );
         $mem['dt'] = $pg_ts;
 
         $header = array( 
