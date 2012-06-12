@@ -1,13 +1,13 @@
 <?php
-    /**
-    * Internationalisation file for extension MyExtension.
-    *
-    * @addtogroup Extensions
-    */
+/**
+ * Internationalisation file for extension MyExtension.
+ *
+ * @addtogroup Extensions
+ */
 
-    $messages = array();
+$messages = array();
 
-    $messages['en'] = array(
-        'memento' => 'Memento',
-        'memento-desc' => 'This is a Memento.'
-    );
+$messages['en'] = array(
+	'memento' => 'Memento',
+	'memento-desc' => 'This is a Memento.'
+);

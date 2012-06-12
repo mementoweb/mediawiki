@@ -1,14 +1,7 @@
 <?php
-    /**
-    * Aliases for special pages
-    *
-    * @file
-    * @ingroup Extensions
-    */
+$aliases = array();
 
-    $aliases = array();
-
-    /** English */
-    $aliases['en'] = array(
-        'TimeGate' => array( 'TimeGate' ),
-    );
+/** English */
+$aliases['en'] = array(
+	'TimeGate' => array( 'TimeGate' ),
+);
