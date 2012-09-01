@@ -9,7 +9,6 @@ class TimeGate extends SpecialPage
 	function execute( $par ) {
 
 		global $wgRequest, $wgOut;
-		global $wgMementoConfigDeleted;
 		global $wgArticlePath;
 		global $wgServer;
 
@@ -52,11 +51,6 @@ class TimeGate extends SpecialPage
 		if ( $pg_id > 0 ) {
 			$this->GetMementoForResource( $pg_id, $historyuri, $new_title );
 		}
-		// if the title was not found in the page table, the archive table is checked for deleted versions of that article.
-		// provided, the variable $wgMementoConfigDeleted is set to true in the LocalSettings.php file. 
-		elseif ( $wgMementoConfigDeleted == true ) {
-			$this->GetMementoForDeletedResource( $new_title, $page_namespace_id );
-		}    
 		else {
 			$msg = wfMsgForContent( 'timegate-404-title', $new_title );
 			$header = array( "Vary" => "negotiate, accept-datetime" );
@@ -64,64 +58,6 @@ class TimeGate extends SpecialPage
 			exit();
 		}
 	}
-
-
-	function getMementoForDeletedResource( $new_title, $page_namespace_id ) {
-		global $wgArticlePath;
-
-
-		// creating a db object to retrieve the old revision id from the db. 
-		$dbr = wfGetDB( DB_SLAVE );
-		$dbr->begin();
-
-		$waddress = str_replace( '/$1', '', $wgArticlePath );
-
-		$res_ar = $dbr->select( 
-				'archive', 
-				array( 'ar_timestamp' ), 
-				array( "ar_title='$new_title'", "ar_namespace=$page_namespace_id" ), 
-				__METHOD__, 
-				array( 'ORDER BY'=>'ar_timestamp ASC', 'LIMIT'=>'1' ) 
-				);
-
-		if ( $dbr->fetchObject( $res_ar ) ) {  
-			// checking if a revision exists for the requested date. 
-			if (  
-					$res_ar_ts = $dbr->select( 
-						'archive', 
-						array( 'ar_timestamp' ), 
-						array( "ar_title='$new_title'", "ar_namespace=$page_namespace_id", "ar_timestamp <= $dt" ), 
-						__METHOD__, 
-						array( 'ORDER BY'=>'ar_timestamp DESC', "LIMIT"=>"1" ) 
-						)
-			   ) { 
-				$row_ar_ts = $dbr->fetchObject( $res_ar_ts );
-				$ar_ts = $row_ar_ts->ar_timestamp;
-
-				if ( $ar_ts ) {
-					// redirection is done to the "special page" for deleted articles. 
-					$historyuri = wfAppendQuery( 
-							wfExpandUrl( $waddress ), 
-							array( "title"=>SpecialPage::getTitleFor( 'Undelete' ), "target"=>$new_title, "timestamp"=>$ar_ts ) 
-							);
-					$header = array( "Location" => $historyuri );
-					$dbr->commit();
-					mmSend( 302, $header, null );
-					exit();
-				}
-			}
-		}    
-		else {
-			$msg = wfMsgForContent( 'timegate-404-title', $title );
-			$header = array( "Vary" => "negotiate, accept-datetime" );
-
-			$dbr->commit();
-
-			mmSend( 404, $header, $msg );
-			exit();
-		}
-	}
-
 
 
 	function parseRequestDateTime( $first, $last, $Link ) {
