@@ -11,6 +11,7 @@ class TimeGate extends SpecialPage
 		global $wgRequest, $wgOut;
 		global $wgArticlePath;
 		global $wgServer;
+		global $wgMementoExcludeNamespaces;
 
 		$this->setHeaders();
 
@@ -42,9 +43,16 @@ class TimeGate extends SpecialPage
 		$page_namespace_id = 0;
 
 		$objTitle =  Title::newFromText( $title );
+		$page_namespace_id = $objTitle->getNamespace();
+
+		if ( in_array( $page_namespace_id, $wgMementoExcludeNamespaces ) ) {
+			$msg = wfMsgForContent( 'timegate-404-inaccessible', $par );
+			mmSend( 404, null, $msg );
+			exit();
+		}
+			
 		$pg_id = $objTitle->getArticleID();
 
-		$page_namespace_id = $objTitle->getNamespace();
 		$new_title = $objTitle->getPrefixedURL();
 		$new_title = urlencode( $new_title );
 

@@ -11,6 +11,7 @@ class TimeMap extends SpecialPage
 		global $wgServer;
 		global $wgRequest;
 		global $wgTimemapNumberOfMementos;
+		global $wgMementoExcludeNamespaces;
 
 		$requestURL = $wgRequest->getRequestURL();
 		$this->setHeaders();
@@ -25,7 +26,7 @@ class TimeMap extends SpecialPage
 
 		$tmRevTs = false;
 		$tmDir = "next";
-		$tmSize = isset( $wgTimemapNumberOfMementos ) ? $wgTimemapNumberOfMementos : 500;
+		$tmSize = isset( $wgTimemapNumberOfMementos ) ? $wgTimemapNumberOfMementos+1 : 501;
 
 		if ( stripos( $par, $wgServer.$waddress ) == 0 ) {
 			$title = str_replace( $wgServer . $waddress, "", $par );
@@ -63,8 +64,14 @@ class TimeMap extends SpecialPage
 		$waddress = str_replace( '/$1', '', $wgArticlePath );
 
 
-
 		$objTitle = Title::newFromText( $title );
+
+		if ( in_array( $objTitle->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+			$msg = wfMsgForContent( 'timemap-404-inaccessible', $par );
+			mmSend( 404, null, $msg );
+			exit();
+		}
+			
 		$pg_id = $objTitle->getArticleID();
 		$title = $objTitle->getPrefixedURL();
 
@@ -117,6 +124,7 @@ class TimeMap extends SpecialPage
 
 			$cnt = count( $revTS );
 
+
 			$orgTmUri = wfExpandUrl( $waddress ) ."/". $splPageTimemapName . "/" . $wikiaddr;
 			$timegate = str_replace( $splPageTimemapName, SpecialPage::getTitleFor( 'TimeGate' ), $orgTmUri );
 
@@ -128,17 +136,36 @@ class TimeMap extends SpecialPage
 			mmSend( 200, $header, null );
 
 			echo "<" . $timegate . ">;rel=\"timegate\", \n";
-			echo "<" . $requri . ">;rel=\"timemap self\", \n";
+			echo "<" . $requri . ">;rel=\"self\";from=\"" . wfTimestamp( TS_RFC2822, $revTS[$cnt-2] ) . "\";until=\"" . wfTimestamp( TS_RFC2822, $revTS[0] ) . "\", \n";
 
-			if ( $tmRevTS )
-				echo "<" . wfExpandUrl( $waddress ) . "/" . $splPageTimemapName . "/" . $revTS[0] . "/1/" . $wikiaddr . ">;rel=\"timemap next\", \n";
+			if ( $tmRevTS ) {
+				// fetching the timestamp for "until" attribute. 
+				$resnext = $dbr->select( 
+						"revision", 
+						array( 'rev_timestamp' ), 
+						array( "rev_page=$pg_id", "rev_timestamp>$revTS[0]" ), 
+						__METHOD__, 
+						array( "LIMIT"=>"1" ) 
+						);
 
+				$revNextFirstTS = '';
+				if( $revNext = $dbr->fetchObject( $resnext ) ) {
+					$revNextFirstTS = $revNext->rev_timestamp;
+				}
+
+                // link to the next timemap
+				if( $revNextFirstTS )
+					echo "<" . wfExpandUrl( $waddress ) . "/" . $splPageTimemapName . "/" . $revTS[0] . "/1/" . $wikiaddr . ">;rel=\"timemap\";from=\"" . wfTimestamp( TS_RFC2822, $revNextFirstTS ) . "\", \n";
+			}
+
+
+            // prev timemap link
 			if ( $cnt == $tmSize )
-				echo "<" . wfExpandUrl( $waddress ) . "/" . $splPageTimemapName . "/" . $revTS[$cnt-1] . "/-1/" . $wikiaddr . ">;rel=\"timemap prev\", \n";
+				echo "<" . wfExpandUrl( $waddress ) . "/" . $splPageTimemapName . "/" . $revTS[$cnt-2] . "/-1/" . $wikiaddr . ">;rel=\"timemap\";until=\"" . wfTimestamp( TS_RFC2822, $revTS[$cnt-1] ) ."\", \n";
 
 			echo "<" . $wikiaddr . ">;rel=\"original latest-version\", \n";
 
-			for ( $i=$cnt-1; $i>0; $i-- ) {
+			for ( $i=$cnt-2; $i>0; $i-- ) {
 				$uri = wfAppendQuery( wfExpandUrl( $waddress ), array( "title" => $title, "oldid" => $revID[$i] ) );
 				echo "<" . $uri . ">;rel=\"memento\";datetime=\"" . wfTimestamp( TS_RFC2822,  $revTS[$i] ) . "\", \n";
 			}

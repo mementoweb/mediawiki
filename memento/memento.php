@@ -85,8 +85,9 @@ function mmSend( $statusCode=200, $headers=array(), $msg=null ) {
 		$mementoResponse->header( "HTTP", TRUE, $statusCode );
 	}
 
-	foreach ( $headers as $name => $value )
-		$mementoResponse->header( "$name: $value" );
+	if ( is_array( $headers ) )
+		foreach ( $headers as $name => $value )
+			$mementoResponse->header( "$name: $value" );
 
 	if ( $msg != null ) {
 		$wgOut->disable();
@@ -106,7 +107,7 @@ function mmFetchMementoFor( $relType, $pg_id, $pg_ts, $db_details ) {
 		return array();
 	}
 
-    $rev = array();
+	$rev = array();
 
 	switch ( $relType ) {
 		case 'first':
@@ -176,6 +177,7 @@ function mmAcceptDateTime() {
 	global $wgArticlePath;
 	global $wgServer;
 	global $wgRequest;
+	global $wgMementoExcludeNamespaces;
 
 	$requestURL = $wgRequest->getRequestURL();
 	$waddress = str_replace( '/$1', '', $wgArticlePath );
@@ -188,7 +190,7 @@ function mmAcceptDateTime() {
 
 
 	//Making sure the header is checked only in the main article.  
-	if ( !isset( $_GET['oldid'] ) && !$objTitle->isSpecialPage() ) {
+	if ( !isset( $_GET['oldid'] ) && !$objTitle->isSpecialPage() && !in_array( $objTitle->getNamespace(), $wgMementoExcludeNamespaces ) ) {
 		$uri='';
 		$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
