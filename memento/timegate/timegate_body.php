@@ -1,11 +1,35 @@
 <?php
+
+/**
+ *
+ * A Memento TimeGate. See http://mementoweb.org
+ * 
+*/
 class TimeGate extends SpecialPage
 {
+
+
+    /**
+     * Constructor
+     */
 	function TimeGate() {
 		parent::__construct( "TimeGate" );
 	}
 
 
+
+    /**
+     * The init function that is called by mediawiki when loading this 
+     * SpecialPage. 
+     * The parameter passed to this function is the original uri. 
+     * This function verifies if the article requested is valid and accessible, and 
+     * fetches it's page_id, title object, etc. and passes it on to another function that 
+     * fetches the memento of the requested resource. 
+     *
+     * @param: $par: String.
+     *      The title parameter that mediawiki returns 
+     *      (the url part after Special:TimeGate/)
+     */
 	function execute( $par ) {
 
 		global $wgRequest, $wgOut;
@@ -38,7 +62,6 @@ class TimeGate extends SpecialPage
 		$title = str_replace( $wgServer . $waddress, "", $par );
 
 		$waddress = str_replace( '/$1', '', $wgArticlePath );
-		$historyuri = $wgServer . $waddress;
 
 		$page_namespace_id = 0;
 
@@ -57,7 +80,7 @@ class TimeGate extends SpecialPage
 		$new_title = urlencode( $new_title );
 
 		if ( $pg_id > 0 ) {
-			$this->GetMementoForResource( $pg_id, $historyuri, $new_title );
+			$this->getMementoForResource( $pg_id, $new_title );
 		}
 		else {
 			$msg = wfMsgForContent( 'timegate-404-title', $new_title );
@@ -68,6 +91,21 @@ class TimeGate extends SpecialPage
 	}
 
 
+    /** 
+     * Checks the validity of the requested datetime in the
+     * accept-datetime header. Throws a 400 HTTP error if the 
+     * requested dt is not parseable. Also sends first and last 
+     * memento link headers as additional information with the errors.
+     * 
+     * @param: $first: associative array, not optional.
+     *      url and dt of the first memento.
+     * @param: $last: associative array, not optional.
+     *      url and dt of the last memento.
+     * @param: $Link: String, not optional.
+     *       A string in link header format containing the 
+     *       original, timemap, timegate, etc links. 
+     */
+     
 	function parseRequestDateTime( $first, $last, $Link ) {
 
 		global $wgRequest;
@@ -98,7 +136,17 @@ class TimeGate extends SpecialPage
 
 
 
-	function getMementoForResource( $pg_id, $historyuri, $title ) {
+    /**
+     * This function retrieves the appropriate revision for a resource 
+     * and builds and sends the memento headers.
+     *
+     * @param: $pg_id: number, not optional.
+     *      The valid page_id of the requested resource. 
+     * @param: $title: String, not optional.
+     *      The title value of the requested resource. 
+     */
+
+	function getMementoForResource( $pg_id, $title ) {
 
 		global $wgRequest, $wgArticlePath;
 
@@ -146,10 +194,10 @@ class TimeGate extends SpecialPage
 			exit();
 		}
 
-		list( $dt, $raw_dt ) = $this->ParseRequestDateTime( $first, $last, $Link );
+		list( $dt, $raw_dt ) = $this->parseRequestDateTime( $first, $last, $Link );
 
 		// if the requested time is earlier than the first memento, the first memento will be returned
-		//if the requested time is past the last memento, or in the future, the last memento will be returned. 
+		// if the requested time is past the last memento, or in the future, the last memento will be returned. 
 		if ( $dt < wfTimestamp( TS_MW, $first['dt'] ) ) {
 			$dt = wfTimestamp( TS_MW, $first['dt'] );
 		}

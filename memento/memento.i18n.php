@@ -1,6 +1,6 @@
 <?php
 /**
- * Internationalisation file for extension MyExtension.
+ * Internationalisation file for extension Memento.
  *
  * @addtogroup Extensions
  */

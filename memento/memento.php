@@ -22,6 +22,34 @@ $wgHooks['BeforePageDisplay'][] = 'mmAcceptDateTime';
 
 
 
+/**
+ * Constructs and returns a string with urls and rel types as defined in the memento RFC.
+ * The constructed string is compatible with the link header format. 
+ * Checks and concats rel types, if the url passed in the different parameters are same. 
+ *
+ * @param $first: associative array, not optional.
+ *      Contains url and datetime info for the first memento of a resource. 
+ *      $first['uri'] is the url of the first memento. 
+ *      $first['dt'] is the datetime of the first memento. 
+ * @param $last: associative array, not optional.
+ *      Contains url and datetime info for the last memento of a resource. 
+ *      $last['uri'] is the url of the last memento. 
+ *      $last['dt'] is the datetime of the last memento. 
+ * @param $mem: associative array, optional.
+ *      Contains url and datetime info for the memento of a resource. 
+ *      $mem['uri'] is the url of the memento. 
+ *      $mem['dt'] is the datetime of the memento. 
+ * @param $next: associative array, optional.
+ *      Contains url and datetime info for the next memento of a resource. 
+ *      $next['uri'] is the url of the next memento. 
+ *      $next['dt'] is the datetime of the next memento. 
+ * @param $prev: associative array, optional.
+ *      Contains url and datetime info for the prev memento of a resource. 
+ *      $prev['uri'] is the url of the prev memento. 
+ *      $prev['dt'] is the datetime of the prev memento. 
+ * @return String, the constructed link header.
+ */
+
 function mmConstructLinkHeader( $first, $last, $mem='', $next='', $prev='' ) {
 	$dt = $first['dt'];
 	$uri = $first['uri'];
@@ -77,6 +105,19 @@ function mmConstructLinkHeader( $first, $last, $mem='', $next='', $prev='' ) {
 }
 
 
+/**
+ * Prepares and sends HTTP responses in memento mode. 
+ * Used mainly to send 30*, 40* and 50* HTTP error codes that the mediawiki api 
+ * does not expose. 
+ * @param $statusCode: number, optional, default is 200.
+ *      The HTTP error code to send. 302, 404, 503, etc. 
+ * @param $headers: associative array, optional.
+ *      A list of key->value pairs to be sent with the HTTP Response headers.
+ *      The HTTP header name is the key, and the header value is the value of the key.
+ * @param $msg: String, optional.
+ *      A message to be sent with the HTTP response.
+ *      eg: "Error 404: The requested resource is not found!"
+ */
 function mmSend( $statusCode=200, $headers=array(), $msg=null ) {
 	global $wgRequest, $wgOut;
 	$mementoResponse = $wgRequest->response();
@@ -96,6 +137,25 @@ function mmSend( $statusCode=200, $headers=array(), $msg=null ) {
 }
 
 
+/**
+ * Fetches the appropriate revision for a resource from the database,
+ * constructs the memento url, and the memento datetime in RFC2822 format. 
+ * 
+ * @param: $relType: String, not optional.
+ *      The value of the memento rel type; first, last, next, prev, memento.
+ *      The rel type determines the direction of the sql query. 
+ * @param: $pg_id: number, not optional.
+ *      The page id of a resource.
+ * @param: $pg_ts: unix datetime, not optional.
+ *      The datetime value of the requested memento.
+ *      This is usually the value of the accept-datetime value. 
+ * @param: db_details: associative array, not optional.
+ *      Miscellaneous details needed to query the db and construct the urls. 
+ *      db_details['dbr'] is the cursor to the db handler.
+ *      db_details['title'] is the title of the resource.
+ *      db_details['waddress'] is the url template to construct the memento urls.
+ * @return: associative array.
+ */
 function mmFetchMementoFor( $relType, $pg_id, $pg_ts, $db_details ) {
 
 	$dbr = $db_details['dbr'];
@@ -172,6 +232,12 @@ function mmFetchMementoFor( $relType, $pg_id, $pg_ts, $db_details ) {
 
 
 
+/** The main hook for the plugin.
+ * Appends a link header with the timegate link to the article pages. 
+ * Appends memento link headers if the revision of an article is loaded.
+ *
+ * @return: Bool.
+ */
 
 function mmAcceptDateTime() {
 	global $wgArticlePath;

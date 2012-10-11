@@ -1,10 +1,34 @@
 <?php
+/**
+ *
+ * A Memento TimeMap. See http://mementoweb.org
+ *
+ */
 class TimeMap extends SpecialPage
 {
+    /**
+     * Constructor
+     */
 	function TimeMap() {
 		parent::__construct( "TimeMap" );
 	}
 
+
+
+
+    /**
+     * The init function that is called by mediawiki when loading
+     * this SpecialPage.
+     * The parameter passed to this function is the original uri.
+     * This function verifies if the article requested is valid and accessible,
+     * and fetches it's page_id, title object and the number of revisions needed 
+     * to construct the timemap. The maximum number of revisions in a timemap is 
+     * indicated as a config parameter.
+     *
+     * @param: $par: String.
+     *      The title parameter that mediawiki returns.
+     */
+    
 	function execute( $par ) {
 
 		global $wgArticlePath;
