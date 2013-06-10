@@ -1,1 +1,21 @@
-Extension Page: http://www.mediawiki.org/wiki/Extension:MementoMain Code Repo: http://github.com/hariharshankar/mediawikiMediaWiki Code Repo: https://gerrit.wikimedia.org/r/#/c/29812MediaWiki Bugzilla page: https://bugzilla.wikimedia.org/show_bug.cgi?id=34778Github is the main code repository that is used for development. Major releases were pushed into the MediaWikiÕs gerrit repository for a code review. Developer access is needed to push code in to gerrit:  http://www.mediawiki.org/wiki/Developer_accessAll the comments that were received so far can be found in the gerrit code repo and the buzilla page. Most of these suggestions were fixed, the rest are listed below.Memento Ð MediaWiki Extension TODO List* The Extension is not compatible with the latest Memento RFC.* Should not construct URLs by string concatenation. o The extension constructs URLs using concatenation for Link headers and TimeMaps.* Should not determine a resource type by parsing the URL.o The extension determines if the current page is a memento or an original resource by looking for the presence of ÒoldidÓ in the URL parameters. This is not reliable as an admin can configure this to be any string. o A suggestion from the bug list: * If the necessary interfaces really are missing, then the developer's response should be to introduce them. But I think using an ArticleViewHeader hook and calling getOldID() on the Article object passed to the hook would be a reasonable way to do it. Then the hook will only be triggered on actual views of ordinary wiki pages, and the oldid will be the same one used by Article.php, which would be an improvement.* The current extension sends 40* and 50* responses and is frowned up on by their community. MediaWiki always sends soft-40*s (something like, this page does not exist, would you like to create it). o Use of the exit() function is a by product of this, it forces the wiki to send that hard 40* and should not be used.* In general, the extension is expected to use MediaWikiÕs core interfaces as much as possible and not write our own methods. Finding these interfaces may require going through their entire source code; their documentation is not exhaustive. 
+Extension Page: http://www.mediawiki.org/wiki/Extension:Memento
+Main Code Repo: http://github.com/hariharshankar/mediawiki
+MediaWiki Code Repo: https://gerrit.wikimedia.org/r/#/c/29812
+MediaWiki Bugzilla page: https://bugzilla.wikimedia.org/show_bug.cgi?id=34778
+
+Github is the main code repository that is used for development. Major releases were pushed into the MediaWikiï¿½s gerrit repository for a code review. Developer access is needed to push code in to gerrit:  http://www.mediawiki.org/wiki/Developer_access
+
+All the comments that were received so far can be found in the gerrit code repo and the buzilla page. Most of these suggestions were fixed, the rest are listed below.
+
+Memento ï¿½ MediaWiki Extension TODO List
+
+* The Extension is not compatible with the latest Memento RFC.
+* Should not construct URLs by string concatenation. 
+  o The extension constructs URLs using concatenation for Link headers and TimeMaps.
+* Should not determine a resource type by parsing the URL.
+  o The extension determines if the current page is a memento or an original resource by looking for the presence of "oldid" in the URL parameters. This is not reliable as an admin can configure this to be any string. 
+  o A suggestion from the bug list: 
+    * If the necessary interfaces really are missing, then the developer's response should be to introduce them. But I think using an ArticleViewHeader hook and calling getOldID() on the Article object passed to the hook would be a reasonable way to do it. Then the hook will only be triggered on actual views of ordinary wiki pages, and the oldid will be the same one used by Article.php, which would be an improvement.
+* The current extension sends 40* and 50* responses and is frowned up on by their community. MediaWiki always sends soft-40*s (something like, this page does not exist, would you like to create it). 
+  o Use of the exit() function is a by product of this, it forces the wiki to send that hard 40* and should not be used.
+* In general, the extension is expected to use MediaWikiï¿½s core interfaces as much as possible and not write our own methods. Finding these interfaces may require going through their entire source code; their documentation is not exhaustive. 
