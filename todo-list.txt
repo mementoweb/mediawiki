@@ -3,11 +3,11 @@ Main Code Repo: http://github.com/hariharshankar/mediawiki
 MediaWiki Code Repo: https://gerrit.wikimedia.org/r/#/c/29812
 MediaWiki Bugzilla page: https://bugzilla.wikimedia.org/show_bug.cgi?id=34778
 
-Github is the main code repository that is used for development. Major releases were pushed into the MediaWiki�s gerrit repository for a code review. Developer access is needed to push code in to gerrit:  http://www.mediawiki.org/wiki/Developer_access
+Github is the main code repository that is used for development. Major releases were pushed into the MediaWiki's gerrit repository for a code review. Developer access is needed to push code in to gerrit:  http://www.mediawiki.org/wiki/Developer_access
 
 All the comments that were received so far can be found in the gerrit code repo and the buzilla page. Most of these suggestions were fixed, the rest are listed below.
 
-Memento � MediaWiki Extension TODO List
+Memento - MediaWiki Extension TODO List
 
 * The Extension is not compatible with the latest Memento RFC.
 * Should not construct URLs by string concatenation. 
