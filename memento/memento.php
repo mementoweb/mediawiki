@@ -4,8 +4,8 @@ $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'Special:Memento',
 	'descriptionmsg' => 'extension-overview',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:Memento',
-	'author' => array('Harihar Shankar', 'Herbert Van de Sompel', 'Robert Sanderson'),
-	'version' => '1.0'
+	'author' => array('Harihar Shankar', 'Herbert Van de Sompel', 'Robert Sanderson', 'Shawn M. Jones'),
+	'version' => '1.1'
 );
 
 $wgExtensionMessagesFiles['memento'] = ( __DIR__ ) . '/memento.i18n.php';
@@ -16,7 +16,11 @@ $wgAutoloadClasses['TimeMap'] = ( __DIR__ ) . '/timemap.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
+$wgHooks['ArticleViewHeader'][] = 'Memento::ArticleViewHeader';
+
 class Memento {
+
+    static $oldID;
 
 	function __construct() { }
 
@@ -231,6 +235,10 @@ class Memento {
 	}
 
 
+    public static function ArticleViewHeader(&$article, &$outputDone, &$pcache) {
+        self::$oldID = $article->getOldID();
+        return true;
+    }
 
 	/** The main hook for the plugin.
 	 * Appends a link header with the timegate link to the article pages.
@@ -254,23 +262,23 @@ class Memento {
 		$title = $objTitle->getPrefixedURL();
 		$title = urlencode( $title );
 
+        $oldid = self::$oldID;
+
 		$wgMementoExcludeNamespaces = is_array( $wgMementoExcludeNamespaces ) ? $wgMementoExcludeNamespaces : array();
 
 		//Making sure the header is checked only in the main article.
-		if ( !isset( $_GET['oldid'] ) && !$objTitle->isSpecialPage() && !in_array( $objTitle->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+		if ( $oldid == 0  && !$objTitle->isSpecialPage() && !in_array( $objTitle->getNamespace(), $wgMementoExcludeNamespaces ) ) {
 			$uri='';
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse = $wgRequest->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
-		elseif ( isset( $_GET['oldid'] ) ) {
+        elseif ( $oldid != 0 ) {
 			$last = array(); $first = array(); $next = array(); $prev = array(); $mem = array();
 
 			//creating a db object to retrieve the old revision id from the db. 
 			$dbr = wfGetDB( DB_SLAVE );
-
-			$oldid = intval( $_GET['oldid'] );
 
 			$res_pg = $dbr->select(
 					'revision',
