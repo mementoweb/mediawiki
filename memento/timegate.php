@@ -32,7 +32,7 @@ class TimeGate extends SpecialPage
 	 */
 	function execute( $par ) {
 
-		$wgRequest = $this->getRequest();
+		$request = $this->getRequest();
 		$wgOut = $this->getOutput();
 		global $wgArticlePath;
 		global $wgServer;
@@ -42,8 +42,8 @@ class TimeGate extends SpecialPage
 
 		$this->setHeaders();
 
-		$requestURL = $wgRequest->getRequestURL();
-		$mementoResponse = $wgRequest->response();
+		$requestURL = $request->getRequestURL();
+		$mementoResponse = $request->response();
 
 		if ( !$par ) {
 			$wgOut->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
@@ -111,10 +111,10 @@ class TimeGate extends SpecialPage
 
 	function parseRequestDateTime( $first, $last, $Link ) {
 
-		$wgRequest = $this->getRequest();
+		$request = $this->getRequest();
 
 		// getting the datetime from the http header
-		$raw_dt = $wgRequest->getHeader( "ACCEPT-DATETIME" );
+		$raw_dt = $request->getHeader( "ACCEPT-DATETIME" );
 
 		// looks for datetime enclosed in ""
 		$req_dt = str_replace( '"', '', $raw_dt );
@@ -151,7 +151,7 @@ class TimeGate extends SpecialPage
 	function getMementoForResource( $pg_id, $title ) {
 
 		global $wgArticlePath;
-		$wgRequest = $this->getRequest();
+		$request = $this->getRequest();
 
 		$waddress = str_replace( '/$1', '', $wgArticlePath );
 
@@ -171,7 +171,7 @@ class TimeGate extends SpecialPage
 		$Link .= "<" . wfExpandUrl( $waddress . "/" . SpecialPage::getTitleFor('TimeMap') ) . "/" . wfExpandUrl( $waddress . "/" . $title) . ">; rel=\"timemap\"; type=\"application/link-format\"";
 
 		// checking for the occurance of the accept datetime header.
-		if ( !$wgRequest->getHeader( 'ACCEPT-DATETIME' ) ) {
+		if ( !$request->getHeader( 'ACCEPT-DATETIME' ) ) {
 
 			if ( isset( $last['uri'] ) ) {
 				$memuri = $last['uri'];
