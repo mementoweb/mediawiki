@@ -33,7 +33,7 @@ class TimeGate extends SpecialPage
 	function execute( $par ) {
 
 		$request = $this->getRequest();
-		$wgOut = $this->getOutput();
+		$out = $this->getOutput();
 		global $wgArticlePath;
 		global $wgServer;
 		global $wgMementoExcludeNamespaces;
@@ -46,7 +46,7 @@ class TimeGate extends SpecialPage
 		$mementoResponse = $request->response();
 
 		if ( !$par ) {
-			$wgOut->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
+			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 			return;
 		}
 
