@@ -21,6 +21,7 @@ $wgHooks['ArticleViewHeader'][] = 'Memento::ArticleViewHeader';
 class Memento {
 
     static $oldID;
+    static $requestURL;
 
 	function __construct() { }
 
@@ -237,6 +238,7 @@ class Memento {
 
     public static function ArticleViewHeader(&$article, &$outputDone, &$pcache) {
         self::$oldID = $article->getOldID();
+        self::$requestURL = $article->getContext()->getRequest()->getRequestURL();
         return true;
     }
 
@@ -253,7 +255,7 @@ class Memento {
 		global $wgRequest;
 		global $wgMementoExcludeNamespaces;
 
-		$requestURL = $wgRequest->getRequestURL();
+        $requestURL = self::$requestURL;
 		$waddress = str_replace( '/$1', '', $wgArticlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
 
