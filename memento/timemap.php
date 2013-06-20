@@ -38,8 +38,8 @@ class TimeMap extends SpecialPage
 
 		$wgMementoExcludeNamespaces = is_array( $wgMementoExcludeNamespaces ) ? $wgMementoExcludeNamespaces : array();
 		
-		$wgRequest = $this->getRequest();
-		$requestURL = $wgRequest->getRequestURL();
+		$request = $this->getRequest();
+		$requestURL = $request->getRequestURL();
 		$this->setHeaders();
 
 
