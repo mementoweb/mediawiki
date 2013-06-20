@@ -251,7 +251,6 @@ class Memento {
 
 	public static function sendMementoHeaders() {
 		global $wgArticlePath;
-		global $wgServer;
 		global $wgRequest;
 		global $wgMementoExcludeNamespaces;
 
