@@ -38,7 +38,9 @@ class TimeGate extends SpecialPage
 		global $wgServer;
 		global $wgMementoExcludeNamespaces;
 
-		$wgMementoExcludeNamespaces = is_array( $wgMementoExcludeNamespaces ) ? $wgMementoExcludeNamespaces : array();
+		if (!is_array( $wgMementoExcludeNamespaces )) {
+			$wgMementoExcludeNamespaces = array();
+		}
 
 		$this->setHeaders();
 
@@ -67,7 +69,7 @@ class TimeGate extends SpecialPage
 
 		$page_namespace_id = 0;
 
-		$objTitle =  Title::newFromText( $title );
+		$objTitle = Title::newFromText( $title );
 		$page_namespace_id = $objTitle->getNamespace();
 
 		if ( in_array( $page_namespace_id, $wgMementoExcludeNamespaces ) ) {
@@ -87,7 +89,7 @@ class TimeGate extends SpecialPage
 		else {
 			$msg = wfMessage( 'timegate-404-title', $new_title )->text();
 			$header = array( "Vary" => "negotiate, accept-datetime" );
-			
+
 			Memento::sendHTTPError( 404, $header, $msg );
 			exit();
 		}
@@ -159,16 +161,24 @@ class TimeGate extends SpecialPage
 		$dbr = wfGetDB( DB_SLAVE );
 
 		$alt_header = '';
-		$last = array(); $first = array(); $next = array(); $prev = array(); $mem = array();
+		$last = array();
+		$first = array();
+		$next = array();
+		$prev = array();
+		$mem = array();
 
-		$db_details = array( 'title'=>$title, 'waddress'=>$waddress );
+		$db_details = array( 'title' => $title, 'waddress' => $waddress );
 
 		// first/last version
 		$last = Memento::getMementoFromDb( 'last', $pg_id, null, $db_details );
 		$first = Memento::getMementoFromDb( 'first', $pg_id, null, $db_details );
 
 		$Link = "<" . wfExpandUrl( $waddress . "/". $title ) . ">; rel=\"original latest-version\", ";
-		$Link .= "<" . wfExpandUrl( $waddress . "/" . SpecialPage::getTitleFor('TimeMap') ) . "/" . wfExpandUrl( $waddress . "/" . $title) . ">; rel=\"timemap\"; type=\"application/link-format\"";
+		$Link .= "<" .
+			wfExpandUrl( $waddress . "/" . SpecialPage::getTitleFor('TimeMap') )
+			. "/" .
+			wfExpandUrl( $waddress . "/" . $title) .
+			">; rel=\"timemap\"; type=\"application/link-format\"";
 
 		// checking for the occurance of the accept datetime header.
 		if ( !$request->getHeader( 'ACCEPT-DATETIME' ) ) {
@@ -196,8 +206,10 @@ class TimeGate extends SpecialPage
 
 		list( $dt, $raw_dt ) = $this->parseRequestDateTime( $first, $last, $Link );
 
-		// if the requested time is earlier than the first memento, the first memento will be returned
-		// if the requested time is past the last memento, or in the future, the last memento will be returned.
+		// if the requested time is earlier than the first memento,
+		// the first memento will be returned
+		// if the requested time is past the last memento, or in the future,
+		// the last memento will be returned.
 		if ( $dt < wfTimestamp( TS_MW, $first['dt'] ) ) {
 			$dt = wfTimestamp( TS_MW, $first['dt'] );
 		}
