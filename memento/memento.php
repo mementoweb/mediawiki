@@ -4,7 +4,12 @@ $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'Special:Memento',
 	'descriptionmsg' => 'extension-overview',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:Memento',
-	'author' => array('Harihar Shankar', 'Herbert Van de Sompel', 'Robert Sanderson', 'Shawn M. Jones'),
+	'author' => array(
+		'Harihar Shankar',
+		'Herbert Van de Sompel',
+		'Robert Sanderson',
+		'Shawn M. Jones'
+		),
 	'version' => '1.1'
 );
 
@@ -20,10 +25,11 @@ $wgHooks['ArticleViewHeader'][] = 'Memento::ArticleViewHeader';
 
 class Memento {
 
-    static $oldID;
-    static $requestURL;
+	static private $oldID;
+	static private $requestURL;
 
-	function __construct() { }
+	function __construct() {
+	}
 
 	/**
 	 * Constructs and returns a string with urls and rel types as defined in the memento RFC.
@@ -98,11 +104,18 @@ class Memento {
 		}
 
 		if ( isset( $prev['uri'] ) )
-			$link .= "<" . $prev['uri'] . ">;rel=\"prev predecessor-version memento\";datetime=\"" . $prev['dt'] . "\", ";
+			$link .= "<" . $prev['uri'] . ">;" .
+			"rel=\"prev predecessor-version memento\";" .
+			"datetime=\"" . $prev['dt'] . "\", ";
+
 		if ( isset( $next['uri'] ) )
-			$link .= "<" . $next['uri'] . ">;rel=\"next successor-version memento\";datetime=\"" . $next['dt'] . "\", ";
+			$link .= "<" . $next['uri'] . ">;" .
+			"rel=\"next successor-version memento\";" .
+			"datetime=\"" . $next['dt'] . "\", ";
+
 		if ( isset( $mem['uri'] ) )
-			$link .= "<" . $mem['uri'] . ">;rel=\"memento\";datetime=\"" . $mem['dt'] . "\", ";
+			$link .= "<" . $mem['uri'] . ">;" .
+			"rel=\"memento\";datetime=\"" . $mem['dt'] . "\", ";
 
 		return $link;
 	}
@@ -127,7 +140,7 @@ class Memento {
 		$mementoResponse = $wgRequest->response();
 
 		if ( $statusCode != 200 ) {
-			$mementoResponse->header( "HTTP", TRUE, $statusCode );
+			$mementoResponse->header( "HTTP", true, $statusCode );
 		}
 
 		if ( is_array( $headers ) )
@@ -166,7 +179,6 @@ class Memento {
 		$dbr = wfGetDB( DB_SLAVE );
 		$title = $db_details['title'];
 		$waddress = $db_details['waddress'];
-
 
 		if ( !isset( $pg_id ) ) {
 			return array();
@@ -214,13 +226,12 @@ class Memento {
 				return array();
 		}
 
-
 		$xares = $dbr->select(
 				'revision',
 				array( 'rev_id', 'rev_timestamp' ),
 				$sqlCond,
 				__METHOD__,
-				array( 'ORDER BY'=>$sqlOrder, 'LIMIT'=>'1' )
+				array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
 				);
 
 		if( $xarow = $dbr->fetchObject( $xares ) ) {
@@ -228,7 +239,10 @@ class Memento {
 			$revTS = $xarow->rev_timestamp;
 			$revTS = wfTimestamp( TS_RFC2822,  $revTS );
 
-			$rev['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array( "title"=>$title, "oldid"=>$revID ) );
+			$rev['uri'] = wfAppendQuery(
+				wfExpandUrl( $waddress ),
+				array( "title" => $title, "oldid" => $revID ) );
+
 			$rev['dt'] = $revTS;
 		}
 
@@ -236,11 +250,15 @@ class Memento {
 	}
 
 
-    public static function ArticleViewHeader(&$article, &$outputDone, &$pcache) {
-        self::$oldID = $article->getOldID();
-        self::$requestURL = $article->getContext()->getRequest()->getRequestURL();
-        return true;
-    }
+	public static function ArticleViewHeader(
+		&$article, &$outputDone, &$pcache
+		) {
+
+		self::$oldID = $article->getOldID();
+		self::$requestURL =
+			$article->getContext()->getRequest()->getRequestURL();
+		return true;
+	}
 
 	/** The main hook for the plugin.
 	 * Appends a link header with the timegate link to the article pages.
@@ -254,7 +272,7 @@ class Memento {
 		global $wgRequest;
 		global $wgMementoExcludeNamespaces;
 
-        $requestURL = self::$requestURL;
+		$requestURL = self::$requestURL;
 		$waddress = str_replace( '/$1', '', $wgArticlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
 
@@ -263,22 +281,34 @@ class Memento {
 		$title = $objTitle->getPrefixedURL();
 		$title = urlencode( $title );
 
-        $oldid = self::$oldID;
+		$oldid = self::$oldID;
 
-		$wgMementoExcludeNamespaces = is_array( $wgMementoExcludeNamespaces ) ? $wgMementoExcludeNamespaces : array();
+		if (!is_array( $wgMementoExcludeNamespaces )) {
+			$wgMementoExcludeNamespaces = array();
+		}
 
 		//Making sure the header is checked only in the main article.
-		if ( $oldid == 0  && !$objTitle->isSpecialPage() && !in_array( $objTitle->getNamespace(), $wgMementoExcludeNamespaces ) ) {
-			$uri='';
+		if (
+			$oldid == 0 &&
+			!$objTitle->isSpecialPage() &&
+			!in_array( $objTitle->getNamespace(),
+			$wgMementoExcludeNamespaces )
+			) {
+
+			$uri = '';
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse = $wgRequest->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
-        elseif ( $oldid != 0 ) {
-			$last = array(); $first = array(); $next = array(); $prev = array(); $mem = array();
+		elseif ( $oldid != 0 ) {
+			$last = array();
+			$first = array();
+			$next = array();
+			$prev = array();
+			$mem = array();
 
-			//creating a db object to retrieve the old revision id from the db. 
+			//creating a db object to retrieve the old revision id from the db.
 			$dbr = wfGetDB( DB_SLAVE );
 
 			$res_pg = $dbr->select(
@@ -306,7 +336,7 @@ class Memento {
 				return true;
 			}
 
-			$db_details = array( 'title'=>$title, 'waddress'=>$waddress );
+			$db_details = array( 'title' => $title, 'waddress' => $waddress );
 
 			// prev/next/last/first versions
 			$prev = Memento::getMementoFromDb( 'prev', $pg_id, $pg_ts, $db_details );
@@ -315,19 +345,40 @@ class Memento {
 			$first = Memento::getMementoFromDb( 'first', $pg_id, $pg_ts, $db_details );
 
 			//original version in the link header...
-			$link = "<" . wfExpandUrl( $waddress . '/' . $title ) . ">; rel=\"original latest-version\", ";
-			$link .= "<" . wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $waddress . "/" . $title ) . ">; rel=\"timegate\", ";
-			$link .= "<" . wfExpandUrl( $waddress . "/" . SpecialPage::getTitleFor('TimeMap') ) . "/" . wfExpandUrl( $waddress . "/" . $title ) . ">; rel=\"timemap\"; type=\"application/link-format\"";
+			$link = "<" .
+				wfExpandUrl( $waddress . '/' . $title ) .
+				">; rel=\"original latest-version\", ";
 
+			$link .= "<" .
+				wfExpandUrl( $waddress . "/" . $tgURL ) .
+				"/" .
+				wfExpandUrl( $waddress . "/" . $title ) .
+				">; rel=\"timegate\", ";
+
+			$link .= "<" .
+				wfExpandUrl(
+					$waddress . "/" .
+					SpecialPage::getTitleFor('TimeMap') ) .
+					"/" .
+					wfExpandUrl(
+						$waddress . "/" . $title
+					) . ">; rel=\"timemap\"; type=\"application/link-format\"";
 
 			$pg_ts = wfTimestamp( TS_RFC2822, $pg_ts );
 
-			$mem['uri'] = wfAppendQuery( wfExpandUrl( $waddress ), array( "title"=>$title, "oldid"=>$oldid ) );
+			$mem['uri'] = wfAppendQuery(
+				wfExpandUrl( $waddress ),
+				array( "title" => $title, "oldid" => $oldid ) );
+
 			$mem['dt'] = $pg_ts;
 
 			$header = array(
-					"Link" =>  Memento::constructLinkHeader( $first, $last, $mem, $next, $prev ) . $link,
-					"Memento-Datetime" => $pg_ts );
+					"Link" => Memento::constructLinkHeader(
+						$first, $last, $mem, $next, $prev
+						) .
+					$link, "Memento-Datetime" => $pg_ts
+					);
+
 			Memento::sendHTTPError( 200, $header, null );
 		}
 		return true;
