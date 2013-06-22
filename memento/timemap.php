@@ -36,12 +36,13 @@ class TimeMap extends SpecialPage
 		global $wgTimemapNumberOfMementos;
 		global $wgMementoExcludeNamespaces;
 
-		$wgMementoExcludeNamespaces = is_array( $wgMementoExcludeNamespaces ) ? $wgMementoExcludeNamespaces : array();
-		
+		if (!is_array( $wgMementoExcludeNamespaces )) {
+			$wgMementoExcludeNamespaces = array();
+		}
+
 		$request = $this->getRequest();
 		$requestURL = $request->getRequestURL();
 		$this->setHeaders();
-
 
 		if ( !$par ) {
 			return;
@@ -52,7 +53,12 @@ class TimeMap extends SpecialPage
 
 		$tmRevTS = false;
 		$tmDir = "next";
-		$tmSize = isset( $wgTimemapNumberOfMementos ) ? $wgTimemapNumberOfMementos+1 : 501;
+
+		if (isset( $wgTimemapNumberOfMementos )) {
+			$wgTimeMapNumberOfMementos = $wgTimemapNumberOfMementos + 1;
+		} else {
+			$wgTimeMapNumberOfMementos = 501;
+		}
 
 		if ( stripos( $par, $wgServer.$waddress ) == 0 ) {
 			$title = str_replace( $wgServer . $waddress, "", $par );
@@ -125,28 +131,42 @@ class TimeMap extends SpecialPage
 						array( 'rev_id', 'rev_timestamp' ),
 						array( "rev_page" => $pg_id ),
 						__METHOD__,
-						array( "ORDER BY"=>"rev_timestamp DESC", "LIMIT"=>$tmSize )
+						array(
+							"ORDER BY" => "rev_timestamp DESC",
+							"LIMIT" => $tmSize
+							)
 						);
 			}
-			else if ( $tmDir == 'next' ) {
+			elseif ( $tmDir == 'next' ) {
 				$xares = $dbr->select(
 						"revision",
 						array( 'rev_id', 'rev_timestamp' ),
-						array( "rev_page" => $pg_id, "rev_timestamp>" . $dbr->addQuotes( $tmRevTS ) ),
+						array(
+							"rev_page" => $pg_id,
+							"rev_timestamp>" . $dbr->addQuotes( $tmRevTS )
+							),
 						__METHOD__,
-						array( "ORDER BY"=>"rev_timestamp DESC", "LIMIT"=>$tmSize )
+						array(
+							"ORDER BY" => "rev_timestamp DESC",
+							"LIMIT" => $tmSize
+							)
 						);
 			}
 			else {
 				$xares = $dbr->select(
 						"revision",
 						array( 'rev_id', 'rev_timestamp' ),
-						array( "rev_page" => $pg_id, "rev_timestamp<" . $dbr->addQuotes( $tmRevTS ) ),
+						array(
+							"rev_page" => $pg_id,
+							"rev_timestamp<" . $dbr->addQuotes( $tmRevTS )
+							),
 						__METHOD__,
-						array( "ORDER BY"=>"rev_timestamp DESC", "LIMIT"=>"$tmSize" )
+						array(
+							"ORDER BY" => "rev_timestamp DESC",
+							"LIMIT" => "$tmSize"
+							)
 						);
 			}
-
 
 			foreach ( $xares as $xarow ) {
 				$revTS[] = $xarow->rev_timestamp;
@@ -155,53 +175,90 @@ class TimeMap extends SpecialPage
 
 			$cnt = count( $revTS );
 
-			$orgTmUri = wfExpandUrl( $waddress ) ."/". $splPageTimemapName . "/" . $wikiaddr;
-			$timegate = str_replace( $splPageTimemapName, SpecialPage::getTitleFor( 'TimeGate' ), $orgTmUri );
+			$orgTmUri = wfExpandUrl( $waddress ) ."/".
+				$splPageTimemapName . "/" . $wikiaddr;
+
+			$timegate = str_replace(
+				$splPageTimemapName,
+				SpecialPage::getTitleFor( 'TimeGate' ),
+				$orgTmUri
+				);
 
 			$header = array(
-					"Content-Type" => "application/link-format;charset=UTF-8",
-					"Link" => "<" . $requri . ">; anchor=\"" . $wikiaddr . "\"; rel=\"timemap\"; type=\"application/link-format\""
-					);
+				"Content-Type" => "application/link-format;charset=UTF-8",
+				"Link" => "<" . $requri . ">; " .
+				"anchor=\"" . $wikiaddr . "\"; " .
+				"rel=\"timemap\"; type=\"application/link-format\""
+				);
 
 			Memento::sendHTTPError( 200, $header, null );
 
 			echo "<" . $timegate . ">;rel=\"timegate\", \n";
-			echo "<" . $requri . ">;rel=\"self\";from=\"" . wfTimestamp( TS_RFC2822, $revTS[$cnt-2] ) . "\";until=\"" . wfTimestamp( TS_RFC2822, $revTS[0] ) . "\", \n";
+			echo "<" . $requri . ">;" .
+				"rel=\"self\";from=\"" .
+				wfTimestamp( TS_RFC2822, $revTS[$cnt - 2] ) .
+				"\";until=\"" .
+				wfTimestamp( TS_RFC2822, $revTS[0] ) . "\", \n";
 
 			if ( $tmRevTS ) {
-				// fetching the timestamp for "until" attribute. 
+				// fetching the timestamp for "until" attribute.
 				$resnext = $dbr->select(
 						"revision",
 						array( 'rev_timestamp' ),
-						array( "rev_page" => $pg_id, "rev_timestamp>" . $dbr->addQuotes( $revTS[0] ) ),
+						array(
+							"rev_page" => $pg_id,
+							"rev_timestamp>" . $dbr->addQuotes( $revTS[0] )
+							),
 						__METHOD__,
-						array( "LIMIT"=>"1" )
+						array( "LIMIT" => "1" )
 						);
 
 				$revNextFirstTS = '';
+
 				if( $revNext = $dbr->fetchObject( $resnext ) ) {
 					$revNextFirstTS = $revNext->rev_timestamp;
 				}
 
 				// link to the next timemap
 				if( $revNextFirstTS )
-					echo "<" . wfExpandUrl( $waddress ) . "/" . $splPageTimemapName . "/" . $revTS[0] . "/1/" . $wikiaddr . ">;rel=\"timemap\";from=\"" . wfTimestamp( TS_RFC2822, $revNextFirstTS ) . "\", \n";
+					echo "<" . wfExpandUrl( $waddress ) . "/" .
+					$splPageTimemapName . "/" .
+					$revTS[0] . "/1/" . $wikiaddr .
+					">;rel=\"timemap\";from=\"" .
+					wfTimestamp( TS_RFC2822, $revNextFirstTS ) .
+					"\", \n";
 			}
-
 
 			// prev timemap link
 			if ( $cnt == $tmSize )
-				echo "<" . wfExpandUrl( $waddress ) . "/" . $splPageTimemapName . "/" . $revTS[$cnt-2] . "/-1/" . $wikiaddr . ">;rel=\"timemap\";until=\"" . wfTimestamp( TS_RFC2822, $revTS[$cnt-1] ) ."\", \n";
+				echo "<" .
+				wfExpandUrl( $waddress ) . "/" .
+				$splPageTimemapName . "/" .
+				$revTS[$cnt - 2] .
+				"/-1/" . $wikiaddr .
+				">;rel=\"timemap\";until=\"" .
+				wfTimestamp( TS_RFC2822, $revTS[$cnt - 1] ) ."\", \n";
 
 			echo "<" . $wikiaddr . ">;rel=\"original latest-version\", \n";
 
-			for ( $i=$cnt-2; $i>0; $i-- ) {
-				$uri = wfAppendQuery( wfExpandUrl( $waddress ), array( "title" => $title, "oldid" => $revID[$i] ) );
-				echo "<" . $uri . ">;rel=\"memento\";datetime=\"" . wfTimestamp( TS_RFC2822,  $revTS[$i] ) . "\", \n";
+			for ( $i = $cnt - 2; $i > 0; $i-- ) {
+				$uri = wfAppendQuery(
+					wfExpandUrl( $waddress ),
+					array( "title" => $title, "oldid" => $revID[$i] )
+					);
+
+				echo "<" . $uri . ">;rel=\"memento\";datetime=\"" .
+					wfTimestamp( TS_RFC2822,  $revTS[$i] ) . "\", \n";
 			}
 
-			$uri = wfAppendQuery( wfExpandUrl( $waddress ), array( "title" => $title, "oldid" => $revID[0] ) );
-			echo "<" . $uri . ">;rel=\"memento\";datetime=\"" . wfTimestamp( TS_RFC2822,  $revTS[0] ) . "\"";
+			$uri = wfAppendQuery(
+				wfExpandUrl( $waddress ),
+				array(
+					"title" => $title, "oldid" => $revID[0] )
+					);
+
+			echo "<" . $uri . ">;rel=\"memento\";datetime=\"" .
+				wfTimestamp( TS_RFC2822,  $revTS[0] ) . "\"";
 
 			exit();
 		}
