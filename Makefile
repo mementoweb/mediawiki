@@ -44,7 +44,7 @@ clean:
 #
 
 # deploy the packaged software, requires a "make package" to be run first
-deploy: ${BUILDDIR}/${BINFILE} check-env
+deploy: check-env ${BUILDDIR}/${BINFILE}
 	@echo "Deploying Memento extension"
 	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
 	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
@@ -55,7 +55,7 @@ deploy: ${BUILDDIR}/${BINFILE} check-env
 	@echo "Deployment complete"
 
 # undeploy the packaged software, requires that it be deployed
-undeploy: ${DEPLOYDIR}/memento check-env
+undeploy: check-env ${DEPLOYDIR}/memento
 	@echo "Removing deployed memento extension"
 	${RM} -rf ${DEPLOYDIR}/memento
 	sed -i "" -e '/require_once "$$IP\/extensions\/memento\/memento.php";/d' ${MWCONF}
