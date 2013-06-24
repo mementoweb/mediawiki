@@ -20,13 +20,13 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 $wgExtensionMessagesFiles['memento'] = ( __DIR__ ) . '/memento.i18n.php';
-$wgHooks['BeforePageDisplay'][] = 'Memento::sendMementoHeaders';
 
 $wgAutoloadClasses['TimeGate'] = ( __DIR__ ) . '/timegate.php';
 $wgAutoloadClasses['TimeMap'] = ( __DIR__ ) . '/timemap.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
+$wgHooks['BeforePageDisplay'][] = 'Memento::sendMementoHeaders';
 $wgHooks['ArticleViewHeader'][] = 'Memento::ArticleViewHeader';
 
 class Memento {
