@@ -1,5 +1,11 @@
 <?php
 
+# ensure that the script can't be executed outside of Mediawiki
+if ( ! defined( 'MEDIAWIKI' ) ) {
+	echo "Not a valid entry point";
+	exit( 1 );
+}
+
 $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'Special:Memento',
 	'descriptionmsg' => 'extension-overview',
@@ -59,7 +65,9 @@ class Memento {
 	 * @return String, the constructed link header.
 	 */
 
-	public static function constructLinkHeader( $first, $last, $mem='', $next='', $prev='' ) {
+	public static function constructLinkHeader(
+			$first, $last, $mem = '', $next = '', $prev = ''
+		) {
 		$dt = $first['dt'];
 		$uri = $first['uri'];
 		$mflag = false;
@@ -115,7 +123,8 @@ class Memento {
 
 		if ( isset( $mem['uri'] ) )
 			$link .= "<" . $mem['uri'] . ">;" .
-			"rel=\"memento\";datetime=\"" . $mem['dt'] . "\", ";
+			"rel=\"memento\";" .
+			"datetime=\"" . $mem['dt'] . "\", ";
 
 		return $link;
 	}
@@ -173,7 +182,6 @@ class Memento {
 	 *	  db_details['waddress'] is the url template to construct the memento urls.
 	 * @return: associative array.
 	 */
-
 	public static function getMementoFromDb( $relType, $pg_id, $pg_ts, $db_details ) {
 
 		$dbr = wfGetDB( DB_SLAVE );
