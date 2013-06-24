@@ -40,7 +40,7 @@ class TimeMap extends SpecialPage
 
 		global $wgArticlePath;
 		global $wgServer;
-		global $wgTimemapNumberOfMementos;
+		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoExcludeNamespaces;
 
 		if (!is_array( $wgMementoExcludeNamespaces )) {
@@ -61,8 +61,9 @@ class TimeMap extends SpecialPage
 		$tmRevTS = false;
 		$tmDir = "next";
 
-		if (isset( $wgTimemapNumberOfMementos )) {
-			$wgTimeMapNumberOfMementos = $wgTimemapNumberOfMementos + 1;
+		if (isset( $wgMementoTimemapNumberOfMementos )) {
+			$wgMementoTimeMapNumberOfMementos = 
+			$wgMementoTimemapNumberOfMementos + 1;
 		} else {
 			$wgTimeMapNumberOfMementos = 501;
 		}
