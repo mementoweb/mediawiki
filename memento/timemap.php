@@ -62,10 +62,9 @@ class TimeMap extends SpecialPage
 		$tmDir = "next";
 
 		if (isset( $wgMementoTimemapNumberOfMementos )) {
-			$wgMementoTimeMapNumberOfMementos = 
-			$wgMementoTimemapNumberOfMementos + 1;
+			$tmSize = $wgMementoTimemapNumberOfMementos;
 		} else {
-			$wgTimeMapNumberOfMementos = 501;
+			$tmSize = 500;
 		}
 
 		if ( stripos( $par, $wgServer.$waddress ) == 0 ) {
