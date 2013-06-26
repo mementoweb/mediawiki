@@ -22,7 +22,7 @@
  * @file
  */
 
-# ensure that the script can't be executed outside of Mediawiki
+// ensure that the script can't be executed outside of Mediawiki
 if ( ! defined( 'MEDIAWIKI' ) ) {
 	echo "Not a valid entry point";
 	exit( 1 );

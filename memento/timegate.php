@@ -22,7 +22,7 @@
  * @file
  */
 
-# ensure that the script can't be executed outside of Mediawiki
+// ensure that the script can't be executed outside of Mediawiki
 if ( ! defined( 'MEDIAWIKI' ) ) {
 	echo "Not a valid entry point";
 	exit( 1 );
@@ -36,15 +36,12 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 class TimeGate extends SpecialPage
 {
 
-
 	/**
 	 * Constructor
 	 */
 	function __construct() {
 		parent::__construct( "TimeGate" );
 	}
-
-
 
 	/**
 	 * The init function that is called by mediawiki when loading this
@@ -123,7 +120,6 @@ class TimeGate extends SpecialPage
 		}
 	}
 
-
 	/**
 	 * Checks the validity of the requested datetime in the
 	 * accept-datetime header. Throws a 400 HTTP error if the
@@ -138,7 +134,6 @@ class TimeGate extends SpecialPage
 	 *	   A string in link header format containing the
 	 *	   original, timemap, timegate, etc links.
 	 */
-
 	function parseRequestDateTime( $first, $last, $Link ) {
 
 		$request = $this->getRequest();
@@ -165,9 +160,6 @@ class TimeGate extends SpecialPage
 		return array( $dt, $raw_dt );
 	}
 
-
-
-
 	/**
 	 * This function retrieves the appropriate revision for a resource
 	 * and builds and sends the memento headers.
@@ -177,7 +169,6 @@ class TimeGate extends SpecialPage
 	 * @param: $title: String, not optional.
 	 *	  The title value of the requested resource.
 	 */
-
 	function getMementoForResource( $pg_id, $title ) {
 
 		global $wgArticlePath;
