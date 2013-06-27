@@ -37,10 +37,38 @@ class TimeGate extends SpecialPage
 {
 
 	/**
+	 * @var string $articlePath: the base URL for all other links
+	 */
+	private $articlePath;
+
+	/**
+	 * @var string $server:  the base URL of the server
+	 */
+	private $server;
+
+	/**
+	 * @var array excludeNamespaces: the namespaces to exclude from TimeGates
+	 */
+	private $excludeNamespaces;
+
+	/**
 	 * Constructor
 	 */
 	function __construct() {
+		global $wgArticlePath;
+		global $wgServer;
+		global $wgMementoExcludeNamespaces;
+
 		parent::__construct( "TimeGate" );
+
+		$this->articlePath = $wgArticlePath;
+		$this->server = $wgServer;
+
+		if (!is_array( $wgMementoExcludeNamespaces )) {
+			$this->excludeNamespaces = array();
+		} else {
+			$this->excludeNamespaces = $wgMementoExcludeNamespaces;
+		}
 	}
 
 	/**
@@ -59,12 +87,12 @@ class TimeGate extends SpecialPage
 
 		$request = $this->getRequest();
 		$out = $this->getOutput();
-		global $wgArticlePath;
-		global $wgServer;
-		global $wgMementoExcludeNamespaces;
+		$articlePath = $this->articlePath;
+		$server = $this->server;
+		$excludeNamespaces = $this->excludeNamespaces;
 
-		if (!is_array( $wgMementoExcludeNamespaces )) {
-			$wgMementoExcludeNamespaces = array();
+		if (!is_array( $excludeNamespaces )) {
+			$excludeNamespaces = array();
 		}
 
 		$this->setHeaders();
@@ -86,18 +114,18 @@ class TimeGate extends SpecialPage
 			exit();
 		}
 
-		$waddress = str_replace( '$1', '', $wgArticlePath );
+		$waddress = str_replace( '$1', '', $articlePath );
 
 		// getting the title of the page from the request uri
 		//$title = str_replace( $wgServer . $waddress, "", $par );
-		$title = substr( $par, strlen( $wgServer . $waddress ) );
+		$title = substr( $par, strlen( $server . $waddress ) );
 
 		$page_namespace_id = 0;
 
 		$objTitle = Title::newFromText( $title );
 		$page_namespace_id = $objTitle->getNamespace();
 
-		if ( in_array( $page_namespace_id, $wgMementoExcludeNamespaces ) ) {
+		if ( in_array( $page_namespace_id, $excludeNamespaces ) ) {
 			$msg = wfMessage( 'timegate-404-inaccessible', $par )->text();
 			Memento::sendHTTPError( 404, null, $msg );
 			exit();
@@ -171,10 +199,10 @@ class TimeGate extends SpecialPage
 	 */
 	function getMementoForResource( $pg_id, $title ) {
 
-		global $wgArticlePath;
+		$articlePath = $this->articlePath;
 		$request = $this->getRequest();
 
-		$waddress = str_replace( '/$1', '', $wgArticlePath );
+		$waddress = str_replace( '/$1', '', $articlePath );
 
 		// creating a db object to retrieve the old revision id from the db.
 		$dbr = wfGetDB( DB_SLAVE );
