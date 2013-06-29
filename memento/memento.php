@@ -77,6 +77,21 @@ class Memento {
 	static private $requestURL;
 
 	/**
+	 * @var object $request: the request object
+	 */
+	static private $request;
+
+	/**
+	 * @var string $articlePath: the article path
+	 */
+	static private $articlePath;
+
+	/**
+	 * @var string $exlcudeNamespaces: namespaces to exclude from Memento
+	 */
+	static private $excludeNamespaces;
+
+	/**
 	 * Nullary constructor
 	 */
 	function __construct() {
@@ -320,9 +335,18 @@ class Memento {
 		&$article, &$outputDone, &$pcache
 		) {
 
+		global $wgArticlePath;
+		global $wgRequest;
+		global $wgMementoExcludeNamespaces;
+
 		self::$oldID = $article->getOldID();
 		self::$requestURL =
 			$article->getContext()->getRequest()->getRequestURL();
+
+		self::$articlePath = $wgArticlePath;
+		self::$request = $wgRequest;
+		self::$excludeNamespaces = $wgMementoExcludeNamespaces;
+
 		return true;
 	}
 
@@ -333,12 +357,11 @@ class Memento {
 	 * @return: Bool.
 	 */
 	public static function sendMementoHeaders() {
-		global $wgArticlePath;
-		global $wgRequest;
-		global $wgMementoExcludeNamespaces;
 
 		$requestURL = self::$requestURL;
-		$waddress = str_replace( '/$1', '', $wgArticlePath );
+		$articlePath = self::$articlePath;
+		$request = self::$request;
+		$waddress = str_replace( '/$1', '', $articlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
 
 		$context = new RequestContext();
@@ -348,8 +371,8 @@ class Memento {
 
 		$oldid = self::$oldID;
 
-		if (!is_array( $wgMementoExcludeNamespaces )) {
-			$wgMementoExcludeNamespaces = array();
+		if (!is_array( $excludeNamespaces )) {
+			$excludeNamespaces = array();
 		}
 
 		//Making sure the header is checked only in the main article.
@@ -357,13 +380,13 @@ class Memento {
 			$oldid == 0 &&
 			!$objTitle->isSpecialPage() &&
 			!in_array( $objTitle->getNamespace(),
-			$wgMementoExcludeNamespaces )
+			$excludeNamespaces )
 			) {
 
 			$uri = '';
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
-			$mementoResponse = $wgRequest->response();
+			$mementoResponse = $request->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
 		elseif ( $oldid != 0 ) {
