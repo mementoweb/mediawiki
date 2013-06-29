@@ -36,9 +36,39 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 class TimeMap extends SpecialPage
 {
 	/**
+	 * @var string $articlePath: the base URL for all other links
+	 */
+	private $articlePath;
+
+	/**
+	 * @var string $server:  the base URL of the server
+	 */
+	private $server;
+
+	/**
+	 * @var array excludeNamespaces: the namespaces to exclude from TimeGates
+	 */
+	private $excludeNamespaces;
+
+	/**
+	 * @var string $numberOfMementos: the number of mementos to return 
+	 */
+	private $numberOfMementos;
+
+	/**
 	 * Constructor
 	 */
 	function __construct() {
+		global $wgArticlePath;
+		global $wgServer;
+		global $wgMementoTimemapNumberOfMementos;
+		global $wgMementoExcludeNamespaces;
+
+		$this->excludeNamespaces = $wgMementoExcludeNamespaces;
+		$this->server = $wgServer;
+		$this->articlePath = $wgArticlePath;
+		$this->numberOfMementos = $wgMementoTimemapNumberOfMementos;
+
 		parent::__construct( "TimeMap" );
 	}
 
@@ -54,16 +84,15 @@ class TimeMap extends SpecialPage
 	 * @param: $par: String.
 	 *	  The title parameter that mediawiki returns.
 	 */
-
 	function execute( $par ) {
 
-		global $wgArticlePath;
-		global $wgServer;
-		global $wgMementoTimemapNumberOfMementos;
-		global $wgMementoExcludeNamespaces;
+		$articlePath = $this->articlePath;
+		$server = $this->server;
+		$numberOfMementos = $this->numberOfMementos;
+		$excludeNamespaces = $this->excludeNamespaces;
 
-		if (!is_array( $wgMementoExcludeNamespaces )) {
-			$wgMementoExcludeNamespaces = array();
+		if (!is_array( $excludeNamespaces )) {
+			$excludeNamespaces = array();
 		}
 
 		$request = $this->getRequest();
@@ -75,22 +104,22 @@ class TimeMap extends SpecialPage
 		}
 
 		// getting the title of the page from the request uri
-		$waddress = str_replace( '$1', '', $wgArticlePath );
+		$waddress = str_replace( '$1', '', $articlePath );
 
 		$tmRevTS = false;
 		$tmDir = "next";
 
-		if (isset( $wgMementoTimemapNumberOfMementos )) {
-			$tmSize = $wgMementoTimemapNumberOfMementos;
+		if (isset( $numberOfMementos )) {
+			$tmSize = $numberOfMementos;
 		} else {
 			$tmSize = 500;
 		}
 
-		if ( stripos( $par, $wgServer.$waddress ) == 0 ) {
-			$title = str_replace( $wgServer . $waddress, "", $par );
+		if ( stripos( $par, $server.$waddress ) == 0 ) {
+			$title = str_replace( $server . $waddress, "", $par );
 		}
-		elseif ( stripos( $par, $wgServer. $waddress ) > 0 ) {
-			$titleParts = explode( $wgServer.$waddress, $par );
+		elseif ( stripos( $par, $server. $waddress ) > 0 ) {
+			$titleParts = explode( $server.$waddress, $par );
 
 			if ( isset( $titleParts[1] ) ) {
 				$title = $titleParts[1];
@@ -119,7 +148,7 @@ class TimeMap extends SpecialPage
 			}
 		}
 
-		$waddress = str_replace( '/$1', '', $wgArticlePath );
+		$waddress = str_replace( '/$1', '', $articlePath );
 
 		if ( !$title ) {
 			$msg = wfMessage( 'timemap-404-title', $par )->text();
@@ -130,7 +159,7 @@ class TimeMap extends SpecialPage
 			$objTitle = Title::newFromText( $title );
 		}
 
-		if ( in_array( $objTitle->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+		if ( in_array( $objTitle->getNamespace(), $excludeNamespaces ) ) {
 			$msg = wfMessage( 'timemap-404-inaccessible', $par );
 			Memento::sendHTTPError( 404, null, $msg );
 			exit();
@@ -148,7 +177,7 @@ class TimeMap extends SpecialPage
 			$dbr = wfGetDB( DB_SLAVE );
 
 			$wikiaddr = wfExpandUrl( $waddress . "/" . $title );
-			$requri = wfExpandUrl( $wgServer . $requestURL );
+			$requri = wfExpandUrl( $server . $requestURL );
 
 			// querying the database and building info for the link header.
 			if ( !$tmRevTS ) {
