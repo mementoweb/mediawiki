@@ -30,7 +30,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($statusline["code"], "404");
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error:", $entity);
+		$this->assertNotContains("Fatal error", $entity);
 	}
 
 	/**
@@ -53,10 +53,11 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 		$entity = extractEntityFromResponse($response);
 
+		# Note that this test may assume $wgMementoTimemapNumberOfMementos = 3
 		$this->assertEquals($expectedOutput, $entity);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error:", $entity);
+		$this->assertNotContains("Fatal error", $entity);
 	}
 
 	public function acquireTimeMapTestData() {

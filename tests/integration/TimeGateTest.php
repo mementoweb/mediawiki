@@ -112,7 +112,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($statusline["code"], "400");
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error:", $entity);
+		$this->assertNotContains("Fatal error", $entity);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error:", $entity);
+		$this->assertNotContains("Fatal error", $entity);
 	}
 
 	/**
@@ -158,7 +158,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		# To catch any PHP errors that the test didn't notice
 		if ($entity) {
-			$this->assertNotContains("Fatal error:", $entity);
+			$this->assertNotContains("Fatal error", $entity);
 		}
 	}
 

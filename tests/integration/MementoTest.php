@@ -7,7 +7,7 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 $HOST = $_ENV["TESTHOST"];
-$DEBUG = false;
+$DEBUG = TRUE;
 
 class MementoTest extends PHPUnit_Framework_TestCase {
 
@@ -179,9 +179,43 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$this->assertNotContains("Fatal error:", $entity);
     }
 
+	/**
+	 * @dataProvider acquireEditUrls
+	 */
+	public function testEditPage($URIR) {
+
+		global $HOST;
+		global $DEBUG;
+
+        $request = "GET $URIR HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+		$response = HTTPFetch($HOST, 80, $request);
+
+		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+
+        if ($DEBUG) {
+            echo "\n";
+            echo $entity;
+            echo "\n";
+        }
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error", $entity);
+	}
+
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
 			'tests/integration/test-data/timegate-302-testdata.csv', 8);
     }
+
+	public function acquireEditUrls() {
+		return acquireLinesFromFile(
+			'tests/integration/test-data/memento-editpage-testdata.csv');
+	}
 
 }

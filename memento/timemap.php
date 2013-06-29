@@ -174,6 +174,9 @@ class TimeMap extends SpecialPage
 			$objTitle = Title::newFromText( $title );
 		}
 
+		$namespace = $objTitle->getNamespace();
+		//echo "Namespace is [$namespace]";
+
 		if ( in_array( $objTitle->getNamespace(), $excludeNamespaces ) ) {
 			$msg = wfMessage( 'timemap-404-inaccessible', $par );
 			Memento::sendHTTPError( 404, null, $msg );

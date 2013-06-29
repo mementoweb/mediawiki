@@ -358,6 +358,8 @@ class Memento {
 	 */
 	public static function sendMementoHeaders() {
 
+		global $wgRequest;
+
 		$requestURL = self::$requestURL;
 		$articlePath = self::$articlePath;
 		$request = self::$request;
@@ -389,6 +391,7 @@ class Memento {
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse = $request->response();
+			$mementoResponse = $wgRequest->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
 		elseif ( $oldid != 0 ) {
