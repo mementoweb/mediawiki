@@ -73,7 +73,7 @@ clean:
 # during development.  The goal is to allow changes to be made to the code,
 # then rapid deployment for integration testing.
 #
-# Pre-requesites:  export MWDIR=<your Mediawiki installation directory>
+# Pre-requisites:  export MWDIR=<your Mediawiki installation directory>
 #
 
 # deploy the packaged software, requires a "make package" to be run first
@@ -85,6 +85,7 @@ deploy: check-deploy-env ${BUILDDIR}/${BINFILE}
 	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
 	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
 	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
+	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
 	find ${DEPLOYDIR}/memento -type d -exec chmod 0755 {} \; 
 	find ${DEPLOYDIR}/memento -type f -exec chmod 0644 {} \; 
 	@echo "Deployment complete"
@@ -100,6 +101,7 @@ undeploy: check-deploy-env ${DEPLOYDIR}/memento
 	sed -i "" -e '/require_once "$$IP\/extensions\/memento\/memento.php";/d' ${MWCONF}
 	sed -i "" -e '/$$wgArticlePath="$$wgScriptPath\/index.php\/$$1";/d' ${MWCONF}
 	sed -i "" -e '/$$wgUsePathInfo = true;/d' ${MWCONF}
+	sed -i "" -e '/$$wgMementoTimemapNumberOfMementos = 3;/d' ${MWCONF}
 	@echo "Removal complete"
 	@echo "#########################"
 	@echo ""
@@ -110,6 +112,12 @@ ifndef MWDIR
 	$(error MWDIR is not defined, type 'export MWDIR=<your Mediawiki installation directory>')
 endif
 
+# INTEGRATION TEST SECTION
+#
+# Pre-requisites:  export TESTHOST=<hostname of the host under test>
+#
+
+# run all of the integration tests
 integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
