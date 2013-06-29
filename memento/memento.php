@@ -361,6 +361,8 @@ class Memento {
 		$requestURL = self::$requestURL;
 		$articlePath = self::$articlePath;
 		$request = self::$request;
+		$excludeNamespaces = self::$excludeNamespaces;
+
 		$waddress = str_replace( '/$1', '', $articlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
 
