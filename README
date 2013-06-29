@@ -31,3 +31,7 @@ To remove the software from a Mediawiki instance, type:
     make undeploy
 
 Note: you will need to change the test data inside tests/integration/test-data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from URI-R to URI-R, it was decided not to come up with a "one size fits all" integration test set.  Perhaps in the future.
+
+Of course, the fastest development process is:
+    1. [edit tests or change code, if necessary]
+    2. make undeploy && make clean package deploy integration-test
