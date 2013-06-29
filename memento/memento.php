@@ -344,7 +344,10 @@ class Memento {
 			$article->getContext()->getRequest()->getRequestURL();
 
 		self::$articlePath = $wgArticlePath;
+
+		// TODO: this is not working correctly, the object is not passed correctly
 		self::$request = $wgRequest;
+
 		self::$excludeNamespaces = $wgMementoExcludeNamespaces;
 
 		return true;
@@ -362,7 +365,11 @@ class Memento {
 
 		$requestURL = self::$requestURL;
 		$articlePath = self::$articlePath;
-		$request = self::$request;
+
+		// TODO: fix so we don't use the global
+		//$request = self::$request;
+
+		$request = $wgRequest;
 		$excludeNamespaces = self::$excludeNamespaces;
 
 		$waddress = str_replace( '/$1', '', $articlePath );
@@ -391,7 +398,7 @@ class Memento {
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse = $request->response();
-			$mementoResponse = $wgRequest->response();
+			//$mementoResponse = $wgRequest->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
 		elseif ( $oldid != 0 ) {
