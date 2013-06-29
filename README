@@ -1,8 +1,23 @@
+The idea of the Memento extension is it to make it as straightforward to access articles of the past as it is to access their current version.
+The Memento framework allows you to see versions of articles as they existed at some date in the past. All you need to do is enter a URL of an article in your browser and specify the desired date in a browser plug-in. This way you can browse the Web of the past. What the Memento extension will present to you is a version of the article as it existed on or very close to the selected date. Obviously, this will only work if previous (archived) versions are available on the Web. Fortunately, MediaWiki is a Content Management System which implies that it maintains all revisions made to an article. This extension leverages this archiving functionality and provides native Memento support for MediaWiki.
+
+For more information about how to install and use this extension, visit:  http://www.mediawiki.org/wiki/Extension:Memento
+
 This package contains the source code, build scripts, and tests for the Memento Mediawiki Extension.
 
 Note: the released version of this extension does not contain this file, so the target audience for this file is those who wish to build/maintain the source code.
 
-## Packaging
+# Directory Contents
+
+* Makefile - the build script that does all of the magic
+* README - this file
+* TODO - list of items to address in the codebase
+* memento - the source code
+* tests/integration - the integration tests
+* tests/lib - libraries needed by the tests
+* coding-standards - directory of coding standards shamelessly stolen from Mediawiki
+
+# Packaging
 
 To package the Memento Mediawiki Extension, type the following 
 from this directory:
@@ -11,7 +26,7 @@ from this directory:
 
 This serves to run everything needed to verify the code and package the zip for release.
 
-## Deployment and Integration Tests
+# Deployment and Integration Tests
 
 To deploy the Memento Mediawiki Extension for testing, one must first indicate
 to the shell where Mediawiki is installed, then run the appropriate make target.
@@ -30,8 +45,18 @@ To remove the software from a Mediawiki instance, type:
 
     make undeploy
 
-Note: you will need to change the test data inside tests/integration/test-data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from URI-R to URI-R, it was decided not to come up with a "one size fits all" integration test set.  Perhaps in the future.
+Running the integration tests requires phpunit.
+
+You will need to change the test data inside tests/integration/test-data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from URI-R to URI-R, it was decided not to come up with a "one size fits all" integration test set.  Perhaps in the future.
 
 Of course, the fastest development process is:
     1. [edit tests or change code, if necessary]
     2. make undeploy && make clean package deploy integration-test
+
+# Code compliance verification
+
+Running the code compliance requires phpcs.
+
+To see if the code complies with Mediawiki's coding conventions, run:
+
+    make verify

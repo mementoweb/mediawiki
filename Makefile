@@ -111,13 +111,24 @@ ifndef MWDIR
 endif
 
 integration-test: check-integration-env
+	@echo ""
 	@echo "#########################"
 	@echo "Running integration tests"
 	phpunit --include-path tests/lib tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
+	@echo ""
 
 check-integration-env:
 ifndef TESTHOST
 	$(error TESTHOST is not defined, type 'export TESTHOST=<host to test>')
 endif
+
+# verify code against coding standards
+verify:
+	@echo ""
+	@echo "#########################"
+	@echo "Verifying against Mediawiki coding standards"
+	phpcs --standard=coding-standards/Mediawiki memento
+	@echo "#########################"
+	@echo ""

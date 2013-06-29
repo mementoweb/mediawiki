@@ -81,6 +81,18 @@ class TimeMap extends SpecialPage
 	 * to construct the timemap. The maximum number of revisions in a timemap is
 	 * indicated as a config parameter.
 	 *
+	 * The typical TimeMap URL for Mediawiki looks like:
+	 * a) http://<wiki_name>/Special:TimeMap/http://<wiki_name>/<Title>
+	 * b) http://<wiki_name>/Special:TimeMap/<TimeStamp>/<TimeMap_Direction>/http://<wiki_name>/<Title>
+	 * 
+	 * Case (a) is the straight forward one, and is handled in line 93.
+	 * 
+	 * Case (b):
+	 * The TimeStamp and the direction here is for partial timemaps. We can
+	 * specify a time in YYYYMMDDHHMMSS and the direction as 1 (asc, going
+	 * forward in time) and -1 (desc, backwards). 
+	 * 
+	 *
 	 * @param: $par: String.
 	 *	  The title parameter that mediawiki returns.
 	 */
@@ -125,6 +137,7 @@ class TimeMap extends SpecialPage
 				$title = $titleParts[1];
 			}
 			else {
+				// could not get Title from the TimeMap URL if pagination used
 				$msg = wfMessage( 'timemap-404-title', $par )->text();
 				Memento::sendHTTPError( 404, null, $msg );
 				exit();
@@ -143,6 +156,7 @@ class TimeMap extends SpecialPage
 				}
 
 				if ( isset( $arrayParams[1] ) ) {
+					// determining the direction of the pagination
 					$tmDir = ( $arrayParams[1] > 0 ) ? "next" : "prev";
 				}
 			}
@@ -156,6 +170,7 @@ class TimeMap extends SpecialPage
 			exit();
 		}
 		else {
+			// using the title retrieved to create a Mediawiki Title object
 			$objTitle = Title::newFromText( $title );
 		}
 
@@ -166,6 +181,9 @@ class TimeMap extends SpecialPage
 		}
 
 		$pg_id = $objTitle->getArticleID();
+
+		// any value requested by user is over-written by value from database:
+		// the standardized title for the request
 		$title = $objTitle->getPrefixedURL();
 
 		$title = urlencode( $title );
