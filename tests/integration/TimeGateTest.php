@@ -45,6 +45,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+		if ($entity) {
+			$this->fail("302 response should not contain entity for $URIG");
+		}
 
         # 302, Location, Vary, Link
         $this->assertEquals($statusline["code"], "302");
@@ -102,8 +107,12 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$response = HTTPFetch($HOST, 80, $request);
 
 		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals($statusline["code"], "400");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error:", $entity);
 	}
 
 	/**
@@ -121,9 +130,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$statusline = extractStatusLineFromResponse($response);
         $headers = extractHeadersFromResponse($response);
+		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals($statusline["code"], "404");
 		$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error:", $entity);
 	}
 
 	/**
@@ -139,8 +152,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$response = HTTPFetch($HOST, 80, $request);
 
 		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals($statusline["code"], "405");
+
+		# To catch any PHP errors that the test didn't notice
+		if ($entity) {
+			$this->assertNotContains("Fatal error:", $entity);
+		}
 	}
 
 

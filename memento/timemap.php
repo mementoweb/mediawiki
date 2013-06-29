@@ -42,9 +42,6 @@ class TimeMap extends SpecialPage
 		parent::__construct( "TimeMap" );
 	}
 
-
-
-
 	/**
 	 * The init function that is called by mediawiki when loading
 	 * this SpecialPage.

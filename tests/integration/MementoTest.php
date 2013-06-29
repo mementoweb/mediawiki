@@ -77,12 +77,17 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
 
         # 302, Location, Vary, Link
         $this->assertEquals($statusline["code"], "302");
         $this->assertArrayHasKey('Location', $headers);
         $this->assertArrayHasKey('Vary', $headers);
         $this->assertArrayHasKey('Link', $headers);
+
+		if ($entity) {
+			$this->fail("302 response should not contain entity for URI $URIG");
+		}
 
         $relations = extractItemsFromLink($headers['Link']);
         $varyItems = extractItemsFromVary($headers['Vary']);
@@ -136,6 +141,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
 
         # 200, Memento-Datetime, Link
         $this->assertEquals($statusline["code"], "200");
@@ -169,6 +175,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
         $this->assertEquals("$URIG", $relations['timegate']['url']);
 
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error:", $entity);
     }
 
     public function acquire302IntegrationData() {

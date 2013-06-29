@@ -25,8 +25,12 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$response = HTTPFetch($HOST, 80, $request);
 
 		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals($statusline["code"], "404");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error:", $entity);
 	}
 
 	/**
@@ -50,6 +54,9 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$entity = extractEntityFromResponse($response);
 
 		$this->assertEquals($expectedOutput, $entity);
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error:", $entity);
 	}
 
 	public function acquireTimeMapTestData() {
