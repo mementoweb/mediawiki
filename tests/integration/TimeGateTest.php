@@ -6,7 +6,7 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
-$HOST = "localhost";
+$HOST = $_ENV["TESTHOST"];
 $DEBUG = false;
 
 class TimeGateTest extends PHPUnit_Framework_TestCase {

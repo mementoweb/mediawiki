@@ -1,0 +1,33 @@
+This package contains the source code, build scripts, and tests for the Memento Mediawiki Extension.
+
+Note: the released version of this extension does not contain this file, so the target audience for this file is those who wish to build/maintain the source code.
+
+## Packaging
+
+To package the Memento Mediawiki Extension, type the following 
+from this directory:
+
+    make package
+
+This serves to run everything needed to verify the code and package the zip for release.
+
+## Deployment and Integration Tests
+
+To deploy the Memento Mediawiki Extension for testing, one must first indicate
+to the shell where Mediawiki is installed, then run the appropriate make target.
+
+    export MWDIR=<where your Mediawiki is installed>
+    make deploy
+
+Once the code is deployed, the integration tests can be run.
+
+    export TESTHOST=<hostname of your Mediawiki server to test>
+    make integration-test
+
+Note that the tests will fail if the software is not deployed.
+
+To remove the software from a Mediawiki instance, type:
+
+    make undeploy
+
+Note: you will need to change the test data inside tests/integration/test-data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from URI-R to URI-R, it was decided not to come up with a "one size fits all" integration test set.  Perhaps in the future.

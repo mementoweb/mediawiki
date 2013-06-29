@@ -110,9 +110,14 @@ ifndef MWDIR
 	$(error MWDIR is not defined, type 'export MWDIR=<your Mediawiki installation directory>')
 endif
 
-integration-test:
+integration-test: check-integration-env
 	@echo "#########################"
 	@echo "Running integration tests"
 	phpunit --include-path tests/lib tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
+
+check-integration-env:
+ifndef TESTHOST
+	$(error TESTHOST is not defined, type 'export TESTHOST=<host to test>')
+endif
