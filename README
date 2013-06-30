@@ -26,7 +26,7 @@ from this directory:
 
 This serves to run everything needed to verify the code and package the zip for release.
 
-# Deployment and Integration Tests
+# Unit Tests, Deployment, and Integration Tests
 
 To deploy the Memento Mediawiki Extension for testing, one must first indicate
 to the shell where Mediawiki is installed, then run the appropriate make target.
@@ -45,13 +45,13 @@ To remove the software from a Mediawiki instance, type:
 
     make undeploy
 
-Running the integration tests requires phpunit.
+Running the unit and integration tests requires phpunit.
 
 You will need to change the test data inside tests/integration/test-data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from URI-R to URI-R, it was decided not to come up with a "one size fits all" integration test set.  Perhaps in the future.
 
 Of course, the fastest development process is:
     1. [edit tests or change code, if necessary]
-    2. make undeploy && make clean package deploy integration-test
+    2. make undeploy && make clean unit-test package deploy integration-test
 
 # Code compliance verification
 

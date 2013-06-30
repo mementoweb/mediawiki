@@ -66,6 +66,15 @@ clean:
 	@echo "#########################"
 	@echo ""
 
+# run the unit tests
+# Note:  requires that phpunit be installed
+unit-test:
+	@echo ""
+	@echo "#########################"
+	phpunit --include-path memento tests/unit
+	@echo "#########################"
+	@echo ""
+
 
 # DEPLOY AND INTEGRATION TEST SECTION
 #
