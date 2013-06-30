@@ -2,17 +2,17 @@
 function acquireLinesFromFile($filename) {
 	$data = array();
 
-	if (($handle = fopen($filename, 'r')) !== FALSE) {
-		while (($filedata = fgetcsv($handle, 1000, ",")) !== FALSE) {
-			
-			$line = $filedata[0];
+	$lines = file($filename);
 
-			$cur = array (
-				$line
-			);
+	foreach ($lines as $line) {
 
-			array_push($data, $cur);
-		}
+		$line = trim($line);
+
+		$cur = array (
+			$line
+		);
+
+		array_push($data, $cur);
 	}
 
 	return $data;
