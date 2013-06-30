@@ -1,4 +1,5 @@
 <?php
+
 function acquireLinesFromFile($filename) {
 	$data = array();
 
@@ -16,7 +17,6 @@ function acquireLinesFromFile($filename) {
 	}
 
 	return $data;
-
 }
 
 function acquireCSVDataFromFile($filename, $columns) {
@@ -39,4 +39,5 @@ function acquireCSVDataFromFile($filename, $columns) {
 
 	return $data;
 }
+
 ?>

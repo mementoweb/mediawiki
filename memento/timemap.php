@@ -112,6 +112,7 @@ class TimeMap extends SpecialPage
 		$this->setHeaders();
 
 		if ( !$par ) {
+			// TODO:  TimeMap welcome message should be displayed here
 			return;
 		}
 

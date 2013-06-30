@@ -227,21 +227,21 @@ class Memento {
 	 * Fetches the appropriate revision for a resource from the database,
 	 * constructs the memento url, and the memento datetime in RFC2822 format.
 	 *
-	 * @param: $relType: String, not optional.
+	 * @param $relType: String, not optional.
 	 *	  The value of the memento rel type; first, last, next, prev, memento.
 	 *	  The rel type determines the direction of the sql query.
-	 * @param: $pg_id: number, not optional.
+	 * @param $pg_id: number, not optional.
 	 *	  The page id of a resource.
-	 * @param: $pg_ts: unix datetime, not optional.
+	 * @param $pg_ts: unix datetime, not optional.
 	 *	  The datetime value of the requested memento.
 	 *	  This is usually the value of the accept-datetime value. 
-	 * @param: db_details: associative array, not optional.
+	 * @param $db_details: associative array, not optional.
 	 *	  Miscellaneous details needed to query the db and construct the urls.
 	 *	  db_details['dbr'] is the cursor to the db handler.
 	 *	  db_details['title'] is the title of the resource.
 	 *	  db_details['waddress'] is the url template to construct the 
 	 *        memento urls.
-	 * @return: associative array.
+	 * @return associative array with url and datetime of the relation type
 	 */
 	public static function getMementoFromDb( $relType, $pg_id, $pg_ts, $db_details ) {
 
@@ -329,7 +329,7 @@ class Memento {
 	 * @param: $pcache: pointer to variable that indicates whether
 	 *          the parser cache should try retrieving cached results
 	 *
-	 * @return Bool.
+	 * @return boolean indicating success to caller
 	 */
 	public static function ArticleViewHeader(
 		&$article, &$outputDone, &$pcache
@@ -351,10 +351,10 @@ class Memento {
 	 * Appends a link header with the timegate link to the article pages.
 	 * Appends memento link headers if the revision of an article is loaded.
 	 *
-	 * @param:  $out:  pointer to the OutputPage Object from the hook
-	 * @param:  $skin: skin object that will be used to generate the page
+	 * @param  $out:  pointer to the OutputPage Object from the hook
+	 * @param  $skin: skin object that will be used to generate the page
 	 *
-	 * @return: Bool.
+	 * @return boolean indicating success to the caller
 	 */
 	public static function sendMementoHeaders(&$out, &$skin) {
 

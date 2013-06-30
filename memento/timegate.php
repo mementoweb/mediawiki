@@ -90,6 +90,7 @@ class TimeGate extends SpecialPage
 		$articlePath = $this->articlePath;
 		$server = $this->server;
 		$excludeNamespaces = $this->excludeNamespaces;
+		$requestMethod = $this->getRequest()->getMethod();
 
 		if (!is_array( $excludeNamespaces )) {
 			$excludeNamespaces = array();
@@ -101,11 +102,13 @@ class TimeGate extends SpecialPage
 		$mementoResponse = $request->response();
 
 		if ( !$par ) {
+			// TODO:  change the welcome message to something more
+			// friendly and useful
 			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 			return;
 		}
 
-		if ( $_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD' ) {
+		if ( $requestMethod != 'GET' && $requestMethod != 'HEAD' ) {
 			$header = array(
 					"Allow" => "GET, HEAD",
 					"Vary" => "negotiate, accept-datetime"
