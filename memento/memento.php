@@ -336,17 +336,11 @@ class Memento {
 		) {
 
 		global $wgArticlePath;
-		global $wgRequest;
 		global $wgMementoExcludeNamespaces;
 
 		self::$oldID = $article->getOldID();
-		self::$requestURL =
-			$article->getContext()->getRequest()->getRequestURL();
 
 		self::$articlePath = $wgArticlePath;
-
-		// TODO: this is not working correctly, the object is not passed correctly
-		self::$request = $wgRequest;
 
 		self::$excludeNamespaces = $wgMementoExcludeNamespaces;
 
@@ -357,20 +351,18 @@ class Memento {
 	 * Appends a link header with the timegate link to the article pages.
 	 * Appends memento link headers if the revision of an article is loaded.
 	 *
+	 * @param:  $out:  pointer to the OutputPage Object from the hook
+	 * @param:  $skin: skin object that will be used to generate the page
+	 *
 	 * @return: Bool.
 	 */
-	public static function sendMementoHeaders() {
+	public static function sendMementoHeaders(&$out, &$skin) {
 
-		global $wgRequest;
-
-		$requestURL = self::$requestURL;
 		$articlePath = self::$articlePath;
-
-		// TODO: fix so we don't use the global
-		//$request = self::$request;
-
-		$request = $wgRequest;
 		$excludeNamespaces = self::$excludeNamespaces;
+
+		$request = $out->getRequest();
+		$requestURL = $out->getRequest()->getRequestURL();
 
 		$waddress = str_replace( '/$1', '', $articlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
@@ -398,7 +390,6 @@ class Memento {
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse = $request->response();
-			//$mementoResponse = $wgRequest->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
 		elseif ( $oldid != 0 ) {
