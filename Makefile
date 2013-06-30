@@ -71,7 +71,7 @@ clean:
 unit-test:
 	@echo ""
 	@echo "#########################"
-	phpunit --include-path memento tests/unit
+	phpunit --include-path "memento:tests/lib" tests/unit
 	@echo "#########################"
 	@echo ""
 

@@ -277,6 +277,16 @@ class Memento {
 	public static function buildMementoDbCondition(
 		$relType, $pg_ts, $pg_id, $dbr) {
 
+		if ( !isset ($pg_ts) ) {
+			if (
+				$relType == 'prev' ||
+				$relType == 'next' ||
+				$relType == 'memento' ) {
+
+				return array();		
+			}
+		}
+
 		switch ( $relType ) {
 			case 'first':
 				if ( isset( $pg_ts ) )
@@ -328,7 +338,7 @@ class Memento {
 	 *
 	 * @return $sqlOrder: string of the SQL order
 	 */
-	public static function getMementoDbOrder($relType) {
+	public static function getMementoDbSortOrder($relType) {
 		switch ( $relType ) {
 			case 'first':
 				$sqlOrder = "rev_timestamp ASC";
@@ -351,8 +361,6 @@ class Memento {
 
 		return $sqlOrder;
 	}
-
-
 
 	/**
 	 * Fetches the appropriate revision for a resource from the database,
@@ -384,19 +392,9 @@ class Memento {
 			return array();
 		}
 
-		if ( !isset ($pg_ts) ) {
-			if (
-				$relType == 'prev' ||
-				$relType == 'next' ||
-				$relType == 'memento' ) {
-
-				return array();		
-			}
-		}
-
 		$sqlCond = Memento::buildMementoDbCondition(
 			$relType, $pg_ts, $pg_id, $dbr);
-		$sqlOrder = Memento::getMementoDbOrder($relType);
+		$sqlOrder = Memento::getMementoDbSortOrder($relType);
 
 		if (count($sqlCond) == 0) {
 			return array();	
