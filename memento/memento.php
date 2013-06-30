@@ -224,6 +224,137 @@ class Memento {
 	}
 
 	/**
+	 * Passes SQL condition and order to database and extracts the
+	 * URI and datetime associated with the memento.
+	 * 
+	 * @param $dbr: database object, not optional
+	 * @param $sqlCond: array SQL condition to use in query
+	 * @param $sqlOrder: string SQL order to use
+	 * @param $title: the title of the resource
+	 * @param $waddress: the url template to use to construct the memento urls
+	 *
+	 * @return associative array with url and datetime of the relation type
+	 */
+	public static function fetchMementoRevisionFromDb(
+		$dbr, $sqlCond, $sqlOrder, $title, $waddress) {
+
+		$rev = array();
+
+		$xares = $dbr->select(
+				'revision',
+				array( 'rev_id', 'rev_timestamp' ),
+				$sqlCond,
+				__METHOD__,
+				array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
+				);
+
+
+		if( $xarow = $dbr->fetchObject( $xares ) ) {
+			$revID = $xarow->rev_id;
+			$revTS = $xarow->rev_timestamp;
+			$revTS = wfTimestamp( TS_RFC2822,  $revTS );
+
+			$rev['uri'] = wfAppendQuery(
+				wfExpandUrl( $waddress ),
+				array( "title" => $title, "oldid" => $revID ) );
+
+			$rev['dt'] = $revTS;
+		}
+
+		return $rev;
+	}
+
+	/**
+	 * Builds the SQL condition for use in fetching.
+	 *
+	 * @param $relType: String, not optional; relation type
+	 * @param $pg_ts: unix datetime, not optional
+	 * @param $pg_id: number, not optional; page id of a resource
+	 * @param $dbr:  database object, not optional
+	 *
+	 * @return associative array with SQL condition
+	 */
+	public static function buildMementoDbCondition(
+		$relType, $pg_ts, $pg_id, $dbr) {
+
+		switch ( $relType ) {
+			case 'first':
+				if ( isset( $pg_ts ) )
+					$sqlCond = array(
+						"rev_page" => $pg_id,
+						"rev_timestamp<=" . $dbr->addQuotes( $pg_ts )
+						);
+				else
+					$sqlCond = array( "rev_page" => $pg_id );
+				break;
+			case 'last':
+				if ( isset( $pg_ts ) )
+					$sqlCond = array(
+						"rev_page" => $pg_id,
+						"rev_timestamp>=" . $dbr->addQuotes( $pg_ts )
+						);
+				else
+					$sqlCond = array( "rev_page" => $pg_id );
+				break;
+			case 'next':
+				$sqlCond = array(
+					"rev_page" => $pg_id,
+					"rev_timestamp>" . $dbr->addQuotes( $pg_ts )
+					);
+				break;
+			case 'prev':
+				$sqlCond = array(
+					"rev_page" => $pg_id,
+					"rev_timestamp<" . $dbr->addQuotes( $pg_ts )
+				);
+				break;
+			case 'memento':
+				$sqlCond = array(
+					"rev_page" => $pg_id,
+					"rev_timestamp<=" . $dbr->addQuotes( $pg_ts )
+					);
+				break;
+			default:
+				$sqlCond = array();
+		}
+
+		return $sqlCond;
+	}
+
+	/**
+	 * Builds the SQL order for use in fetching.
+	 *
+	 * @param $relType: String, not optional; relation type
+	 *
+	 * @return $sqlOrder: string of the SQL order
+	 */
+	public static function getMementoDbOrder($relType) {
+		switch ( $relType ) {
+			case 'first':
+				$sqlOrder = "rev_timestamp ASC";
+				break;
+			case 'last':
+				$sqlOrder = "rev_timestamp DESC";
+				break;
+			case 'next':
+				$sqlOrder = "rev_timestamp ASC";
+				break;
+			case 'prev':
+				$sqlOrder = "rev_timestamp DESC";
+				break;
+			case 'memento':
+				$sqlOrder = "rev_timestamp DESC";
+				break;
+			default:
+				$sqlOrder = "";
+		}
+
+		return $sqlOrder;
+	}
+
+
+
+	/**
 	 * Fetches the appropriate revision for a resource from the database,
 	 * constructs the memento url, and the memento datetime in RFC2822 format.
 	 *
@@ -253,67 +384,30 @@ class Memento {
 			return array();
 		}
 
-		$rev = array();
+		if ( !isset ($pg_ts) ) {
+			if (
+				$relType == 'prev' ||
+				$relType == 'next' ||
+				$relType == 'memento' ) {
 
-		switch ( $relType ) {
-			case 'first':
-				if ( isset( $pg_ts ) )
-					$sqlCond = array( "rev_page" => $pg_id, "rev_timestamp<=" . $dbr->addQuotes( $pg_ts ) );
-				else
-					$sqlCond = array( "rev_page" => $pg_id );
-				$sqlOrder = "rev_timestamp ASC";
-				break;
-			case 'last':
-				if ( isset( $pg_ts ) )
-					$sqlCond = array( "rev_page" => $pg_id, "rev_timestamp>=" . $dbr->addQuotes( $pg_ts ) );
-				else
-					$sqlCond = array( "rev_page" => $pg_id );
-				$sqlOrder = "rev_timestamp DESC";
-				break;
-			case 'next':
-				if ( !isset( $pg_ts ) ) {
-					return array();
-				}
-				$sqlCond = array( "rev_page" => $pg_id, "rev_timestamp>" . $dbr->addQuotes( $pg_ts ) );
-				$sqlOrder = "rev_timestamp ASC";
-				break;
-			case 'prev':
-				if ( !isset( $pg_ts ) ) {
-					return array();
-				}
-				$sqlCond = array( "rev_page" => $pg_id, "rev_timestamp<" . $dbr->addQuotes( $pg_ts ) );
-				$sqlOrder = "rev_timestamp DESC";
-				break;
-			case 'memento':
-				if ( !isset( $pg_ts ) ) {
-					return array();
-				}
-				$sqlCond = array( "rev_page" => $pg_id, "rev_timestamp<=" . $dbr->addQuotes( $pg_ts ) );
-				$sqlOrder = "rev_timestamp DESC";
-				break;
-			default:
-				return array();
+				return array();		
+			}
 		}
 
-		$xares = $dbr->select(
-				'revision',
-				array( 'rev_id', 'rev_timestamp' ),
-				$sqlCond,
-				__METHOD__,
-				array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
-				);
+		$sqlCond = Memento::buildMementoDbCondition(
+			$relType, $pg_ts, $pg_id, $dbr);
+		$sqlOrder = Memento::getMementoDbOrder($relType);
 
-		if( $xarow = $dbr->fetchObject( $xares ) ) {
-			$revID = $xarow->rev_id;
-			$revTS = $xarow->rev_timestamp;
-			$revTS = wfTimestamp( TS_RFC2822,  $revTS );
-
-			$rev['uri'] = wfAppendQuery(
-				wfExpandUrl( $waddress ),
-				array( "title" => $title, "oldid" => $revID ) );
-
-			$rev['dt'] = $revTS;
+		if (count($sqlCond) == 0) {
+			return array();	
 		}
+
+		if ($sqlOrder == "") {
+			return array();
+		}
+
+		$rev = Memento::fetchMementoRevisionFromDb(
+			$dbr, $sqlCond, $sqlOrder, $title, $waddress);
 
 		return $rev;
 	}
