@@ -195,6 +195,8 @@ class Memento {
 	 * Prepares and sends HTTP responses in memento mode.
 	 * Used mainly to send 30*, 40* and 50* HTTP error codes 
 	 * that the mediawiki api does not expose.
+	 *
+	 * @param $outputPage: pointer to the OutputPage object, not optional
 	 * @param $statusCode: number, optional, default is 200.
 	 *	  The HTTP error code to send. 302, 404, 503, etc.
 	 * @param $headers: associative array, optional.
@@ -205,8 +207,8 @@ class Memento {
 	 *	  A message to be sent with the HTTP response.
 	 *	  eg: "Error 404: The requested resource is not found!"
 	 */
-	public static function sendHTTPResponse( $statusCode=200, $headers=array(), $msg=null ) {
-		global $wgRequest, $wgOut;
+	public static function sendHTTPResponse( $outputPage, $statusCode=200, $headers=array(), $msg=null ) {
+		global $wgRequest;
 		$mementoResponse = $wgRequest->response();
 
 		if ( $statusCode != 200 ) {
@@ -218,7 +220,7 @@ class Memento {
 				$mementoResponse->header( "$name: $value", true );
 
 		if ( $msg !== null ) {
-			$wgOut->disable();
+			$outputPage->disable();
 			echo $msg;
 		}
 	}
@@ -562,7 +564,7 @@ class Memento {
 					$link, "Memento-Datetime" => $pg_ts
 					);
 
-			Memento::sendHTTPResponse( 200, $header, null );
+			Memento::sendHTTPResponse( $out, 200, $header, null );
 		}
 		return true;
 	}

@@ -113,7 +113,7 @@ class TimeGate extends SpecialPage
 					"Allow" => "GET, HEAD",
 					"Vary" => "negotiate, accept-datetime"
 					);
-			Memento::sendHTTPResponse( 405, $header, null );
+			Memento::sendHTTPResponse( $out, 405, $header, null );
 			exit();
 		}
 
@@ -130,7 +130,7 @@ class TimeGate extends SpecialPage
 
 		if ( in_array( $page_namespace_id, $excludeNamespaces ) ) {
 			$msg = wfMessage( 'timegate-404-inaccessible', $par )->text();
-			Memento::sendHTTPResponse( 404, null, $msg );
+			Memento::sendHTTPResponse( $out, 404, null, $msg );
 			exit();
 		}
 
@@ -146,7 +146,7 @@ class TimeGate extends SpecialPage
 			$msg = wfMessage( 'timegate-404-title', $new_title )->text();
 			$header = array( "Vary" => "negotiate, accept-datetime" );
 
-			Memento::sendHTTPResponse( 404, $header, $msg );
+			Memento::sendHTTPResponse( $out, 404, $header, $msg );
 			exit();
 		}
 	}
@@ -168,6 +168,7 @@ class TimeGate extends SpecialPage
 	function parseRequestDateTime( $first, $last, $Link ) {
 
 		$request = $this->getRequest();
+		$out = $this->getOutput();
 
 		// getting the datetime from the http header
 		$raw_dt = $request->getHeader( "ACCEPT-DATETIME" );
@@ -185,7 +186,7 @@ class TimeGate extends SpecialPage
 			$msg .= wfMessage( 'timegate-400-last-memento', $last['uri'] )->text();
 
 			$header = array( "Link" => Memento::constructLinkHeader( $first, $last ) . $Link );
-			Memento::sendHTTPResponse( 400, $header, $msg );
+			Memento::sendHTTPResponse( $out, 400, $header, $msg );
 			exit();
 		}
 		return array( $dt, $raw_dt );
@@ -204,6 +205,7 @@ class TimeGate extends SpecialPage
 
 		$articlePath = $this->articlePath;
 		$request = $this->getRequest();
+		$outputPage = $this->getOutput();
 
 		$waddress = str_replace( '/$1', '', $articlePath );
 
@@ -250,7 +252,7 @@ class TimeGate extends SpecialPage
 					"Link" => Memento::constructLinkHeader( $first, $last, $mem, '', $prev ) . $Link
 					);
 
-			Memento::sendHTTPResponse( 302, $header, null );
+			Memento::sendHTTPResponse( $outputPage, 302, $header, null );
 			exit();
 		}
 
@@ -277,7 +279,7 @@ class TimeGate extends SpecialPage
 				"Link" => Memento::constructLinkHeader( $first, $last, $mem, $next, $prev ) . $Link
 				);
 
-		Memento::sendHTTPResponse( 302, $header, null );
+		Memento::sendHTTPResponse( $outputPage, 302, $header, null );
 		exit();
 	}
 }
