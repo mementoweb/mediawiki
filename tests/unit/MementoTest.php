@@ -1,10 +1,11 @@
 <?php
 
-define("MEDIAWIKI", true);
+require_once("MockMediawiki.php");
 
 require_once("memento.php");
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
+
 
 class MementoTest extends PHPUnit_Framework_TestCase {
 
@@ -175,6 +176,212 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, $actual);
 
 	}
+
+	public function testGetMementoDbSortOrderFirst() {
+
+		$relType = 'first';
+
+		$expected = "rev_timestamp ASC";
+		$actual = Memento::getMementoDbSortOrder($relType);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetMementoDbSortOrderLast() {
+
+		$relType = 'last';
+
+		$expected = "rev_timestamp DESC";
+		$actual = Memento::getMementoDbSortOrder($relType);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetMementoDbSortOrderNext() {
+
+		$relType = 'next';
+
+		$expected = "rev_timestamp ASC";
+		$actual = Memento::getMementoDbSortOrder($relType);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetMementoDbSortOrderPrev() {
+
+		$relType = 'prev';
+
+		$expected = "rev_timestamp DESC";
+		$actual = Memento::getMementoDbSortOrder($relType);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetMementoDbSortOrderMemento() {
+
+		$relType = 'memento';
+
+		$expected = "rev_timestamp DESC";
+		$actual = Memento::getMementoDbSortOrder($relType);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetMementoDbSortOrderBadInput() {
+
+		$relType = 'bad input';
+
+		$expected = "";
+		$actual = Memento::getMementoDbSortOrder($relType);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testBuildMementoDbConditionFirstTsSet() {
+		
+		$relType = 'first';
+		$pg_ts = 123456789;
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array(
+			"rev_page" => $pg_id,
+			"rev_timestamp<=" . $dbr->addQuotes($pg_ts)
+		);
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, $pg_ts, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
+	public function testBuildMementoDbConditionFirstNotSet() {
+		
+		$relType = 'first';
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array("rev_page" => $pg_id );
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, null, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
+	public function testBuildMementoDbConditionLastTsSet() {
+		
+		$relType = 'last';
+		$pg_ts = 123456789;
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array(
+			"rev_page" => $pg_id,
+			"rev_timestamp>=" . $dbr->addQuotes($pg_ts)
+		);
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, $pg_ts, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
+	public function testBuildMementoDbConditionLastNotSet() {
+		
+		$relType = 'last';
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array("rev_page" => $pg_id );
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, null, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
+	public function testBuildMementoDbConditionNext() {
+		
+		$relType = 'next';
+		$pg_ts = 123456789;
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array(
+			"rev_page" => $pg_id,
+			"rev_timestamp>" . $dbr->addQuotes($pg_ts)
+		);
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, $pg_ts, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
+	public function testBuildMementoDbConditionPrev() {
+		
+		$relType = 'prev';
+		$pg_ts = 123456789;
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array(
+			"rev_page" => $pg_id,
+			"rev_timestamp<" . $dbr->addQuotes($pg_ts)
+		);
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, $pg_ts, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
+	public function testBuildMementoDbConditionMemento() {
+		
+		$relType = 'memento';
+		$pg_ts = 123456789;
+		$pg_id = 42;
+		$dbr = new MockDatabaseBase();
+
+		$expected = array(
+			"rev_page" => $pg_id,
+			"rev_timestamp<=" . $dbr->addQuotes($pg_ts)
+		);
+
+		$actual = Memento::buildMementoDbCondition(
+			$relType, $pg_ts, $pg_id, $dbr);
+
+		$this->assertSame($expected, $actual);
+	}
+
+	public function testFetchMementoRevisionFromDb() {
+
+		$dbr = new MockDatabaseBase();
+		$sqlCond = "My Condition";
+		$sqlOrder = "My Order";
+		$title = "My Title";
+		$waddress = "/something/somewhere.ext";
+
+		$actual = Memento::fetchMementoRevisionFromDb(
+			$dbr, $sqlCond, $sqlOrder, $title, $waddress);
+
+		$expected = array(
+			'uri' => 
+				'PROCESSED:EXPANDED:/something/somewhere.ext [title = My Title][oldid = 42]',
+			'dt' => "STANDARDIZED:123456789"
+		);
+
+		$this->assertSame($expected, $actual);
+
+	}
+
 
 }
 ?>

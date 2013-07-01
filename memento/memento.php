@@ -205,7 +205,7 @@ class Memento {
 	 *	  A message to be sent with the HTTP response.
 	 *	  eg: "Error 404: The requested resource is not found!"
 	 */
-	public static function sendHTTPError( $statusCode=200, $headers=array(), $msg=null ) {
+	public static function sendHTTPResponse( $statusCode=200, $headers=array(), $msg=null ) {
 		global $wgRequest, $wgOut;
 		$mementoResponse = $wgRequest->response();
 
@@ -562,7 +562,7 @@ class Memento {
 					$link, "Memento-Datetime" => $pg_ts
 					);
 
-			Memento::sendHTTPError( 200, $header, null );
+			Memento::sendHTTPResponse( 200, $header, null );
 		}
 		return true;
 	}

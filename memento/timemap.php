@@ -140,7 +140,7 @@ class TimeMap extends SpecialPage
 			else {
 				// could not get Title from the TimeMap URL if pagination used
 				$msg = wfMessage( 'timemap-404-title', $par )->text();
-				Memento::sendHTTPError( 404, null, $msg );
+				Memento::sendHTTPResponse( 404, null, $msg );
 				exit();
 			}
 
@@ -151,7 +151,7 @@ class TimeMap extends SpecialPage
 					$tmRevTS = wfTimestamp( TS_MW, $arrayParams[0] );
 					if ( !$tmRevTS ) {
 						$msg = wfMessage( 'timemap-404-title', $par )->text();
-						Memento::sendHTTPError( 404, null, $msg );
+						Memento::sendHTTPResponse( 404, null, $msg );
 						exit();
 					}
 				}
@@ -167,7 +167,7 @@ class TimeMap extends SpecialPage
 
 		if ( !$title ) {
 			$msg = wfMessage( 'timemap-404-title', $par )->text();
-			Memento::sendHTTPError( 404, null, $msg );
+			Memento::sendHTTPResponse( 404, null, $msg );
 			exit();
 		}
 		else {
@@ -180,7 +180,7 @@ class TimeMap extends SpecialPage
 
 		if ( in_array( $objTitle->getNamespace(), $excludeNamespaces ) ) {
 			$msg = wfMessage( 'timemap-404-inaccessible', $par );
-			Memento::sendHTTPError( 404, null, $msg );
+			Memento::sendHTTPResponse( 404, null, $msg );
 			exit();
 		}
 
@@ -268,7 +268,7 @@ class TimeMap extends SpecialPage
 				"rel=\"timemap\"; type=\"application/link-format\""
 				);
 
-			Memento::sendHTTPError( 200, $header, null );
+			Memento::sendHTTPResponse( 200, $header, null );
 
 			echo "<" . $timegate . ">;rel=\"timegate\", \n";
 			echo "<" . $requri . ">;" .
@@ -341,7 +341,7 @@ class TimeMap extends SpecialPage
 		}
 		else {
 			$msg = wfMsgForContent( 'timemap-404-title', $title );
-			Memento::sendHTTPError( 404, null, $msg );
+			Memento::sendHTTPResponse( 404, null, $msg );
 			exit();
 		}
 	}
