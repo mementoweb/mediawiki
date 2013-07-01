@@ -103,6 +103,7 @@ class TimeMap extends SpecialPage
 		$numberOfMementos = $this->numberOfMementos;
 		$excludeNamespaces = $this->excludeNamespaces;
 		$out = $this->getOutput();
+		$mementoResponse = $this->getRequest()->response();
 
 		if (!is_array( $excludeNamespaces )) {
 			$excludeNamespaces = array();
@@ -141,7 +142,7 @@ class TimeMap extends SpecialPage
 			else {
 				// could not get Title from the TimeMap URL if pagination used
 				$msg = wfMessage( 'timemap-404-title', $par )->text();
-				Memento::sendHTTPResponse( $out, 404, null, $msg );
+				Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
 				exit();
 			}
 
@@ -152,7 +153,7 @@ class TimeMap extends SpecialPage
 					$tmRevTS = wfTimestamp( TS_MW, $arrayParams[0] );
 					if ( !$tmRevTS ) {
 						$msg = wfMessage( 'timemap-404-title', $par )->text();
-						Memento::sendHTTPResponse( $out, 404, null, $msg );
+						Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
 						exit();
 					}
 				}
@@ -168,7 +169,7 @@ class TimeMap extends SpecialPage
 
 		if ( !$title ) {
 			$msg = wfMessage( 'timemap-404-title', $par )->text();
-			Memento::sendHTTPResponse( $out, 404, null, $msg );
+			Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
 			exit();
 		}
 		else {
@@ -181,7 +182,7 @@ class TimeMap extends SpecialPage
 
 		if ( in_array( $objTitle->getNamespace(), $excludeNamespaces ) ) {
 			$msg = wfMessage( 'timemap-404-inaccessible', $par );
-			Memento::sendHTTPResponse( $out, 404, null, $msg );
+			Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
 			exit();
 		}
 
@@ -269,7 +270,7 @@ class TimeMap extends SpecialPage
 				"rel=\"timemap\"; type=\"application/link-format\""
 				);
 
-			Memento::sendHTTPResponse( $out, 200, $header, null );
+			Memento::sendHTTPResponse( $out, $mementoResponse, 200, $header, null );
 
 			echo "<" . $timegate . ">;rel=\"timegate\", \n";
 			echo "<" . $requri . ">;" .
@@ -342,7 +343,7 @@ class TimeMap extends SpecialPage
 		}
 		else {
 			$msg = wfMsgForContent( 'timemap-404-title', $title );
-			Memento::sendHTTPResponse( $out, 404, null, $msg );
+			Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
 			exit();
 		}
 	}

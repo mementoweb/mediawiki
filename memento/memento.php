@@ -207,9 +207,9 @@ class Memento {
 	 *	  A message to be sent with the HTTP response.
 	 *	  eg: "Error 404: The requested resource is not found!"
 	 */
-	public static function sendHTTPResponse( $outputPage, $statusCode=200, $headers=array(), $msg=null ) {
-		global $wgRequest;
-		$mementoResponse = $wgRequest->response();
+	public static function sendHTTPResponse(
+		$outputPage, $mementoResponse, $statusCode=200,
+		$headers=array(), $msg=null ) {
 
 		if ( $statusCode != 200 ) {
 			$mementoResponse->header( "HTTP", true, $statusCode );
@@ -250,7 +250,6 @@ class Memento {
 				array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
 				);
 
-
 		if( $xarow = $dbr->fetchObject( $xares ) ) {
 			$revID = $xarow->rev_id;
 			$revTS = $xarow->rev_timestamp;
@@ -285,7 +284,7 @@ class Memento {
 				$relType == 'next' ||
 				$relType == 'memento' ) {
 
-				return array();		
+				return array();
 			}
 		}
 
@@ -399,7 +398,7 @@ class Memento {
 		$sqlOrder = Memento::getMementoDbSortOrder($relType);
 
 		if (count($sqlCond) == 0) {
-			return array();	
+			return array();
 		}
 
 		if ($sqlOrder == "") {
@@ -457,6 +456,7 @@ class Memento {
 
 		$request = $out->getRequest();
 		$requestURL = $out->getRequest()->getRequestURL();
+		$mementoResponse = $request->response();
 
 		$waddress = str_replace( '/$1', '', $articlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
@@ -483,7 +483,6 @@ class Memento {
 			$uri = '';
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
-			$mementoResponse = $request->response();
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
 		elseif ( $oldid != 0 ) {
@@ -564,7 +563,7 @@ class Memento {
 					$link, "Memento-Datetime" => $pg_ts
 					);
 
-			Memento::sendHTTPResponse( $out, 200, $header, null );
+			Memento::sendHTTPResponse( $out, $mementoResponse, 200, $header, null );
 		}
 		return true;
 	}
