@@ -486,12 +486,6 @@ class Memento {
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
 		}
 		elseif ( $oldid != 0 ) {
-			$last = array();
-			$first = array();
-			$next = array();
-			$prev = array();
-			$mem = array();
-
 			//creating a db object to retrieve the old revision id from the db.
 			$dbr = wfGetDB( DB_SLAVE );
 
