@@ -459,8 +459,21 @@ class Memento {
 			return true;
 		}
 
-		$articlePath = self::$articlePath;
+		$context = new RequestContext();
+		$objTitle = $context->getTitle();
 		$excludeNamespaces = self::$excludeNamespaces;
+
+		// no mementos for special pages!
+		if ($objTitle->isSpecialPage()) {
+			return true;
+		}
+
+		// no mementos for pages with forbidden namespaces
+		if (in_array($objTitle->getNamespace(), $excludeNamespaces)) {
+			return true;
+		}
+
+		$articlePath = self::$articlePath;
 
 		$request = $out->getRequest();
 		$requestURL = $out->getRequest()->getRequestURL();
@@ -469,8 +482,6 @@ class Memento {
 		$waddress = str_replace( '/$1', '', $articlePath );
 		$tgURL = SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
 
-		$context = new RequestContext();
-		$objTitle = $context->getTitle();
 		$title = $objTitle->getPrefixedURL();
 		$title = urlencode( $title );
 
@@ -483,19 +494,12 @@ class Memento {
 		}
 
 		//Making sure the header is checked only in the main article.
-		if (
-			$oldid == 0 &&
-			!$objTitle->isSpecialPage() &&
-			!in_array( $objTitle->getNamespace(),
-			$excludeNamespaces )
-			) {
-
+		if ($oldid == 0) {
 			$uri = '';
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
-		}
-		elseif ( $oldid != 0 ) {
+		} else {
 			//creating a db object to retrieve the old revision id from the db.
 			$dbr = wfGetDB( DB_SLAVE );
 
