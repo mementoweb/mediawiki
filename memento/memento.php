@@ -197,6 +197,7 @@ class Memento {
 	 * that the mediawiki api does not expose.
 	 *
 	 * @param $outputPage: pointer to the OutputPage object, not optional
+	 * @param $mementoResponse: pointer to the response object, not optional
 	 * @param $statusCode: number, optional, default is 200.
 	 *	  The HTTP error code to send. 302, 404, 503, etc.
 	 * @param $headers: associative array, optional.
@@ -414,7 +415,8 @@ class Memento {
 
 	/**
 	 * The ArticleViewHeader hook, used to feed values into 
-	 * local memeber variables, to minimize the use of globals
+	 * local memeber variables, to minimize the use of globals.
+	 * Note:  this is not called when the Edit page is loaded.
 	 *
 	 * @param: $article: pointer to the Article Object from the hook
 	 * @param: $outputDone: pointer to variable that indicates that 
@@ -451,6 +453,12 @@ class Memento {
 	 */
 	public static function sendMementoHeaders(&$out, &$skin) {
 
+		// protection for non article pages (like Edit, View history, etc.)
+		// to play nice with other extensions
+		if (! $out->isArticle()) {
+			return true;
+		}
+
 		$articlePath = self::$articlePath;
 		$excludeNamespaces = self::$excludeNamespaces;
 
@@ -468,6 +476,8 @@ class Memento {
 
 		$oldid = self::$oldID;
 
+		// has to be initialized here because this object is static
+		// due to the way the hook is called
 		if (!is_array( $excludeNamespaces )) {
 			$excludeNamespaces = array();
 		}

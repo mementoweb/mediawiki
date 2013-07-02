@@ -215,11 +215,6 @@ class TimeGate extends SpecialPage
 		$dbr = wfGetDB( DB_SLAVE );
 
 		$alt_header = '';
-		$last = array();
-		$first = array();
-		$next = array();
-		$prev = array();
-		$mem = array();
 
 		$db_details = array( 'title' => $title, 'waddress' => $waddress );
 
