@@ -30,7 +30,13 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($statusline["code"], "404");
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error", $entity);
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
 	}
 
 	/**

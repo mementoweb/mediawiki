@@ -437,7 +437,11 @@ class Memento {
 
 		self::$articlePath = $wgArticlePath;
 
-		self::$excludeNamespaces = $wgMementoExcludeNamespaces;
+		if (!is_array( $wgMementoExcludeNamespaces )) {
+			self::$excludeNamespaces = array();
+		} else {
+			self::$excludeNamespaces = $wgMementoExcludeNamespaces;
+		}
 
 		return true;
 	}
