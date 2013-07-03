@@ -216,9 +216,11 @@ class Memento {
 			$mementoResponse->header( "HTTP", true, $statusCode );
 		}
 
-		if ( is_array( $headers ) )
-			foreach ( $headers as $name => $value )
+		if ( is_array( $headers ) ) {
+			foreach ( $headers as $name => $value ) {
 				$mementoResponse->header( "$name: $value", true );
+			}
+		}
 
 		if ( $msg !== null ) {
 			$outputPage->disable();
@@ -416,7 +418,7 @@ class Memento {
 	/**
 	 * The ArticleViewHeader hook, used to feed values into 
 	 * local memeber variables, to minimize the use of globals.
-	 * Note:  this is not called when the Edit page is loaded.
+	 * Note:  this is not called when the Edit or History pages are loaded.
 	 *
 	 * @param: $article: pointer to the Article Object from the hook
 	 * @param: $outputDone: pointer to variable that indicates that 
@@ -477,6 +479,12 @@ class Memento {
 			return true;
 		}
 
+		// has to be initialized here because this object is static
+		// due to the way the hook is called
+		if (!is_array( $excludeNamespaces )) {
+			$excludeNamespaces = array();
+		}
+
 		$articlePath = self::$articlePath;
 
 		$request = $out->getRequest();
@@ -491,15 +499,8 @@ class Memento {
 
 		$oldid = self::$oldID;
 
-		// has to be initialized here because this object is static
-		// due to the way the hook is called
-		if (!is_array( $excludeNamespaces )) {
-			$excludeNamespaces = array();
-		}
-
 		//Making sure the header is checked only in the main article.
 		if ($oldid == 0) {
-			$uri = '';
 			$uri = wfExpandUrl( $waddress . "/" . $tgURL ) . "/" . wfExpandUrl( $requestURL );
 
 			$mementoResponse->header( 'Link: <' . $uri . ">; rel=\"timegate\"" );
