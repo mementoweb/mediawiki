@@ -12,6 +12,8 @@ $TGDEBUG = false;
 class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 	/**
+	 * @group all
+	 * 
 	 * @dataProvider acquireTimeGatesWithAcceptDateTime
 	 */
 	public function test302TimeGate(
@@ -94,6 +96,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group traditionalErrorPages
+     * 
 	 * @dataProvider acquireTimeGate200Urls
 	 */
 	public function test400TimeGate($URIG) {
@@ -129,6 +133,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group traditionalErrorPages
+     * 
 	 * @dataProvider acquireTimeGate404Urls
 	 */
 	public function test404TimeGate($URIG) {
@@ -166,6 +172,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group traditionalErrorPages
+     * 
 	 * @dataProvider acquireTimeGate405Urls
 	 */
 	public function test405TimeGate($URIG) {

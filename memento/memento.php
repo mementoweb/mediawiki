@@ -213,7 +213,13 @@ class Memento {
 			$headers=array(), $textmsg, $params=array(), $titlemsg=""
 		) {
 
+		// TODO: make this an actual setting
+		//global $wgMementoErrorPageType;
 		$wgMementoErrorPageType = "traditional";
+
+		if ( !isset($wgMementoErrorPageType) ) {
+			$wgMementoErrorPageType = "friendly";
+		}
 
 		if ( is_array( $headers ) ) {
 			foreach ( $headers as $name => $value ) {
@@ -236,9 +242,16 @@ class Memento {
 				exit();
 			}
 
-		// TODO: Non-traditional "friendly" error pages
-//		} else {
-//			$outputPage->showErrorPage($titlemsg, $textmsg);
+		// TODO: write integration tests for non-traditional friendly error pages
+		} else {
+
+			if ( $statusCode == 302 ) {
+				$mementoResponse->header( "HTTP", true, $statusCode );
+			} else {
+				if ($textmsg !== null) {
+					$outputPage->showErrorPage($titlemsg, $textmsg, $params);
+				}
+			}
 		}
 	}
 

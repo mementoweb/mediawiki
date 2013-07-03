@@ -12,6 +12,8 @@ $DEBUG = false;
 class MementoTest extends PHPUnit_Framework_TestCase {
 
     /**
+	 * @group all
+	 *
      * @dataProvider acquire302IntegrationData
      */
     public function testVaryAcceptDateTime302WholeProcess(
@@ -186,6 +188,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     }
 
 	/**
+	 * @group all
+	 *
 	 * @dataProvider acquireEditUrls
 	 */
 	public function testEditPage($URIR) {

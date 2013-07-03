@@ -12,6 +12,8 @@ $TMDEBUG = false;
 class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 	/**
+	 * @group traditionalErrorPages
+     * 
 	 * @dataProvider acquireTimeMap404Urls
 	 */
 	public function test404TimeMap($TIMEMAP) {
@@ -47,6 +49,8 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @group all
+	 *
 	 * @dataProvider acquireTimeMapTestData
 	 */
 	public function testGetTimeMap(
