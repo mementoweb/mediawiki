@@ -209,12 +209,11 @@ class Memento {
 	 *	  eg: "Error 404: The requested resource is not found!"
 	 */
 	public static function sendHTTPResponse(
-		$outputPage, $mementoResponse, $statusCode=200,
-		$headers=array(), $msg=null ) {
+			$outputPage, $mementoResponse, $statusCode=200,
+			$headers=array(), $textmsg, $params=array(), $titlemsg=""
+		) {
 
-		if ( $statusCode != 200 ) {
-			$mementoResponse->header( "HTTP", true, $statusCode );
-		}
+		$wgMementoErrorPageType = "traditional";
 
 		if ( is_array( $headers ) ) {
 			foreach ( $headers as $name => $value ) {
@@ -222,9 +221,24 @@ class Memento {
 			}
 		}
 
-		if ( $msg !== null ) {
-			$outputPage->disable();
-			echo $msg;
+		// this functionality exits for sites that want hard 40* HTTP statuses
+		if ($wgMementoErrorPageType == "traditional") {
+			if ( $statusCode != 200 ) {
+
+				$mementoResponse->header( "HTTP", true, $statusCode );
+
+				if ( $textmsg !== null ) {
+					$msg = wfMessage($textmsg, $params )->text();
+					$outputPage->disable();
+					echo $msg;
+				}
+
+				exit();
+			}
+
+		// TODO: Non-traditional "friendly" error pages
+//		} else {
+//			$outputPage->showErrorPage($titlemsg, $textmsg);
 		}
 	}
 

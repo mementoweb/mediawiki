@@ -7,7 +7,7 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 $HOST = $_ENV["TESTHOST"];
-$DEBUG = false;
+$TGDEBUG = false;
 
 class TimeGateTest extends PHPUnit_Framework_TestCase {
 
@@ -26,7 +26,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		) {
 
 		global $HOST;
-		global $DEBUG;
+		global $TGDEBUG;
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         $request = "GET $URIG HTTP/1.1\r\n";
@@ -37,7 +37,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
         $response = HTTPFetch('localhost', 80, $request);
 
-        if ($DEBUG) {
+        if ($TGDEBUG) {
             echo "\n";
             echo $response;
             echo "\n";
@@ -98,6 +98,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test400TimeGate($URIG) {
 		global $HOST;
+		global $TGDEBUG;
 
         $request = "GET $URIG HTTP/1.1\r\n";
         $request .= "Host: $HOST\r\n";
@@ -105,6 +106,12 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $request .= "Connection: close\r\n\r\n";
 
 		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TGDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -127,12 +134,19 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	public function test404TimeGate($URIG) {
 	
 		global $HOST;
+		global $TGDEBUG;
 
         $request = "GET $URIG HTTP/1.1\r\n";
         $request .= "Host: $HOST\r\n";
         $request .= "Connection: close\r\n\r\n";
 
 		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TGDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
 
 		$statusline = extractStatusLineFromResponse($response);
         $headers = extractHeadersFromResponse($response);

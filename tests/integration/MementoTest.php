@@ -7,7 +7,7 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 $HOST = $_ENV["TESTHOST"];
-$DEBUG = TRUE;
+$DEBUG = false;
 
 class MementoTest extends PHPUnit_Framework_TestCase {
 

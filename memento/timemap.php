@@ -141,9 +141,13 @@ class TimeMap extends SpecialPage
 			}
 			else {
 				// could not get Title from the TimeMap URL if pagination used
-				$msg = wfMessage( 'timemap-404-title', $par )->text();
-				Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
-				exit();
+				$titlemsg = 'timemap';
+				$textmsg = 'timemap-404-title';
+				$params = array( $par );
+				Memento::sendHTTPResponse(
+					$out, $mementoResponse, 404, null,
+					$textmsg, $params, $titlemsg
+					);
 			}
 
 			if ( isset( $titleParts[0] ) ) {
@@ -152,9 +156,13 @@ class TimeMap extends SpecialPage
 				if ( isset( $arrayParams[0] ) ) {
 					$tmRevTS = wfTimestamp( TS_MW, $arrayParams[0] );
 					if ( !$tmRevTS ) {
-						$msg = wfMessage( 'timemap-404-title', $par )->text();
-						Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
-						exit();
+						$titlemsg = 'timemap';
+						$textmsg = 'timemap-404-title';
+						$params = array( $par );
+						Memento::sendHTTPResponse(
+							$out, $mementoResponse, 404, null,
+							$textmsg, $params, $titlemsg
+							);
 					}
 				}
 
@@ -168,9 +176,13 @@ class TimeMap extends SpecialPage
 		$waddress = str_replace( '/$1', '', $articlePath );
 
 		if ( !$title ) {
-			$msg = wfMessage( 'timemap-404-title', $par )->text();
-			Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
-			exit();
+			$titlemsg = 'timemap';
+			$textmsg = 'timemap-404-title';
+			$params = array( $par );
+			Memento::sendHTTPResponse(
+				$out, $mementoResponse, 404, null,
+				$textmsg, $params, $titlemsg
+				);
 		}
 		else {
 			// using the title retrieved to create a Mediawiki Title object
@@ -181,9 +193,13 @@ class TimeMap extends SpecialPage
 		//echo "Namespace is [$namespace]";
 
 		if ( in_array( $objTitle->getNamespace(), $excludeNamespaces ) ) {
-			$msg = wfMessage( 'timemap-404-inaccessible', $par );
-			Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
-			exit();
+			$titlemsg = 'timemap';
+			$textmsg = 'timemap-404-inaccessible';
+			$params = array( $title );
+			Memento::sendHTTPResponse(
+				$out, $mementoResponse, 404, null,
+				$textmsg, $params, $titlemsg
+				);
 		}
 
 		$pg_id = $objTitle->getArticleID();
@@ -339,12 +355,17 @@ class TimeMap extends SpecialPage
 			echo "<" . $uri . ">;rel=\"memento\";datetime=\"" .
 				wfTimestamp( TS_RFC2822,  $revTS[0] ) . "\"";
 
+			// TODO: Eliminate this exit
 			exit();
 		}
 		else {
-			$msg = wfMsgForContent( 'timemap-404-title', $title );
-			Memento::sendHTTPResponse( $out, $mementoResponse, 404, null, $msg );
-			exit();
+			$titlemsg = 'timemap';
+			$textmsg = 'timemap-404-title';
+			$params = array( $title );
+			Memento::sendHTTPResponse(
+				$out, $mementoResponse, 404, null,
+				$textmsg, $params, $titlemsg
+				);
 		}
 	}
 }

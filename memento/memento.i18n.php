@@ -65,14 +65,20 @@ understood by memento for the title: '$1'.
 EOT;
 
 $timemap_desc = <<<EOT
-My goal is to gather all of the coding conventions so we can ensure we meet 
-them.  Ultimately, when we re-engage Wikipedia, we will have documentation to 
-use during the conversation.
+The Memento TimeMap retrieves the revision list of an article including the 
+datetime when the revision was created. The revision list is serialized as 
+application/link-format. Please see http://mementoweb.org for more information.
 EOT;
 
 $timemap_404_namespace_title = <<<EOT
 Error 404: Either the resource does not exist or the namespace is not 
 understood by memento for the title: '$1'.
+EOT;
+
+$timegate_400_date = <<<EOT
+Error 400: Requested date $1 not parseable.<br/>
+<b>First Memento:</b> <a href=$2>$2</a><br/>
+<b>Last Memento:</b> <a href=$3>$3</a><br/>
 EOT;
 
 $messages['en'] = array(
@@ -84,13 +90,12 @@ $messages['en'] = array(
 	'timegate-404-namespace-title' => $timegate_404_namespace_title,
 	'timegate-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
 	'timegate-404-inaccessible' => "Error 404: Resource '$1' is not accessible.",
-	'timegate-400-date' => "Error 400: Requested date $1 not parseable.<br/>",
-	'timegate-400-first-memento' => "<b>First Memento:</b> <a href=$1>$1</a><br/>",
-	'timegate-400-last-memento' => "<b>Last Memento:</b> <a href=$1>$1</a><br/>",
+	'timegate-400-date' => $timegate_400_date,
 	'timemap' => 'Memento TimeMap',
 	'timemap-desc' => $timemap_desc,
 	'timemap-404-namespace-title' => $timemap_404_namespace_title,
 	'timemap-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
 	'timemap-404-inaccessible' => "Error 404: Resource '$1' is not accessible.",
 	'timemap-400-date' => "Error 400: Requested date $1 not parseable.<br/>",
+	'timemap-405-badmethod' => "Unsupported method used for page operation.<br />",
 );

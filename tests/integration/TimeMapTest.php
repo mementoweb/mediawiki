@@ -7,7 +7,7 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 $HOST = $_ENV["TESTHOST"];
-$DEBUG = false;
+$TMDEBUG = false;
 
 class TimeMapTest extends PHPUnit_Framework_TestCase {
 
@@ -17,12 +17,19 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	public function test404TimeMap($TIMEMAP) {
 	
 		global $HOST;
+		global $TMDEBUG;
 
         $request = "GET $TIMEMAP HTTP/1.1\r\n";
         $request .= "Host: $HOST\r\n";
         $request .= "Connection: close\r\n\r\n";
 
 		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TMDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -48,12 +55,19 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		) {
 
         global $HOST;
+		global $TMDEBUG;
 
         $request = "GET $TIMEMAP HTTP/1.1\r\n";
         $request .= "Host: $HOST\r\n";
         $request .= "Connection: close\r\n\r\n";
 
 		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TMDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
 
 		$expectedOutput = file_get_contents($EXPECTEDFILE);
 
