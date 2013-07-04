@@ -47,8 +47,9 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 
-		# TODO: have test load memento.i18n.php to get message,
-		# then run $this->assertContains("$message", $entity);
+		# To ensure that the error message actually exists in the output
+		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
+		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
 	/**
@@ -87,8 +88,9 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 
-		# TODO: have test load memento.i18n.php to get message,
-		# then run $this->assertContains("$message", $entity);
+		# To ensure that the error message actually exists in the output
+		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
+		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
 	/**

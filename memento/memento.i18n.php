@@ -97,5 +97,5 @@ $messages['en'] = array(
 	'timemap-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
 	'timemap-404-inaccessible' => "Error 404: Resource '$1' is not accessible.",
 	'timemap-400-date' => "Error 400: Requested date $1 not parseable.<br/>",
-	'timemap-405-badmethod' => "Unsupported method used for page operation.<br />",
+	'timegate-405-badmethod' => "Unsupported method used for page operation.<br />",
 );

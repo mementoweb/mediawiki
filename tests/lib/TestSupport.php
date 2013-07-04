@@ -40,4 +40,18 @@ function acquireCSVDataFromFile($filename, $columns) {
 	return $data;
 }
 
+function acquireFormattedI18NString($lang, $key) {
+
+	if (!defined('MEDIAWIKI')) {
+		define("MEDIAWIKI", true);
+	}
+
+	require('memento.i18n.php');
+
+	$format = $messages[$lang][$key];
+	$format = str_replace(array('$1', '$2', '$3'), '%s', $format);
+
+	return $format;
+}
+
 ?>

@@ -4,6 +4,7 @@ require_once("MementoParse.php");
 require_once("TestSupport.php");
 require_once('PHPUnit/Extensions/TestDecorator.php');
 
+
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 $HOST = $_ENV["TESTHOST"];
@@ -131,8 +132,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 
-		# TODO: have test load memento.i18n.php to get message,
-		# then run $this->assertContains("$message", $entity);
+		# To ensure that the error message actually exists in the output
+		$expected = acquireFormattedI18NString('en', 'timegate-400-date');
+		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
 	/**
@@ -171,8 +173,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 
-		# TODO: have test load memento.i18n.php to get message,
-		# then run $this->assertContains("$message", $entity);
+		# To ensure that the error message actually exists in the output
+		$expected = acquireFormattedI18NString('en', 'timegate-400-date');
+		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
 	/**
@@ -213,8 +216,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 
-		# TODO: have test load memento.i18n.php to get message,
-		# then run $this->assertContains("$message", $entity);
+		# To ensure that the error message actually exists in the output
+		$expected = acquireFormattedI18NString('en', 'timegate-404-title');
+		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
 	/**
@@ -255,8 +259,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 
-		# TODO: have test load memento.i18n.php to get message,
-		# then run $this->assertContains("$message", $entity);
+		# To ensure that the error message actually exists in the output
+		$expected = acquireFormattedI18NString('en', 'timegate-404-title');
+		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
 	/**
@@ -288,8 +293,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 			# To catch any PHP notices that the test didn't notice
 			$this->assertNotContains("<b>Warning</b>", $entity);
 
-			# TODO: have test load memento.i18n.php to get message,
-			# then run $this->assertContains("$message", $entity);
+			# To ensure that the error message actually exists in the output
+			$expected = acquireFormattedI18NString('en', 'timegate-405-badmethod');
+			$this->assertStringMatchesFormat("$expected", $entity);
 		}
 	}
 
@@ -322,8 +328,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 			# To catch any PHP notices that the test didn't notice
 			$this->assertNotContains("<b>Warning</b>", $entity);
 
-			# TODO: have test load memento.i18n.php to get message,
-			# then run $this->assertContains("$message", $entity);
+			# To ensure that the error message actually exists in the output
+			$expected = acquireFormattedI18NString('en', 'timegate-405-badmethod');
+			$this->assertStringMatchesFormat("$expected", $entity);
 		}
 	}
 
