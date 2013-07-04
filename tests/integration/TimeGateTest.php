@@ -130,6 +130,49 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
+
+		# TODO: have test load memento.i18n.php to get message,
+		# then run $this->assertContains("$message", $entity);
+	}
+
+	/**
+	 * @group friendlyErrorPages
+     * 
+	 * @dataProvider acquireTimeGate200Urls
+	 */
+	public function testFriendly400TimeGate($URIG) {
+		global $HOST;
+		global $TGDEBUG;
+
+        $request = "GET $URIG HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+		$request .= "Accept-DateTime:  bad-input\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TGDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
+
+		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+
+		# TODO: have test load memento.i18n.php to get message,
+		# then run $this->assertContains("$message", $entity);
 	}
 
 	/**
@@ -169,6 +212,51 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
+
+		# TODO: have test load memento.i18n.php to get message,
+		# then run $this->assertContains("$message", $entity);
+	}
+
+	/**
+	 * @group friendlyErrorPages
+     * 
+	 * @dataProvider acquireTimeGate404Urls
+	 */
+	public function testFriendly404TimeGate($URIG) {
+	
+		global $HOST;
+		global $TGDEBUG;
+
+        $request = "GET $URIG HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TGDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
+
+		$statusline = extractStatusLineFromResponse($response);
+        $headers = extractHeadersFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+		$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+
+		# TODO: have test load memento.i18n.php to get message,
+		# then run $this->assertContains("$message", $entity);
 	}
 
 	/**
@@ -199,6 +287,43 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 			# To catch any PHP notices that the test didn't notice
 			$this->assertNotContains("<b>Warning</b>", $entity);
+
+			# TODO: have test load memento.i18n.php to get message,
+			# then run $this->assertContains("$message", $entity);
+		}
+	}
+
+	/**
+	 * @group friendlyErrorPages
+     * 
+	 * @dataProvider acquireTimeGate405Urls
+	 */
+	public function testFriendly405TimeGate($URIG) {
+		global $HOST;
+
+        $request = "POST $URIG HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+		$response = HTTPFetch($HOST, 80, $request);
+
+		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+
+		# To catch any PHP errors that the test didn't notice
+		if ($entity) {
+			$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+			# To catch any PHP notices that the test didn't notice
+			$this->assertNotContains("<b>Notice</b>", $entity);
+
+			# To catch any PHP notices that the test didn't notice
+			$this->assertNotContains("<b>Warning</b>", $entity);
+
+			# TODO: have test load memento.i18n.php to get message,
+			# then run $this->assertContains("$message", $entity);
 		}
 	}
 

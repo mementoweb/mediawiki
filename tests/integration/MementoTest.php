@@ -216,6 +216,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("Fatal error", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
 	}
 
     public function acquire302IntegrationData() {

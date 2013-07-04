@@ -46,6 +46,49 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
+
+		# TODO: have test load memento.i18n.php to get message,
+		# then run $this->assertContains("$message", $entity);
+	}
+
+	/**
+	 * @group friendlyErrorPages
+     * 
+	 * @dataProvider acquireTimeMap404Urls
+	 */
+	public function testFriendlyErrorTimeMap($TIMEMAP) {
+	
+		global $HOST;
+		global $TMDEBUG;
+
+        $request = "GET $TIMEMAP HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+		$response = HTTPFetch($HOST, 80, $request);
+
+		if ($TMDEBUG) {
+			echo "\n";
+			echo $response . "\n";
+			echo "\n";
+		}
+
+		$statusline = extractStatusLineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+
+		# TODO: have test load memento.i18n.php to get message,
+		# then run $this->assertContains("$message", $entity);
 	}
 
 	/**

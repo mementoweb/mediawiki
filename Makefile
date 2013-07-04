@@ -131,7 +131,8 @@ integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running integration tests"
-	phpunit --include-path tests/lib tests/integration
+	phpunit --include-path tests/lib --group all tests/integration
+	phpunit --include-path tests/lib --group traditionalErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
