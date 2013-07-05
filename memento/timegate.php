@@ -120,46 +120,48 @@ class TimeGate extends SpecialPage
 				$out, $mementoResponse, 405, $header,
 				$textmsg, $params, $titlemsg
 				);
-		}
+		} else {
 
-		$waddress = str_replace( '$1', '', $articlePath );
+			$waddress = str_replace( '$1', '', $articlePath );
 
-		// getting the title of the page from the request uri
-		//$title = str_replace( $wgServer . $waddress, "", $par );
-		$title = substr( $par, strlen( $server . $waddress ) );
+			// getting the title of the page from the request uri
+			//$title = str_replace( $wgServer . $waddress, "", $par );
+			$title = substr( $par, strlen( $server . $waddress ) );
 
-		$page_namespace_id = 0;
+			$page_namespace_id = 0;
 
-		$objTitle = Title::newFromText( $title );
-		$page_namespace_id = $objTitle->getNamespace();
+			$objTitle = Title::newFromText( $title );
+			$page_namespace_id = $objTitle->getNamespace();
 
-		if ( in_array( $page_namespace_id, $excludeNamespaces ) ) {
-			$titlemsg = 'timegate';
-			$textmsg = 'timegate-404-inaccessible';
-			$params = array( $par );
-			Memento::sendHTTPResponse(
-				$out, $mementoResponse, 404, $header,
-				$textmsg, $params, $titlemsg
-				);
-		}
+			if ( in_array( $page_namespace_id, $excludeNamespaces ) ) {
+				$titlemsg = 'timegate';
+				$textmsg = 'timegate-404-inaccessible';
+				$params = array( $par );
+				Memento::sendHTTPResponse(
+					$out, $mementoResponse, 404, $header,
+					$textmsg, $params, $titlemsg
+					);
+			} else {
 
-		$pg_id = $objTitle->getArticleID();
+				$pg_id = $objTitle->getArticleID();
 
-		$new_title = $objTitle->getPrefixedURL();
-		$new_title = urlencode( $new_title );
+				$new_title = $objTitle->getPrefixedURL();
+				$new_title = urlencode( $new_title );
 
-		if ( $pg_id > 0 ) {
-			$this->getMementoForResource( $pg_id, $new_title );
-		}
-		else {
-			$header = array( "Vary" => "negotiate, accept-datetime" );
-			$titlemsg = 'timegate';
-			$textmsg = 'timegate-404-title';
-			$params = array( $new_title );
-			Memento::sendHTTPResponse(
-				$out, $mementoResponse, 404, $header,
-				$textmsg, $params, $titlemsg
-				);
+				if ( $pg_id > 0 ) {
+					$this->getMementoForResource( $pg_id, $new_title );
+				}
+				else {
+					$header = array( "Vary" => "negotiate, accept-datetime" );
+					$titlemsg = 'timegate';
+					$textmsg = 'timegate-404-title';
+					$params = array( $new_title );
+					Memento::sendHTTPResponse(
+						$out, $mementoResponse, 404, $header,
+						$textmsg, $params, $titlemsg
+						);
+				}
+			}
 		}
 	}
 
@@ -193,11 +195,13 @@ class TimeGate extends SpecialPage
 		$dt = wfTimestamp( TS_MW, $req_dt );
 
 		if ( !$dt ) {
+
 			$header = array( "Link" => Memento::constructLinkHeader( $first, $last ) . $Link );
 
 			$titlemsg = 'timegate';
 			$textmsg = 'timegate-400-date';
 			$params = array( $req_dt, $first['uri'], $last['uri'] );
+
 			Memento::sendHTTPResponse(
 				$out, $mementoResponse, 400, $header,
 				$textmsg, $params, $titlemsg
@@ -271,30 +275,34 @@ class TimeGate extends SpecialPage
 
 		list( $dt, $raw_dt ) = $this->parseRequestDateTime( $first, $last, $Link );
 
-		// if the requested time is earlier than the first memento,
-		// the first memento will be returned
-		// if the requested time is past the last memento, or in the future,
-		// the last memento will be returned.
-		if ( $dt < wfTimestamp( TS_MW, $first['dt'] ) ) {
-			$dt = wfTimestamp( TS_MW, $first['dt'] );
-		}
-		elseif ( $dt > wfTimestamp( TS_MW, $last['dt'] ) ) {
-			$dt = wfTimestamp( TS_MW, $last['dt'] );
-		}
+		// if we don't get a $dt back, then a 400 should have been queued up
+		if ($dt) {
 
-		$prev = Memento::getMementoFromDb( 'prev', $pg_id, $dt, $db_details );
-		$next = Memento::getMementoFromDb( 'next', $pg_id, $dt, $db_details );
-		$mem = Memento::getMementoFromDb( 'memento', $pg_id, $dt, $db_details );
+			// if the requested time is earlier than the first memento,
+			// the first memento will be returned
+			// if the requested time is past the last memento, or in the future,
+			// the last memento will be returned.
+			if ( $dt < wfTimestamp( TS_MW, $first['dt'] ) ) {
+				$dt = wfTimestamp( TS_MW, $first['dt'] );
+			}
+			elseif ( $dt > wfTimestamp( TS_MW, $last['dt'] ) ) {
+				$dt = wfTimestamp( TS_MW, $last['dt'] );
+			}
 
-		$header = array(
-				"Location" => $mem['uri'],
-				"Vary" => "negotiate, accept-datetime",
-				"Link" => Memento::constructLinkHeader( $first, $last, $mem, $next, $prev ) . $Link
+			$prev = Memento::getMementoFromDb( 'prev', $pg_id, $dt, $db_details );
+			$next = Memento::getMementoFromDb( 'next', $pg_id, $dt, $db_details );
+			$mem = Memento::getMementoFromDb( 'memento', $pg_id, $dt, $db_details );
+
+			$header = array(
+					"Location" => $mem['uri'],
+					"Vary" => "negotiate, accept-datetime",
+					"Link" => Memento::constructLinkHeader( $first, $last, $mem, $next, $prev ) . $Link
+					);
+
+			Memento::sendHTTPResponse(
+				$outputPage, $mementoResponse, 302, $header,
+				null
 				);
-
-		Memento::sendHTTPResponse(
-			$outputPage, $mementoResponse, 302, $header,
-			null
-			);
+		}
 	}
 }

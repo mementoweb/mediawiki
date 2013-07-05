@@ -76,9 +76,9 @@ understood by memento for the title: '$1'.
 EOT;
 
 $timegate_400_date = <<<EOT
-Error 400: Requested date $1 not parseable.<br/>
-<b>First Memento:</b> <a href=$2>$2</a><br/>
-<b>Last Memento:</b> <a href=$3>$3</a><br/>
+Error 400: Requested date '$1' not parseable.<br />
+<b>First Memento:</b> $2<br />
+<b>Last Memento:</b> $3<br />
 EOT;
 
 $messages['en'] = array(

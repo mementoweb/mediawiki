@@ -85,8 +85,10 @@ unit-test:
 # Pre-requisites:  export MWDIR=<your Mediawiki installation directory>
 #
 
+deploy: deploy-default
+
 # deploy the packaged software, requires a "make package" to be run first
-deploy: check-deploy-env ${BUILDDIR}/${BINFILE}
+deploy-default: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo ""
 	@echo "#########################"
 	@echo "Deploying Memento extension"
@@ -101,6 +103,39 @@ deploy: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "#########################"
 	@echo ""
 
+deploy-traditional-errors: check-deploy-env ${BUILDDIR}/${BINFILE}
+	@echo ""
+	@echo "#########################"
+	@echo "Deploying Memento extension"
+	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
+	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
+	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
+	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
+	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
+	echo '$$wgMementoErrorPageType = "traditional";' >> ${MWCONF}
+	find ${DEPLOYDIR}/memento -type d -exec chmod 0755 {} \; 
+	find ${DEPLOYDIR}/memento -type f -exec chmod 0644 {} \; 
+	@echo "Deployment complete"
+	@echo "#########################"
+	@echo ""
+
+deploy-friendly-errors: check-deploy-env ${BUILDDIR}/${BINFILE}
+	@echo ""
+	@echo "#########################"
+	@echo "Deploying Memento extension"
+	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
+	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
+	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
+	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
+	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
+	echo '$$wgMementoErrorPageType = "friendly";' >> ${MWCONF}
+	find ${DEPLOYDIR}/memento -type d -exec chmod 0755 {} \; 
+	find ${DEPLOYDIR}/memento -type f -exec chmod 0644 {} \; 
+	@echo "Deployment complete"
+	@echo "#########################"
+	@echo ""
+
+
 # undeploy the packaged software, requires that it be deployed
 undeploy: check-deploy-env ${DEPLOYDIR}/memento
 	@echo ""
@@ -111,6 +146,7 @@ undeploy: check-deploy-env ${DEPLOYDIR}/memento
 	sed -i "" -e '/$$wgArticlePath="$$wgScriptPath\/index.php\/$$1";/d' ${MWCONF}
 	sed -i "" -e '/$$wgUsePathInfo = true;/d' ${MWCONF}
 	sed -i "" -e '/$$wgMementoTimemapNumberOfMementos = 3;/d' ${MWCONF}
+	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}
 	@echo "Removal complete"
 	@echo "#########################"
 	@echo ""
@@ -126,11 +162,24 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-# run all of the integration tests
-integration-test: check-integration-env
+integration-test: deploy-traditional-errors traditional-error-integration-test undeploy deploy-friendly-errors friendly-error-integration-test undeploy
+
+# run all of the friendly error integration tests
+friendly-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
-	@echo "Running integration tests"
+	@echo "Running friendly error integration tests"
+	phpunit --include-path "memento:tests/lib" --group all tests/integration
+	phpunit --include-path "memento:tests/lib" --group friendlyErrorPages tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
+# run all of the traditional error integration tests
+traditional-error-integration-test: check-integration-env
+	@echo ""
+	@echo "#########################"
+	@echo "Running traditional error integration tests"
 	phpunit --include-path "memento:tests/lib" --group all tests/integration
 	phpunit --include-path "memento:tests/lib" --group traditionalErrorPages tests/integration
 	@echo "Done with integration tests"

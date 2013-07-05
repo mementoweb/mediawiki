@@ -55,7 +55,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		}
 
         # 302, Location, Vary, Link
-        $this->assertEquals($statusline["code"], "302");
+        $this->assertEquals("302", $statusline["code"]);
         $this->assertArrayHasKey('Location', $headers);
         $this->assertArrayHasKey('Vary', $headers);
         $this->assertArrayHasKey('Link', $headers);
@@ -120,8 +120,39 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
+        $headers = extractHeadersFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "400");
+        $this->assertEquals("400", $statusline["code"]);
+
+        $this->assertArrayHasKey('Vary', $headers);
+        $this->assertArrayHasKey('Link', $headers);
+
+        $relations = extractItemsFromLink($headers['Link']);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        # Link
+        $this->assertArrayHasKey('first memento', $relations);
+        $this->assertArrayHasKey('last memento', $relations);
+        $this->assertArrayHasKey('original latest-version', $relations);
+        $this->assertArrayHasKey('timemap', $relations);
+
+		/*
+        # Link: URI-T
+        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
+        $this->assertEquals($URIT, $relations['timemap']['url']);
+		*/
+
+        # Link: other entries
+        $this->assertNotNull($relations['first memento']['datetime']);
+        $this->assertNotNull($relations['last memento']['datetime']);
+
+		/*
+        $this->assertEquals($relations['first memento']['url'],
+            $FIRSTMEMENTO); 
+        $this->assertEquals($relations['last memento']['url'],
+            $LASTMEMENTO);
+        $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
+		*/
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -162,7 +193,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -175,7 +206,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-400-date');
-		$this->assertStringMatchesFormat("$expected", $entity);
+
+		$this->assertStringMatchesFormat("%a" . $expected . "%a", $entity);
 	}
 
 	/**
@@ -204,7 +236,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $headers = extractHeadersFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "404");
+        $this->assertEquals("404", $statusline["code"]);
 		$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
 
 		# To catch any PHP errors that the test didn't notice
@@ -227,7 +259,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeGate404Urls
 	 */
 	public function testFriendly404TimeGate($URIG) {
-	
+
 		global $HOST;
 		global $TGDEBUG;
 
@@ -247,8 +279,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $headers = extractHeadersFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
-		$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
+        $this->assertEquals("200", $statusline["code"]);
+		//$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -261,7 +293,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-404-title');
-		$this->assertStringMatchesFormat("$expected", $entity);
+		$this->assertStringMatchesFormat("%a" . $expected . "%a", $entity);
 	}
 
 	/**
@@ -281,7 +313,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "405");
+        $this->assertEquals("405", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
 		if ($entity) {
@@ -316,7 +348,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
 		if ($entity) {
@@ -330,7 +362,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 			# To ensure that the error message actually exists in the output
 			$expected = acquireFormattedI18NString('en', 'timegate-405-badmethod');
-			$this->assertStringMatchesFormat("$expected", $entity);
+			$this->assertStringMatchesFormat("%a" . $expected . "%a", $entity);
 		}
 	}
 

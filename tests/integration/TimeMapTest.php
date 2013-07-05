@@ -90,7 +90,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
-		$this->assertStringMatchesFormat("$expected", $entity);
+		$this->assertStringMatchesFormat("%a" . $expected . "%a", $entity);
 	}
 
 	/**
