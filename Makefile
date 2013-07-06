@@ -196,6 +196,6 @@ verify:
 	@echo ""
 	@echo "#########################"
 	@echo "Verifying against Mediawiki coding standards"
-	phpcs --standard=coding-standards/Mediawiki memento
+	phpcs --standard=externals/mediawiki-codesniffer/Mediawiki memento
 	@echo "#########################"
 	@echo ""
