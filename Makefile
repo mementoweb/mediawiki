@@ -93,7 +93,7 @@ deploy-default: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "#########################"
 	@echo "Deploying Memento extension"
 	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
-	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
+	echo 'require_once "$$IP/extensions/memento/Memento.php";' >> ${MWCONF}
 	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
 	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
 	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
@@ -108,7 +108,7 @@ deploy-traditional-errors: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "#########################"
 	@echo "Deploying Memento extension"
 	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
-	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
+	echo 'require_once "$$IP/extensions/memento/Memento.php";' >> ${MWCONF}
 	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
 	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
 	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
@@ -124,7 +124,7 @@ deploy-friendly-errors: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "#########################"
 	@echo "Deploying Memento extension"
 	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
-	echo 'require_once "$$IP/extensions/memento/memento.php";' >> ${MWCONF}
+	echo 'require_once "$$IP/extensions/memento/Memento.php";' >> ${MWCONF}
 	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
 	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
 	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
@@ -142,7 +142,7 @@ undeploy: check-deploy-env ${DEPLOYDIR}/memento
 	@echo "#########################"
 	@echo "Removing deployed memento extension"
 	${RM} -rf ${DEPLOYDIR}/memento
-	sed -i "" -e '/require_once "$$IP\/extensions\/memento\/memento.php";/d' ${MWCONF}
+	sed -i "" -e '/require_once "$$IP\/extensions\/memento\/Memento.php";/d' ${MWCONF}
 	sed -i "" -e '/$$wgArticlePath="$$wgScriptPath\/index.php\/$$1";/d' ${MWCONF}
 	sed -i "" -e '/$$wgUsePathInfo = true;/d' ${MWCONF}
 	sed -i "" -e '/$$wgMementoTimemapNumberOfMementos = 3;/d' ${MWCONF}
