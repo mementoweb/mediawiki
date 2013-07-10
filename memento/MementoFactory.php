@@ -55,20 +55,25 @@ class MementoFactory {
 	 * @param $conf: MementoConfig object, used in object instantiation
 	 *
 	 */
-	 public static function PageFactory( $out, $caller, $conf ) {
+	 public static function PageFactory( $out, $caller, $conf, $dbr ) {
 
 		$pageClass = null;
 
-		if ( $caller == "Memento" ) {
-			// $pageClass = new MementoPage($out, $conf);
-		} else if ( $caller == "TimeGate" ) {
-			// $pageClass = new TimeGatePage($out, $conf);
-		} else if ( $caller == "TimeMap" ) {
-			// $pageClass = new TimeMapPage($out, $conf);
+		// TODO: make decision about which MementoPage to load (200 vs. 302) based
+		// on $conf->get('$wgMementoPattern')
+
+		if ( $caller == "Original" ) {
+			$pageClass = new OriginalPage( $out, $conf, $dbr );
+		} elseif ( $caller == "Memento" ) {
+			$pageClass = new MementoPage( $out, $conf, $dbr );
+		} elseif ( $caller == "TimeGate" ) {
+			$pageClass = new TimeGatePage( $out, $conf, $dbr );
+		} elseif ( $caller == "TimeMap" ) {
+			$pageClass = new TimeMapPage( $out, $conf, $dbr );
 		} else {
 			$pageClass = "NOT IMPLEMENTED";
 		}
-		
+
 		return $pageClass;
 	 }
 

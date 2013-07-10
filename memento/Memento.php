@@ -57,6 +57,11 @@ $wgExtensionMessagesFiles['Memento'] = ( __DIR__ ) . '/Memento.i18n.php';
 // Load the classes into MediaWiki
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoFactory'] = __DIR__ . '/MementoFactory.php';
+$wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
+$wgAutoloadClasses['MementoPage'] = __DIR__ . '/MementoPage.php';
+$wgAutoloadClasses['OriginalPage'] = __DIR__ . '/OriginalPage.php';
+$wgAutoloadClasses['TimeGatePage'] = __DIR__ . '/TimeGatePage.php';
+$wgAutoloadClasses['TimeMapPage'] = __DIR__ . '/TimeMapPage.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 
@@ -65,7 +70,7 @@ $wgSpecialPages['TimeGate'] = 'TimeGate';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
 // Set up the hooks
-$wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
+$wgHooks['BeforePageDisplay'][] = 'MementoMediator';
 
 /**
  * Main Memento class, used by hooks.
@@ -79,35 +84,37 @@ $wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
  * some namespace protection for Mediawiki, which can probably be better 
  * served by some other language feature (like perhaps, namespaces?).
  *
- */
 class Memento {
+ */
 
-	/**
-	 * The main hook for the plugin.
-	 *
-	 * @param $out: pointer to the OutputPage Object from the hook
-	 * @param $skin: skin object that will be used to generate the page
-	 *
-	 * @returns boolean indicating success to the caller
-	 */
-	public static function mediator(&$out, &$skin) {
+/**
+ * The main hook for the plugin.
+ *
+ * @param $out: pointer to the OutputPage Object from the hook
+ * @param $skin: skin object that will be used to generate the page
+ *
+ * @returns boolean indicating success to the caller
+ */
+function MementoMediator(&$out, &$skin) {
 
-		$status = true;
+	$status = true;
 
-		if ( $out->isArticle() ) {
-			$config = new MementoConfig();
-			$page = MementoFactory::PageFactory(
-				$out, "Memento", $config
-				);
-			// $page->render();
+	if ( $out->isArticle() ) {
+		$config = new MementoConfig();
+		$dbr = wfGetDB( DB_SLAVE );
+		$page = MementoFactory::PageFactory(
+			$out, "Original", $config, $dbr
+			);
+		$page->render();
 
-			echo "Memento is running<br />";
+		echo "Memento is running<br />";
 
-		}
-
-		return $status;
 	}
 
+	return $status;
 }
+/*
+}
+*/
 
 ?>

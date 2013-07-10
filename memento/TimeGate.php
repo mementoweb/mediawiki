@@ -58,15 +58,24 @@ class TimeGate extends SpecialPage {
 	 */
 	 function execute( $par ) {
 
-		$config = new MementoConfig();
 		$out = $this->getOutput();
+		$this->setHeaders();
 
-		$page = MementoFactory::PageFactory(
-			$out, "TimeGate", $config
-			);
-		// page.render();
+		if ( !$par ) {
+			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
+			return;
+		} else {
 
-		echo "TimeGate is running<br />";
+			$config = new MementoConfig();
+			$dbr = wfGetDB( DB_SLAVE );
+	
+			$page = MementoFactory::PageFactory(
+				$out, "TimeGate", $config, $dbr
+				);
+			$page->render();
+	
+			echo "TimeGate is running<br />";
+		}
 
 	 }
 

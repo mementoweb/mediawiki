@@ -56,16 +56,27 @@ class TimeMap extends SpecialPage {
 	 */
 	function execute($par) {
 
-		$config = new MementoConfig();
 		$out = $this->getOutput();
+		$this->setHeaders();
 
-		$page = MementoFactory::PageFactory(
-			$out, "TimeMap", $config
-			);
-		// page.render();
+		if ( !$par ) {
+			$out->addHTML( wfMessage( 'timemap-welcome-message' )->parse() );
+			return;
+		} else {
 
-		echo "TimeMap is running<br />";
+			$config = new MementoConfig();
+			$dbr = wfGetDB( DB_SLAVE );
+
+			$page = MementoFactory::PageFactory(
+				$out, "TimeMap", $config, $dbr
+				);
+			$page->render();
+
+			echo "TimeMap is running<br />";
+		}
 
 	}
 
 }
+
+?>

@@ -7,6 +7,7 @@ $wgServer = null;
 $wgMementoExcludeNamespaces = null;
 $wgMementoTimeMapNumberOfMementos = null;
 $wgMementoErrorPageType = null;
+$wgMementoPattern = null;
 
 class ConfigurationTest extends PHPUnit_Framework_TestCase {
 
@@ -17,12 +18,14 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimeMapNumberOfMementos;
 		global $wgMementoErrorPageType;
+		global $wgMementoPattern;
 
 		$this->expectedArticlePath = "/somepath/somewhere/";
 		$this->expectedServer = "http://localhost";
 		$this->expectedExcludeNamespaces = "notsurehere";
 		$this->expectedNumberOfMementos = 20;
 		$this->expectedErrorPageType = "traditional";
+		$this->expectedPattern = "separate";
 		
 		$wgArticlePath = $this->expectedArticlePath;
 		$wgServer = $this->expectedServer;
@@ -30,6 +33,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$wgMementoTimeMapNumberOfMementos = 
 			$this->expectedNumberOfMementos;
 		$wgMementoErrorPageType = $this->expectedErrorPageType;
+		$wgMementoPattern = $this->expectedPattern;
 
 
 	}
@@ -54,6 +58,9 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(
 			$this->expectedErrorPageType, $config->get('ErrorPageType'));
 
+		$this->assertEquals(
+			$this->expectedPattern, $config->get('Pattern'));
+
 	}
 
 	public function testConfigurationDefaults() {
@@ -77,7 +84,10 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(500, $config->get('NumberOfMementos'));
 
 		$this->assertEquals(
-			"traditional", $config->get('ErrorPageType'));
+			'traditional', $config->get('ErrorPageType'));
+
+		$this->assertEquals(
+			'separate', $config->get('Pattern'));
 
 	}
 
