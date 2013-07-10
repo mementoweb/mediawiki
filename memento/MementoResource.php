@@ -24,6 +24,10 @@
 
 /**
  * This class is the exception used by all MementoResource types.
+ *
+ * The large number of getters exist mainly to conform to the standard
+ * set by the PHP built-in exception class.
+ *
  */
 class MementoResourceException extends Exception {
 
@@ -35,17 +39,12 @@ class MementoResourceException extends Exception {
 	/**
 	 * @var Response object $response - response object from throwing code
 	 */
-	private $mementoResponse;
+	private $response;
 
 	/**
 	 * @var OutputPage object $output - OutputPage object from throwing code
 	 */
 	private $outputPage;
-
-	/**
-	 * @var MemementoConfig object $conf - configuration object from throw
-	 */
-	private $conf;
 
 	/**
 	 * @var string $textMessage - the full text to display to the user
@@ -61,21 +60,60 @@ class MementoResourceException extends Exception {
 	 * redefined constructor for our purposes
 	 */
 	public function __construct(
-		$textMessage, $titleMessage, $outputPage, $mementoResponse, 
-		$statusCode, $conf) {
+		$textMessage, $titleMessage, $outputPage, $response, $statusCode) {
+
+		$this->statusCode = $statusCode;
+		$this->response = $response;
+		$this->outputPage = $outputPage;
+		$this->textMessage = $textMessage;
+		$this->titleMessage = $titleMessage;
 
 		parent::__construct($textMessage, $statusCode, null);
 	}
 
 	/**
-	 * custom string representation of object
+	 * custom string representation of object (for testing)
 	 */
 	public function __toString() {
 		return __CLASS__ . ":[{$this->statusCode}]: {$this->textMessage}\n";
 	}
 
-}
+	/**
+	 * getter for StatusCode
+	 */
+	public function getStatusCode() {
+		return $this->statusCode;
+	}
 
+	/**
+	 * getter for response
+	 */
+	public function getResponse() {
+		return $this->response;
+	}
+
+	/**
+	 * getter for outputPage
+	 */
+	public function getOutputPage() {
+		return $this->outputPage;
+	}
+
+	/**
+	 * getter for textMessage
+	 */
+	public function getTextMessage() {
+		return $this->textMessage;
+	}
+
+	/**
+	 * getter for titleMessage()
+	 */
+	public function getTitleMessage() {
+		return $this->titleMessage;
+	}
+
+}
 
 /**
  * This abstract class is the parent of all MementoResource types.
