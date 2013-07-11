@@ -129,6 +129,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$this->assertNotContains("Fatal error", $entity);
 	}
 
+
 	public function acquireTimeMapTestData() {
 		return acquireCSVDataFromFile(
 			"tests/integration/test-data/timemap-testdata.csv", 2);

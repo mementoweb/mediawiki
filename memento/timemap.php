@@ -288,10 +288,19 @@ class TimeMap extends SpecialPage
 
 			Memento::sendHTTPResponse( $out, $mementoResponse, 200, $header, null );
 
+
 			echo "<" . $timegate . ">;rel=\"timegate\", \n";
+
+			if ( $cnt < 2 ) {
+				$bottom = 0;
+			} else {
+				$bottom = $cnt - 2;
+			}
+
+			// TODO: fix the offset bug below (hint:  -2)
 			echo "<" . $requri . ">;" .
 				"rel=\"self\";from=\"" .
-				wfTimestamp( TS_RFC2822, $revTS[$cnt - 2] ) .
+				wfTimestamp( TS_RFC2822, $revTS[$bottom] ) .
 				"\";until=\"" .
 				wfTimestamp( TS_RFC2822, $revTS[0] ) . "\", \n";
 
