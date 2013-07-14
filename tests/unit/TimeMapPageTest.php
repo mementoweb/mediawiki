@@ -4,6 +4,7 @@ require_once('MockMediawiki.php');
 require_once('MementoConfig.php');
 require_once('MementoResource.php');
 require_once('TimeMapPage.php');
+require_once('TimeMapFullPage.php');
 
 
 class TimeMapPageTest extends PHPUnit_Framework_TestCase {
@@ -16,7 +17,7 @@ class TimeMapPageTest extends PHPUnit_Framework_TestCase {
 		$urlparam = "http://www.example.com/wiki/index.php/MyPage";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
 
 		$data = array(
 			array(

@@ -49,13 +49,23 @@ class TimeMap extends SpecialPage {
 	}
 
 	/**
+	 * timeMapFactory
+	 *
+	 * This function determines which TimeMap object behavior we will get
+	 * based on the input.
+	 */
+	public function timeMapFactory( $out, $config, $dbr, $urlparam, $title ) {
+		return new TimeMapFullPage( $out, $config, $dbr, $urlparam, $title );
+	}
+
+	/**
 	 * The init function that is called by mediawiki when loading this
 	 * SpecialPage.
 	 *
 	 * @param $urlpar: string; the title parameter returned by Mediawiki
 	 *				which, in this case, is the URI for which we want TimeMaps
 	 */
-	function execute($urlparam) {
+	public function execute($urlparam) {
 
 		$out = $this->getOutput();
 		$this->setHeaders();
@@ -74,8 +84,8 @@ class TimeMap extends SpecialPage {
 
 			$title = Title::newFromText( $title );
 
-			$page = new TimeMapPage(
-				$out, $config, $dbr, $urlparam, $title);
+			$page = $this->timeMapFactory(
+				$out, $config, $dbr, $urlparam, $title );
 
 			try {
 				$page->render();

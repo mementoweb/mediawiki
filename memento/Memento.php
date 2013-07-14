@@ -64,6 +64,7 @@ $wgAutoloadClasses['MementoPage'] = __DIR__ . '/MementoPage.php';
 $wgAutoloadClasses['OriginalPage'] = __DIR__ . '/OriginalPage.php';
 $wgAutoloadClasses['TimeGatePage'] = __DIR__ . '/TimeGatePage.php';
 $wgAutoloadClasses['TimeMapPage'] = __DIR__ . '/TimeMapPage.php';
+$wgAutoloadClasses['TimeMapFullPage'] = __DIR__ . '/TimeMapFullPage.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 
