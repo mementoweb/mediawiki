@@ -43,6 +43,28 @@ class MockResultWrapper {
 	public $rev_id;
 	
 	public $rev_timestamp;
+
+	public function fetchRow() {
+
+		static $counter = 0;
+
+		if ($counter > 3) {
+
+			$data = array(
+				array(
+					'rev_id' => 42,
+					'rev_timestamp' => 123456789,
+				)
+			);
+
+		} else {
+			$data == null;
+		}
+
+		$counter++;
+
+		return $data;
+	}
 }
 
 /**
@@ -65,7 +87,23 @@ class MockDatabaseBase {
 
 		return $res; 
 	}
+}
+
+/**
+ * Mocked version of the OutputPage class, so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class MockOutputPage {
 
 }
+
+/**
+ * Mocked version of the TitleObject class so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class MockTitleObject {
+
+}
+
 
 ?>

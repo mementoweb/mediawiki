@@ -5,7 +5,7 @@ require_once('MementoConfig.php');
 $wgArticlePath = null;
 $wgServer = null;
 $wgMementoExcludeNamespaces = null;
-$wgMementoTimeMapNumberOfMementos = null;
+$wgMementoTimemapNumberOfMementos = null;
 $wgMementoErrorPageType = null;
 $wgMementoPattern = null;
 
@@ -16,7 +16,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		global $wgArticlePath;
 		global $wgServer;
 		global $wgMementoExcludeNamespaces;
-		global $wgMementoTimeMapNumberOfMementos;
+		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
 		global $wgMementoPattern;
 
@@ -30,7 +30,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$wgArticlePath = $this->expectedArticlePath;
 		$wgServer = $this->expectedServer;
 		$wgMementoExcludeNamespaces = $this->expectedExcludeNamespaces;
-		$wgMementoTimeMapNumberOfMementos = 
+		$wgMementoTimemapNumberOfMementos = 
 			$this->expectedNumberOfMementos;
 		$wgMementoErrorPageType = $this->expectedErrorPageType;
 		$wgMementoPattern = $this->expectedPattern;
@@ -71,7 +71,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		//unset($GLOBALS['wgServer']);
 
 		unset($GLOBALS['wgMementoExcludeNamespaces']);
-		unset($GLOBALS['wgMementoTimeMapNumberOfMementos']);
+		unset($GLOBALS['wgMementoTimemapNumberOfMementos']);
 		unset($GLOBALS['wgMementoErrorPageType']);
 
 		$config = new MementoConfig();

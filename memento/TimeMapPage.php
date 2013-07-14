@@ -96,14 +96,6 @@ class TimeMapPage extends MementoResource {
 	public function generateTimeMapText(
 		$data, $urlparam, $baseURL, $title) {
 
-		/*
-			1. generate TimeGate URL 'timegate' X
-			2. generate TimeMap URL 'timemap' X
-			3. generate from and until parts of timemap entry X
-			4. generate Original Page URL 'original latest-version'
-			5. generate memento URLs with datetimes
-		*/
-
 		$timegateURL = $this->generateSpecialURL(
 			$urlparam, "Special:TimeGate", $baseURL);
 
@@ -118,7 +110,6 @@ class TimeMapPage extends MementoResource {
 		$output .= "from=\"$from\";until=\"$until\",\n";
 		$output .= "<$urlparam>;rel=\"original latest-version\",\n";
 
-		#foreach ($data as $datum) {
 		for ($i = count($data) - 1; $i >= 0; $i--) {
 		    $datum = $data[$i];
 			$output .= '<' . $baseURL . "?title=$title";
@@ -139,19 +130,30 @@ class TimeMapPage extends MementoResource {
 		$server = $this->conf->get('Server');
 		$pg_id = $this->title->getArticleID();
 		$title = $this->title->getPrefixedURL();
-
-		$results = $this->getFullTimeMapData(
-			$pg_id, $this->conf->get('NumberOfMementos')
-			);
-
-		echo $this->generateTimeMapText(
-			$results, $this->urlparam, $this->mwbaseurl, $title
-			);
 		$response = $this->out->getRequest()->response();
 
-		$response->header("Content-Type: text/plain", true);
+		if ( $pg_id > 0 ) {
 
-		$this->out->disable();
+			$results = $this->getFullTimeMapData(
+				$pg_id, $this->conf->get('NumberOfMementos')
+				);
+	
+			echo $this->generateTimeMapText(
+				$results, $this->urlparam, $this->mwbaseurl, $title
+				);
+	
+			$response->header("Content-Type: text/plain", true);
+	
+			$this->out->disable();
+		} else {
+			$titleMessage = 'timemap';
+			$textMessage = 'timemap-404-title';
+
+			throw new MementoResourceException(
+				$textMessage, $titleMessage, 
+				$this->out, $response, 404
+			);
+		}
 	}
 
 }

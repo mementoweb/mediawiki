@@ -76,7 +76,12 @@ class TimeMap extends SpecialPage {
 
 			$page = new TimeMapPage(
 				$out, $config, $dbr, $urlparam, $title);
-			$page->render();
+
+			try {
+				$page->render();
+			} catch (MementoResourceException $e) {
+				$page->renderError($e);
+			}
 
 		}
 

@@ -60,13 +60,15 @@ class MementoResourceException extends Exception {
 	 * redefined constructor for our purposes
 	 */
 	public function __construct(
-		$textMessage, $titleMessage, $outputPage, $response, $statusCode) {
+		$textMessage, $titleMessage, $outputPage, $response, $statusCode,
+		$params = array()) {
 
 		$this->statusCode = $statusCode;
 		$this->response = $response;
 		$this->outputPage = $outputPage;
 		$this->textMessage = $textMessage;
 		$this->titleMessage = $titleMessage;
+		$this->params = $params;
 
 		parent::__construct($textMessage, $statusCode, null);
 	}
@@ -107,10 +109,17 @@ class MementoResourceException extends Exception {
 	}
 
 	/**
-	 * getter for titleMessage()
+	 * getter for titleMessage
 	 */
 	public function getTitleMessage() {
 		return $this->titleMessage;
+	}
+
+	/**
+	 * getter for params
+	 */
+	public function getParams() {
+		return $this->params;
 	}
 
 }
@@ -152,6 +161,35 @@ abstract class MementoResource {
 	public function generateSpecialURL($urlparam, $middletext, $baseURL) {
 		return implode('/', array($baseURL, $middletext, $urlparam));
 	}
+
+	/**
+	 * renderError
+	 *
+	 * Render error page.  This is only used for 40* and 50* errors.
+	 *
+	 * @param $error - MementoResourceException object
+	 */
+	 public function renderError($error) {
+		if ( $this->conf->get('ErrorPageType') == 'traditional' ) {
+
+			$msg = wfMessage(
+				$error->getTextMessage(), $error->getParams()
+				)->text();
+
+			$error->getResponse()->header(
+				"HTTP", true, $error->getStatusCode());
+
+			echo $msg;
+
+			$this->out->disable();
+		} else {
+			$this->out->showErrorPage(
+				$error->getTitleMessage(),
+				$error->getTextMessage(),
+				$error->getParams()
+				);
+		}
+	 }
 
 	/**
 	 * Constructor

@@ -77,7 +77,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
