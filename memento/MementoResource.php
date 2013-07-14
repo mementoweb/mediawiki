@@ -125,28 +125,49 @@ abstract class MementoResource {
 	/**
 	 * @var object $out: OutputPage object for Memento Extension
 	 */
-	private $out;
+	protected $out;
 
 	/**
 	 * @var object $conf: configuration object for Memento Extension
 	 */
-	private $conf;
+	protected $conf;
 
 	/**
 	 * @var object $dbr: DatabaseBase object for Memento Extension
 	 */
-	private $dbr;
+	protected $dbr;
+
+	/**
+	 * @var string $mwbaseurl: Base URL for Mediawiki installation
+	 */
+	protected $mwbaseurl;
+
+	/**
+	 * generateSpecialURL
+	 *
+	 * @param $urlparam - url from the SpecialPage call
+	 * @param $middletext - Special:SpecialPage part of URL
+	 * @param $baseURL - the base URL for the Mediawiki installation
+	 */
+	public function generateSpecialURL($urlparam, $middletext, $baseURL) {
+		return implode('/', array($baseURL, $middletext, $urlparam));
+	}
 
 	/**
 	 * Constructor
 	 * 
 	 * @param $out
 	 * @param $conf
+	 * @param $dbr
 	 */
 	public function __construct( $out, $conf, $dbr ) {
 		$this->out = $out;
 		$this->conf = $conf;
 		$this->dbr = $dbr;
+
+		$waddress = str_replace( '$1', '', $conf->get('ArticlePath') );
+
+		$this->mwbaseurl = $this->conf->get('Server') . $waddress;
 	}
 
 

@@ -52,14 +52,15 @@ class TimeMap extends SpecialPage {
 	 * The init function that is called by mediawiki when loading this
 	 * SpecialPage.
 	 *
-	 * @param $par: string; the title parameter returned by Mediawiki
+	 * @param $urlpar: string; the title parameter returned by Mediawiki
+	 *				which, in this case, is the URI for which we want TimeMaps
 	 */
-	function execute($par) {
+	function execute($urlparam) {
 
 		$out = $this->getOutput();
 		$this->setHeaders();
 
-		if ( !$par ) {
+		if ( !$urlparam ) {
 			$out->addHTML( wfMessage( 'timemap-welcome-message' )->parse() );
 			return;
 		} else {
@@ -67,12 +68,16 @@ class TimeMap extends SpecialPage {
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
 
-			$page = MementoFactory::PageFactory(
-				$out, "TimeMap", $config, $dbr
-				);
+			$server = $config->get('Server');
+			$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
+			$title = str_replace( $server . $waddress, "", $urlparam );
+
+			$title = Title::newFromText( $title );
+
+			$page = new TimeMapPage(
+				$out, $config, $dbr, $urlparam, $title);
 			$page->render();
 
-			echo "TimeMap is running<br />";
 		}
 
 	}

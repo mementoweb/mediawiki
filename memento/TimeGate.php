@@ -66,6 +66,16 @@ class TimeGate extends SpecialPage {
 			return;
 		} else {
 
+			$textMessage = 'not implemented yet';
+			$titleMessage = 'title stuff';
+			$outputPage = $out;
+			$response = $out->getRequest()->response();
+			$statusCode = 200;
+
+			throw new MementoResourceException(
+				$textMessage, $titleMessage, 
+				$outputPage, $response, $statusCode);
+
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
 	

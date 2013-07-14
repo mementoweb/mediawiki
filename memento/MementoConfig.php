@@ -50,7 +50,7 @@ class MementoConfig {
 		global $wgServer;
 
 		global $wgMementoExcludeNamespaces;
-		global $wgMementoTimeMapNumberOfMementos;
+		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
 		global $wgMementoPattern;
 
@@ -69,8 +69,8 @@ class MementoConfig {
 
 		$this->settings['NumberOfMementos'] = 
 			$this->setDefault(
-				$wgMementoTimeMapNumberOfMementos, 500 );
-
+				$wgMementoTimemapNumberOfMementos, 500 );
+		
 		$this->settings['ErrorPageType'] = 
 			$this->setDefault(
 				$wgMementoErrorPageType, 'traditional' );

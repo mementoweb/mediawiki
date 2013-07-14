@@ -58,6 +58,8 @@ $wgExtensionMessagesFiles['Memento'] = ( __DIR__ ) . '/Memento.i18n.php';
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoFactory'] = __DIR__ . '/MementoFactory.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
+$wgAutoloadClasses['MementoResourceException'] =
+	__DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoPage'] = __DIR__ . '/MementoPage.php';
 $wgAutoloadClasses['OriginalPage'] = __DIR__ . '/OriginalPage.php';
 $wgAutoloadClasses['TimeGatePage'] = __DIR__ . '/TimeGatePage.php';
@@ -70,7 +72,8 @@ $wgSpecialPages['TimeGate'] = 'TimeGate';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
 // Set up the hooks
-$wgHooks['BeforePageDisplay'][] = 'MementoMediator';
+$wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
+$wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
 
 /**
  * Main Memento class, used by hooks.
@@ -80,41 +83,68 @@ $wgHooks['BeforePageDisplay'][] = 'MementoMediator';
  * the Mediawiki setup code from the Memento code as much as possible
  * for clarity, testing, maintainability, etc.
  *
- * Author's note:  the only reason I'm using this static class is to provide
- * some namespace protection for Mediawiki, which can probably be better 
- * served by some other language feature (like perhaps, namespaces?).
+ * Author's note:  the only reason I'm using this static class is to allow
+ * for the passing of $oldID to the main hook.
  *
+ */
 class Memento {
- */
 
-/**
- * The main hook for the plugin.
- *
- * @param $out: pointer to the OutputPage Object from the hook
- * @param $skin: skin object that will be used to generate the page
- *
- * @returns boolean indicating success to the caller
- */
-function MementoMediator(&$out, &$skin) {
+	/**
+	 * @var string $oldID: the identifier used for the revision of the article
+	 */
+	static private $oldID;
 
-	$status = true;
+	/**
+	 * The ArticleViewHeader hook, used to feed values into lodal memeber
+	 * variables, to minimize the use of globals.
+	 *
+	 * Note: this is not called when the Edit or History pages are loaded.
+	 *
+	 * @param: $article: pointer to the Article Object from the hook
+	 * @param: $outputDone: pointer to variable that indicates that 
+	 *			the output should be terminated
+	 * @param: $pcache: pointer to variable that indicates whether the parser
+	 * 			cache should try retrieving the cached results
+	 */
+	public static function articleViewHeader(
+		&$article, &$outputDone, &$pcache
+		) {
 
-	if ( $out->isArticle() ) {
-		$config = new MementoConfig();
-		$dbr = wfGetDB( DB_SLAVE );
-		$page = MementoFactory::PageFactory(
-			$out, "Original", $config, $dbr
-			);
-		$page->render();
+		$status = true;
 
-		echo "Memento is running<br />";
+		self::$oldID = $article->getOldID();
 
+		return $status;
 	}
 
-	return $status;
+	/**
+	 * The main hook for the plugin.
+	 *
+	 * @param $out: pointer to the OutputPage Object from the hook
+	 * @param $skin: skin object that will be used to generate the page
+	 *
+	 * @returns boolean indicating success to the caller
+	 */
+	public static function mediator(&$out, &$skin) {
+	
+		$status = true;
+	
+		if ( $out->isArticle() ) {
+			$config = new MementoConfig();
+			$dbr = wfGetDB( DB_SLAVE );
+			$oldID = self::$oldID;
+
+			$page = MementoFactory::PageFactory(
+				$out, "Original", $config, $dbr
+				);
+			$page->render();
+	
+			echo "Memento is running<br />";
+	
+		}
+	
+		return $status;
+	}
 }
-/*
-}
-*/
 
 ?>
