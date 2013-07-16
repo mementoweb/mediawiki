@@ -122,14 +122,6 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 		$entity = extractEntityFromResponse($response);
 
-		echo "\n";
-		echo '[' . $expectedOutput . ']';
-		echo "\n";
-		echo '[' . $entity . ']';
-		echo "\n";
-
-#		diffStrings($expectedOutput, $entity);
-
 		# Note that this test may assume $wgMementoTimemapNumberOfMementos = 3
 		$this->assertEquals($expectedOutput, $entity);
 

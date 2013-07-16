@@ -76,6 +76,7 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 		if ( $pg_id > 0 ) {
 
 			$timestamp = $this->extractTimestampPivot( $this->urlparam );
+
 			$formattedTimestamp =
 				$this->formatTimestampForDatabase( $timestamp );
 
@@ -96,7 +97,6 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-404-title';
-			$server = $this->conf->get('Server');
 			$waddress = str_replace( 
 				'$1', '', $this->conf->get('ArticlePath') );
 			$title = str_replace(

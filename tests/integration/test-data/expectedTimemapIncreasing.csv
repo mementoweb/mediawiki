@@ -1,4 +1,4 @@
-<http://localhost/~smj/mediawiki-1.21.1/index.php/Special:TimeGate/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page>;rel="timegate", 
-<http://localhost/~smj/mediawiki-1.21.1/index.php/Special:TimeMap/20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page>;rel="self";from="Sat, 29 Jun 2013 19:03:46 GMT";until="Sat, 29 Jun 2013 19:03:46 GMT", 
-<http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page>;rel="original latest-version", 
+<http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page>;rel="original latest-version",
+<http://localhost/~smj/mediawiki-1.21.1/index.php/Special:TimeMap/20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page>;rel="self";from="Sat, 29 Jun 2013 19:03:46 GMT";until="Sat, 29 Jun 2013 19:03:46 GMT",
+<http://localhost/~smj/mediawiki-1.21.1/index.php/Special:TimeGate/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page>;rel="timegate",
 <http://localhost/~smj/mediawiki-1.21.1/index.php?title=Awesome_Page&oldid=7>;rel="memento";datetime="Sat, 29 Jun 2013 19:03:46 GMT"

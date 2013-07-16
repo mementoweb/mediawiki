@@ -97,7 +97,18 @@ class TimeMap extends SpecialPage {
 			$tm = new TimeMapPivotDescendingPage(
 				$out, $config, $dbr, $urlparam, $title );
 		} else {
-			$tm = null; // let the 500 rain down
+			$titleMessage = 'timemap';
+			$textMessage = 'timemap-400-date';
+			$server = $config->get('Server');
+			$waddress = str_replace( 
+				'$1', '', $config->get('ArticlePath') );
+			$title = str_replace( $server . $waddress, "", $urlparam );
+			$response = $this->getOutput()->getRequest()->response();
+
+			throw new MementoResourceException(
+				$textMessage, $titleMessage, 
+				$out, $response, 400, array( )
+			);
 		}
 
 		return $tm;
@@ -159,13 +170,13 @@ class TimeMap extends SpecialPage {
 
 			$title = Title::newFromText( $title );
 
-			$page = $this->timeMapFactory(
-				$out, $config, $dbr, $urlparam, $title );
-
 			try {
+				$page = $this->timeMapFactory(
+					$out, $config, $dbr, $urlparam, $title );
 				$page->render();
 			} catch (MementoResourceException $e) {
-				$page->renderError($e);
+				MementoResource::renderError(
+					$out, $e, $config->get('ErrorPageType') );
 			}
 
 		}

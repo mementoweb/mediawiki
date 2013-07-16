@@ -174,8 +174,8 @@ abstract class MementoResource {
 	 *
 	 * @param $error - MementoResourceException object
 	 */
-	 public function renderError($error) {
-		if ( $this->conf->get('ErrorPageType') == 'traditional' ) {
+	 public static function renderError($out, $error, $errorPageType) {
+		if ( $errorPageType == 'traditional' ) {
 
 			$msg = wfMessage(
 				$error->getTextMessage(), $error->getParams()
@@ -186,9 +186,9 @@ abstract class MementoResource {
 
 			echo $msg;
 
-			$this->out->disable();
+			$out->disable();
 		} else {
-			$this->out->showErrorPage(
+			$out->showErrorPage(
 				$error->getTitleMessage(),
 				$error->getTextMessage(),
 				$error->getParams()
