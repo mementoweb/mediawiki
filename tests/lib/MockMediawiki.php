@@ -8,6 +8,11 @@ define("TS_RFC2822", "GOOD CONST");
  * to run unit tests.
  */
 function wfTimestamp($standard, $input) {
+
+	if ( strstr($input, "BAD INPUT" ) ) {
+		throw new MWException("bad bad mojo!");
+	}
+
 	return "STANDARDIZED:$input";
 }
 
@@ -103,6 +108,17 @@ class MockOutputPage {
  */
 class MockTitleObject {
 
+}
+
+/**
+ * Mocked version of the MWException object so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class MWException extends Exception {
+
+	public function __construct( $message, $code = 0, Exception $previous = null ) {
+		parent::__construct( $message, $code, $previous );
+	}
 }
 
 

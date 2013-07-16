@@ -55,37 +55,129 @@ abstract class TimeMapPage extends MementoResource {
 	}
 
 	/**
+	 * extractTimestampPivot
+	 *
+	 * @param $urlparam - the parameter passed to execute() in this SpecialPage
+	 *
+	 * @returns timestamp, if found; null otherwise
+	 */
+	public function extractTimestampPivot( $urlparam ) {
+		$pivot = null;
+
+		$pattern = "/^([0-9]+)\/.*/";
+
+		preg_match($pattern, $urlparam, $matches);
+
+		if ( count($matches) == 2 ) {
+			$pivot = $matches[1];
+		}
+
+		return $pivot;
+	}
+
+	/**
+	 * formatTimestamp
+	 *
+	 * Wrapper for wfTimestamp that catches exceptions so the caller can issue 
+	 * its own error statements instead.
+	 *
+	 * @see http://www.mediawiki.org/wiki/Manual:WfTimestamp
+	 *
+	 * @param $timestamp
+	 *
+	 * @returns formatted timestamp; null if error
+	 */
+	public function formatTimestampForDatabase( $timestamp ) {
+
+		$formattedTimestamp = null;
+
+		try {
+			$formattedTimestamp = wfTimestamp( TS_MW, $timestamp );
+
+			if ( $formattedTimestamp === false ) {
+				// the timestamp is unrecognized, but not incorrectly formatted?
+				$formattedTimestamp = null;
+			}
+
+		} catch ( MWException $e ) {
+			// it all went wrong, we passed in bad data
+			$formattedTimestamp = null;	
+		}
+
+		return $formattedTimestamp;
+	}
+
+	/**
+	 * extractPageURL
+	 *
+	 * Extracts the Page URL from the URL parameter that is passed into the 
+	 * execute function of SpecialPage.
+	 *
+	 */
+	public function extractPageURL( $urlparam ) {
+
+		$pageURL = null;
+
+		$pattern = "/^.*(http:\/\/.*$)/";
+
+		preg_match( $pattern, $urlparam, $matches );
+
+		if ( count($matches) == 2 ) {
+			$pageURL = $matches[1];
+		}
+
+		return $pageURL;
+	}
+
+	/**
 	 * generateTimeMapText
+	 *
+	 * Generates Time Map text as per examples in Memento TimeMap RFC
+	 * @see http://www.mementoweb.org/guide/rfc/ID/
 	 *
 	 * @param $data - array with entries containing the keys
 	 *					rev_id and rev_timestamp
+	 *
+	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(
-		$data, $urlparam, $baseURL, $title) {
+		$data, $urlparam, $baseURL, $title, $pageURL ) {
+
+		$outputArray = array();
 
 		$timegateURL = $this->generateSpecialURL(
-			$urlparam, "Special:TimeGate", $baseURL);
+			$pageURL, "Special:TimeGate", $baseURL);
 
-		$timemapURL = $this->generateSpecialURL(
-			$urlparam, "Special:TimeMap", $baseURL);
+		$selfURL = $this->generateSpecialURL(
+				$urlparam, "Special:TimeMap", $baseURL);
 
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
-		$output = "<$timegateURL>;rel=\"timegate\",\n";
-		$output .= "<$timemapURL>;rel=\"self\";";
-		$output .= "from=\"$from\";until=\"$until\",\n";
-		$output .= "<$urlparam>;rel=\"original latest-version\",\n";
+		array_push($outputArray, "<$pageURL>;rel=\"original latest-version\"");
+
+		array_push($outputArray,
+			"<$selfURL>;rel=\"self\";from=\"$from\";until=\"$until\"");
+
+		array_push($outputArray, "<$timegateURL>;rel=\"timegate\"");
+
+		$baseURL = rtrim($baseURL, "/");
 
 		for ($i = count($data) - 1; $i >= 0; $i--) {
+			$output = "";
 		    $datum = $data[$i];
 			$output .= '<' . $baseURL . "?title=$title";
-			$output .= '&oldid=' . $datum['rev_id'] . '>';
+			$output .= '&oldid=' . $datum['rev_id'] . '>;';
 			$output .= 'rel="memento";';
-			$output .= 'datetime="' . $datum['rev_timestamp'] . '",' . "\n";
+			$output .= 'datetime="' . $datum['rev_timestamp'] . '"';
+			array_push($outputArray, $output);
 		}
 
-		return $output;
+		// the original implementation of TimeMap for Mediawiki used ,<SP><LF>
+		// to separate the entries and added a \n at the end
+		$timemap = implode(",\n", $outputArray);
+
+		return $timemap;
 	}
 
 }

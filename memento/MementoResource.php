@@ -159,6 +159,11 @@ abstract class MementoResource {
 	 * @param $baseURL - the base URL for the Mediawiki installation
 	 */
 	public function generateSpecialURL($urlparam, $middletext, $baseURL) {
+
+		if ( $baseURL[strlen($baseURL) - 1] == '/' ) {
+			$baseURL = substr($baseURL, 0, strlen($baseURL) - 1);
+		}
+
 		return implode('/', array($baseURL, $middletext, $urlparam));
 	}
 

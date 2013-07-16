@@ -45,7 +45,39 @@ class TimeMap extends SpecialPage {
 	 * Constructor
 	 */
 	function __construct() {
+		$this->ascendingURLPattern = "^[0-9]+\/1\/";
+		$this->descendingURLPattern = "^[0-9]+\/-1\/";
+
 		parent::__construct( "TimeMap" );
+	}
+
+	/**
+	 * is Full
+	 *
+	 * Return true if the URL is for a full TimeMap.
+	 */
+	public function isFull($urlparam) {
+		return ( substr($urlparam, 0, 4 ) == "http" );
+	}
+
+	/**
+	 * isPivotAscending
+	 *
+	 * Return true if the URL is for a TimeMap ascending from a pivot.
+	 */
+	public function isPivotAscending($urlparam) {
+		return (
+			preg_match( "/$this->ascendingURLPattern/", $urlparam ) == 1 );
+	}
+
+	/**
+	 * isPivotDescending
+	 *
+	 * Return true if the URL is for a TimeMap descending from a pivot.
+	 */
+	public function isPivotDescending($urlparam) {
+		return (
+			preg_match( "/$this->descendingURLPattern/", $urlparam ) == 1 );
 	}
 
 	/**
@@ -55,7 +87,50 @@ class TimeMap extends SpecialPage {
 	 * based on the input.
 	 */
 	public function timeMapFactory( $out, $config, $dbr, $urlparam, $title ) {
-		return new TimeMapFullPage( $out, $config, $dbr, $urlparam, $title );
+
+		if ( $this->isFull( $urlparam ) ) {
+			$tm = new TimeMapFullPage( $out, $config, $dbr, $urlparam, $title );
+		} elseif ( $this->isPivotAscending( $urlparam ) ) {
+			$tm = new TimeMapPivotAscendingPage(
+				$out, $config, $dbr, $urlparam, $title );
+		} elseif ( $this->isPivotDescending( $urlparam ) ) {
+			$tm = new TimeMapPivotDescendingPage(
+				$out, $config, $dbr, $urlparam, $title );
+		} else {
+			$tm = null; // let the 500 rain down
+		}
+
+		return $tm;
+	}
+
+	/**
+	 * getTitle
+	 *
+	 * This function extracts the Title from the URL
+	 */
+	public function getPageTitle( $server, $waddress, $urlparam ) {
+
+		if ( $this->isFull( $urlparam ) ) {
+			$title = str_replace( $server . $waddress, "", $urlparam );
+		} elseif ( $this->isPivotAscending( $urlparam ) ) {
+			$title = preg_replace(
+				'/' . $this->ascendingURLPattern .
+				str_replace( "/", "\\/", $server ) .
+				str_replace( "/", "\\/", $waddress ) .
+				'/',
+				"", $urlparam );
+		} elseif ( $this->isPivotDescending( $urlparam ) ) {
+			$title = preg_replace(
+				'/' . $this->descendingURLPattern .
+				str_replace( "/", "\\/", $server ) .
+				str_replace( "/", "\\/", $waddress ) .
+				'/',
+				"", $urlparam );
+		} else {
+			$title = null; // let the 500 rain down
+		}
+
+		return $title;
 	}
 
 	/**
@@ -80,7 +155,7 @@ class TimeMap extends SpecialPage {
 
 			$server = $config->get('Server');
 			$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
-			$title = str_replace( $server . $waddress, "", $urlparam );
+			$title = $this->getPageTitle( $server, $waddress, $urlparam );
 
 			$title = Title::newFromText( $title );
 

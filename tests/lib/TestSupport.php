@@ -54,4 +54,39 @@ function acquireFormattedI18NString($lang, $key) {
 	return $format;
 }
 
+function diffStrings($string1, $string2) {
+
+	$s1len = strlen($string1);
+	$s2len = strlen($string2);
+
+	if ( $s1len > $s2len ) {
+		$size = $s1len;
+		$limit = $s2len;
+		$overage = "string1";
+	} else {
+		$size = $s2len;
+		$limit = $s2len;
+		$overage = "string2";
+	}
+
+	for ( $i = 0; $i < $size; $i++ ) {
+
+		if ($i < $limit) {
+	
+			if ( $string1[$i] == $string2[$i] ) {
+				echo "strings match at position $i with character " . $string1[$i] . "\n";
+			} else {
+				echo "at position $i: string1 has character " . $string1[$i] . 
+					'(' . ord($string1[$i]) . "), and string2 has character " .
+					$string2[$i] .  '(' . ord($string2[$i]) . ")\n";
+			}
+
+		} else {
+			echo "$overage[$i] has character " . ord(eval("$overage\[\$i\]")) . "\n";
+		}
+
+	}
+
+}
+
 ?>

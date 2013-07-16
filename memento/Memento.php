@@ -65,6 +65,10 @@ $wgAutoloadClasses['OriginalPage'] = __DIR__ . '/OriginalPage.php';
 $wgAutoloadClasses['TimeGatePage'] = __DIR__ . '/TimeGatePage.php';
 $wgAutoloadClasses['TimeMapPage'] = __DIR__ . '/TimeMapPage.php';
 $wgAutoloadClasses['TimeMapFullPage'] = __DIR__ . '/TimeMapFullPage.php';
+$wgAutoloadClasses['TimeMapPivotAscendingPage'] =
+	__DIR__ . '/TimeMapPivotAscendingPage.php';
+$wgAutoloadClasses['TimeMapPivotDescendingPage'] =
+	__DIR__ . '/TimeMapPivotDescendingPage.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 
