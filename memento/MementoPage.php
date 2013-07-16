@@ -32,5 +32,3 @@ class MementoPage extends MementoResource {
 	}
 
 }
-
-?>

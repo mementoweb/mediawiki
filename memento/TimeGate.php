@@ -56,7 +56,7 @@ class TimeGate extends SpecialPage {
 	 * 		which turns out to be the part of the url after Special:TimeGate
 	 *
 	 */
-	 function execute( $par ) {
+	function execute( $par ) {
 
 		$out = $this->getOutput();
 		$this->setHeaders();
@@ -66,29 +66,14 @@ class TimeGate extends SpecialPage {
 			return;
 		} else {
 
-			$textMessage = 'not implemented yet';
-			$titleMessage = 'title stuff';
-			$outputPage = $out;
-			$response = $out->getRequest()->response();
-			$statusCode = 200;
-
-			throw new MementoResourceException(
-				$textMessage, $titleMessage, 
-				$outputPage, $response, $statusCode);
-
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
-	
-			$page = MementoFactory::PageFactory(
-				$out, "TimeGate", $config, $dbr
-				);
+
+			$page = new TimeGatePage( $out, $config, $dbr );
 			$page->render();
-	
-			echo "TimeGate is running<br />";
+
 		}
 
-	 }
+	}
 
 }
-
-?>

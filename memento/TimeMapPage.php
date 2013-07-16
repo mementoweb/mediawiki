@@ -101,7 +101,7 @@ abstract class TimeMapPage extends MementoResource {
 
 		} catch ( MWException $e ) {
 			// it all went wrong, we passed in bad data
-			$formattedTimestamp = null;	
+			$formattedTimestamp = null;
 		}
 
 		return $formattedTimestamp;
@@ -165,7 +165,7 @@ abstract class TimeMapPage extends MementoResource {
 
 		for ($i = count($data) - 1; $i >= 0; $i--) {
 			$output = "";
-		    $datum = $data[$i];
+			$datum = $data[$i];
 			$output .= '<' . $baseURL . "?title=$title";
 			$output .= '&oldid=' . $datum['rev_id'] . '>;';
 			$output .= 'rel="memento";';
@@ -181,5 +181,3 @@ abstract class TimeMapPage extends MementoResource {
 	}
 
 }
-
-?>

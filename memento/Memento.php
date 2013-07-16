@@ -48,7 +48,7 @@ $wgExtensionCredits['specialpage'][] = array(
 
 //require_once( ( __DIR__ ) . '/MementoUtilities.php');
 
-// TODO:  have the make file change 'version' above to an actual 
+// TODO:  have the make file change 'version' above to an actual
 // version upon release
 
 // Set up the messages file
@@ -131,9 +131,9 @@ class Memento {
 	 * @returns boolean indicating success to the caller
 	 */
 	public static function mediator(&$out, &$skin) {
-	
+
 		$status = true;
-	
+
 		if ( $out->isArticle() ) {
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
@@ -143,13 +143,11 @@ class Memento {
 				$out, "Original", $config, $dbr
 				);
 			$page->render();
-	
+
 			echo "Memento is running<br />";
-	
+
 		}
-	
+
 		return $status;
 	}
 }
-
-?>

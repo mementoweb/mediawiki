@@ -75,28 +75,27 @@ class TimeMapFullPage extends TimeMapPage {
 			$results = $this->getFullTimeMapData(
 				$pg_id, $this->conf->get('NumberOfMementos')
 				);
-	
+
 			echo $this->generateTimeMapText(
 				$results, $this->urlparam, $this->mwbaseurl, $title,
 				$this->urlparam
 				);
-	
+
 			$response->header("Content-Type: text/plain", true);
-	
+
 			$this->out->disable();
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-404-title';
-			$waddress = str_replace( 
+			$waddress = str_replace(
 				'$1', '', $this->conf->get('ArticlePath') );
 			$title = str_replace( $server . $waddress, "", $this->urlparam );
 
 			throw new MementoResourceException(
-				$textMessage, $titleMessage, 
+				$textMessage, $titleMessage,
 				$this->out, $response, 404, array( $title )
 			);
 		}
 	}
 
 }
-?>

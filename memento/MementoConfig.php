@@ -54,24 +54,24 @@ class MementoConfig {
 		global $wgMementoErrorPageType;
 		global $wgMementoPattern;
 
-		$this->settings['ArticlePath'] = 
+		$this->settings['ArticlePath'] =
 			$this->setDefault(
 				$wgArticlePath, "$wgScriptPath/index.php/$1" );
 
 		// TODO: what if this isn't set by the Mediawiki installation?
 		// the documentation at http://www.mediawiki.org/wiki/Manual:$wgServer
-		// says it will be detected at run time using 
+		// says it will be detected at run time using
 		// WebRequest::detectServer()
 		$this->settings['Server'] = $wgServer;
 
 		// this can be null
 		$this->settings['ExcludedNamespaces'] = $wgMementoExcludeNamespaces;
 
-		$this->settings['NumberOfMementos'] = 
+		$this->settings['NumberOfMementos'] =
 			$this->setDefault(
 				$wgMementoTimemapNumberOfMementos, 500 );
-		
-		$this->settings['ErrorPageType'] = 
+
+		$this->settings['ErrorPageType'] =
 			$this->setDefault(
 				$wgMementoErrorPageType, 'traditional' );
 
@@ -93,7 +93,7 @@ class MementoConfig {
 		$value = null;
 
 		if ( isset( $valueToCheck ) ) {
-			$value = $valueToCheck;	
+			$value = $valueToCheck;
 		} else {
 			$value = $defaultValue;
 		}
@@ -107,9 +107,7 @@ class MementoConfig {
 	public function get( $setting ) {
 
 		return $this->settings[$setting];
-		
+
 	}
 
 }
-
-?>

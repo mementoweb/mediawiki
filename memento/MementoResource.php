@@ -174,7 +174,7 @@ abstract class MementoResource {
 	 *
 	 * @param $error - MementoResourceException object
 	 */
-	 public static function renderError($out, $error, $errorPageType) {
+	public static function renderError($out, $error, $errorPageType) {
 		if ( $errorPageType == 'traditional' ) {
 
 			$msg = wfMessage(
@@ -194,7 +194,7 @@ abstract class MementoResource {
 				$error->getParams()
 				);
 		}
-	 }
+	}
 
 	/**
 	 * Constructor
@@ -217,5 +217,3 @@ abstract class MementoResource {
 	abstract public function render();
 
 }
-
-?>

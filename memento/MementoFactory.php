@@ -55,7 +55,7 @@ class MementoFactory {
 	 * @param $conf: MementoConfig object, used in object instantiation
 	 *
 	 */
-	 public static function PageFactory( $out, $caller, $conf, $dbr ) {
+	public static function PageFactory( $out, $caller, $conf, $dbr ) {
 
 		$pageClass = null;
 
@@ -75,10 +75,6 @@ class MementoFactory {
 		}
 
 		return $pageClass;
-	 }
+	}
 
 }
-
-
-
-?>

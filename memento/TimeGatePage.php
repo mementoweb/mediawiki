@@ -28,9 +28,23 @@ class TimeGatePage extends MementoResource {
 	 * Render the page
 	 */
 	public function render() {
-		echo "I can't render a TimeGate yet!<br />";
+
+		$response = $this->out->getRequest()->response();
+		$requestDatetime =
+			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
+
+		$response->header( "HTTP", true, 302 );
+		$response->header( "Vary: negotiate,accept-datetime", true );
+
+		# TODO Link header should contain original and timemap entries
+		$response->header( "Link: something", true );
+
+		# TODO Location header should contain location of Memento based on value from ACCEPT-DATETIME
+		$response->header( "Location: something", true );
+
+		// no output for a 302 response
+		$this->out->disable();
+
 	}
 
 }
-
-?>

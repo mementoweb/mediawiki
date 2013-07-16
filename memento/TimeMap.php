@@ -100,13 +100,13 @@ class TimeMap extends SpecialPage {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-400-date';
 			$server = $config->get('Server');
-			$waddress = str_replace( 
+			$waddress = str_replace(
 				'$1', '', $config->get('ArticlePath') );
 			$title = str_replace( $server . $waddress, "", $urlparam );
 			$response = $this->getOutput()->getRequest()->response();
 
 			throw new MementoResourceException(
-				$textMessage, $titleMessage, 
+				$textMessage, $titleMessage,
 				$out, $response, 400, array( )
 			);
 		}
@@ -184,5 +184,3 @@ class TimeMap extends SpecialPage {
 	}
 
 }
-
-?>

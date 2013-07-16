@@ -86,18 +86,18 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 				);
 
 			$pageURL = $this->extractPageURL($this->urlparam);
-	
+
 			echo $this->generateTimeMapText(
 				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL
 				);
-	
+
 			$response->header("Content-Type: text/plain", true);
-	
+
 			$this->out->disable();
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-404-title';
-			$waddress = str_replace( 
+			$waddress = str_replace(
 				'$1', '', $this->conf->get('ArticlePath') );
 			$title = str_replace(
 				$server . $waddress, "",
@@ -105,11 +105,10 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 				);
 
 			throw new MementoResourceException(
-				$textMessage, $titleMessage, 
+				$textMessage, $titleMessage,
 				$this->out, $response, 404, array( $title )
 			);
 		}
 	}
 
 }
-?>
