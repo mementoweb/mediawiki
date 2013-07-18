@@ -22,10 +22,10 @@
  * @file
  */
 
-class TimeMapPivotDescendingPage extends TimeMapPage {
+class TimeMapPivotAscendingResource extends TimeMapResource {
 
 	/**
-	 * getFullTimeMapData
+	 * getAscendingTimeMapData
 	 *
 	 * Extract the full time map data from the database.
 	 *
@@ -33,7 +33,7 @@ class TimeMapPivotDescendingPage extends TimeMapPage {
 	 * @param $limit - the greatest number of results
 	 *
 	 */
-	public function getDescendingTimeMapData($pg_id, $limit, $timestamp) {
+	public function getAscendingTimeMapData($pg_id, $limit, $timestamp) {
 
 		$data = array();
 
@@ -42,7 +42,7 @@ class TimeMapPivotDescendingPage extends TimeMapPage {
 			array( 'rev_id', 'rev_timestamp'),
 			array(
 				'rev_page' => $pg_id,
-				'rev_timestamp<' . $this->dbr->addQuotes( $timestamp )
+				'rev_timestamp>' . $this->dbr->addQuotes( $timestamp )
 				),
 			__METHOD__,
 			array(
@@ -80,7 +80,7 @@ class TimeMapPivotDescendingPage extends TimeMapPage {
 			$formattedTimestamp =
 				$this->formatTimestampForDatabase( $timestamp );
 
-			$results = $this->getDescendingTimeMapData(
+			$results = $this->getAscendingTimeMapData(
 				$pg_id, $this->conf->get('NumberOfMementos'),
 				$formattedTimestamp
 				);
@@ -99,7 +99,6 @@ class TimeMapPivotDescendingPage extends TimeMapPage {
 			$textMessage = 'timemap-404-title';
 			$waddress = str_replace(
 				'$1', '', $this->conf->get('ArticlePath') );
-
 			$title = str_replace(
 				$server . $waddress, "",
 				$this->extractPageURL( $this->urlparam )

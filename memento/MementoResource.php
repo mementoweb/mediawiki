@@ -152,6 +152,11 @@ abstract class MementoResource {
 	protected $mwbaseurl;
 
 	/**
+	 * @var string $mwrelurl: Base relative URL for Mediawiki installation
+	 */
+	protected $mwrelurl;
+
+	/**
 	 * generateSpecialURL
 	 *
 	 * @param $urlparam - url from the SpecialPage call
@@ -164,7 +169,9 @@ abstract class MementoResource {
 			$baseURL = substr($baseURL, 0, strlen($baseURL) - 1);
 		}
 
-		return implode('/', array($baseURL, $middletext, $urlparam));
+		$specialPageText = SpecialPage::getTitleFor($middletext);
+
+		return implode('/', array($baseURL, $specialPageText, $urlparam));
 	}
 
 	/**
@@ -208,9 +215,10 @@ abstract class MementoResource {
 		$this->conf = $conf;
 		$this->dbr = $dbr;
 
-		$waddress = str_replace( '$1', '', $conf->get('ArticlePath') );
+		$waddress = str_replace( '/$1', '', $conf->get('ArticlePath') );
 
 		$this->mwbaseurl = $this->conf->get('Server') . $waddress;
+		$this->mwrelurl = $waddress;
 	}
 
 

@@ -121,5 +121,17 @@ class MWException extends Exception {
 	}
 }
 
+/**
+ * Mocked version of the SpecialPage object so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class SpecialPage {
+
+	public static function getTitleFor( $sometext ) {
+		return $sometext;
+	}
+
+}
+
 
 ?>

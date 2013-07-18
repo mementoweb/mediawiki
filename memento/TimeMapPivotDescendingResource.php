@@ -22,7 +22,7 @@
  * @file
  */
 
-class TimeMapFullPage extends TimeMapPage {
+class TimeMapPivotDescendingResource extends TimeMapResource {
 
 	/**
 	 * getFullTimeMapData
@@ -33,14 +33,17 @@ class TimeMapFullPage extends TimeMapPage {
 	 * @param $limit - the greatest number of results
 	 *
 	 */
-	public function getFullTimeMapData($pg_id, $limit) {
+	public function getDescendingTimeMapData($pg_id, $limit, $timestamp) {
 
 		$data = array();
 
 		$results = $this->dbr->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
-			array( 'rev_page' => $pg_id ),
+			array(
+				'rev_page' => $pg_id,
+				'rev_timestamp<' . $this->dbr->addQuotes( $timestamp )
+				),
 			__METHOD__,
 			array(
 				'ORDER BY' => 'rev_timestamp DESC',
@@ -72,13 +75,20 @@ class TimeMapFullPage extends TimeMapPage {
 
 		if ( $pg_id > 0 ) {
 
-			$results = $this->getFullTimeMapData(
-				$pg_id, $this->conf->get('NumberOfMementos')
+			$timestamp = $this->extractTimestampPivot( $this->urlparam );
+
+			$formattedTimestamp =
+				$this->formatTimestampForDatabase( $timestamp );
+
+			$results = $this->getDescendingTimeMapData(
+				$pg_id, $this->conf->get('NumberOfMementos'),
+				$formattedTimestamp
 				);
 
+			$pageURL = $this->extractPageURL($this->urlparam);
+
 			echo $this->generateTimeMapText(
-				$results, $this->urlparam, $this->mwbaseurl, $title,
-				$this->urlparam
+				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL
 				);
 
 			$response->header("Content-Type: text/plain", true);
@@ -89,7 +99,11 @@ class TimeMapFullPage extends TimeMapPage {
 			$textMessage = 'timemap-404-title';
 			$waddress = str_replace(
 				'$1', '', $this->conf->get('ArticlePath') );
-			$title = str_replace( $server . $waddress, "", $this->urlparam );
+
+			$title = str_replace(
+				$server . $waddress, "",
+				$this->extractPageURL( $this->urlparam )
+				);
 
 			throw new MementoResourceException(
 				$textMessage, $titleMessage,

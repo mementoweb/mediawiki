@@ -25,7 +25,7 @@
 /**
  * This class provides the base functions for all Memento TimeMap types
  */
-abstract class TimeMapPage extends MementoResource {
+abstract class TimeMapResource extends MementoResource {
 
 	/**
 	 * @var $urlparam - parameter part of the Special Page
@@ -146,10 +146,10 @@ abstract class TimeMapPage extends MementoResource {
 		$outputArray = array();
 
 		$timegateURL = $this->generateSpecialURL(
-			$pageURL, "Special:TimeGate", $baseURL);
+			$pageURL, "TimeGate", $baseURL);
 
 		$selfURL = $this->generateSpecialURL(
-				$urlparam, "Special:TimeMap", $baseURL);
+				$urlparam, "TimeMap", $baseURL);
 
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];

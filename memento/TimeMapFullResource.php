@@ -22,10 +22,10 @@
  * @file
  */
 
-class TimeMapPivotAscendingPage extends TimeMapPage {
+class TimeMapFullResource extends TimeMapResource {
 
 	/**
-	 * getAscendingTimeMapData
+	 * getFullTimeMapData
 	 *
 	 * Extract the full time map data from the database.
 	 *
@@ -33,17 +33,14 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 	 * @param $limit - the greatest number of results
 	 *
 	 */
-	public function getAscendingTimeMapData($pg_id, $limit, $timestamp) {
+	public function getFullTimeMapData($pg_id, $limit) {
 
 		$data = array();
 
 		$results = $this->dbr->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
-			array(
-				'rev_page' => $pg_id,
-				'rev_timestamp>' . $this->dbr->addQuotes( $timestamp )
-				),
+			array( 'rev_page' => $pg_id ),
 			__METHOD__,
 			array(
 				'ORDER BY' => 'rev_timestamp DESC',
@@ -75,20 +72,13 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 
 		if ( $pg_id > 0 ) {
 
-			$timestamp = $this->extractTimestampPivot( $this->urlparam );
-
-			$formattedTimestamp =
-				$this->formatTimestampForDatabase( $timestamp );
-
-			$results = $this->getAscendingTimeMapData(
-				$pg_id, $this->conf->get('NumberOfMementos'),
-				$formattedTimestamp
+			$results = $this->getFullTimeMapData(
+				$pg_id, $this->conf->get('NumberOfMementos')
 				);
 
-			$pageURL = $this->extractPageURL($this->urlparam);
-
 			echo $this->generateTimeMapText(
-				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL
+				$results, $this->urlparam, $this->mwbaseurl, $title,
+				$this->urlparam
 				);
 
 			$response->header("Content-Type: text/plain", true);
@@ -99,10 +89,7 @@ class TimeMapPivotAscendingPage extends TimeMapPage {
 			$textMessage = 'timemap-404-title';
 			$waddress = str_replace(
 				'$1', '', $this->conf->get('ArticlePath') );
-			$title = str_replace(
-				$server . $waddress, "",
-				$this->extractPageURL( $this->urlparam )
-				);
+			$title = str_replace( $server . $waddress, "", $this->urlparam );
 
 			throw new MementoResourceException(
 				$textMessage, $titleMessage,

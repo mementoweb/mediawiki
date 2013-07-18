@@ -49,19 +49,31 @@ class TimeGate extends SpecialPage {
 	}
 
 	/**
+	 * getTitle
+	 *
+	 * This function extracts the Title from the URL
+	 */
+	public function getPageTitle( $server, $waddress, $urlparam ) {
+
+		$title = str_replace( $server . $waddress, "", $urlparam );
+
+		return $title;
+	}
+
+	/**
 	 * The init function that is called by Mediawiki when loading this
 	 * SpecialPage.
 	 *
-	 * @param: $par: string - the title parameter that Mediawiki returns
+	 * @param: $urlparam: string - the title parameter that Mediawiki returns
 	 * 		which turns out to be the part of the url after Special:TimeGate
 	 *
 	 */
-	function execute( $par ) {
+	function execute( $urlparam ) {
 
 		$out = $this->getOutput();
 		$this->setHeaders();
 
-		if ( !$par ) {
+		if ( !$urlparam ) {
 			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 			return;
 		} else {
@@ -69,7 +81,13 @@ class TimeGate extends SpecialPage {
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
 
-			$page = new TimeGatePage( $out, $config, $dbr );
+			$server = $config->get('Server');
+			$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
+			$title = $this->getPageTitle( $server, $waddress, $urlparam );
+
+			$title = Title::newFromText( $title );
+
+			$page = new TimeGateResource( $out, $config, $dbr, $urlparam, $title );
 			$page->render();
 
 		}

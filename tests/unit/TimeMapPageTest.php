@@ -3,8 +3,8 @@
 require_once('MockMediawiki.php');
 require_once('MementoConfig.php');
 require_once('MementoResource.php');
-require_once('TimeMapPage.php');
-require_once('TimeMapFullPage.php');
+require_once('TimeMapResource.php');
+require_once('TimeMapFullResource.php');
 
 
 class TimeMapPageTest extends PHPUnit_Framework_TestCase {
@@ -17,7 +17,7 @@ class TimeMapPageTest extends PHPUnit_Framework_TestCase {
 		$urlparam = "http://www.example.com/wiki/index.php/MyPage";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$data = array(
 			array(
@@ -64,7 +64,7 @@ EOT;
 		$urlparam = "20130609170256/1/http://www.example.com/wiki/index.php/MyPage";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$data = array(
 			array(
@@ -113,7 +113,7 @@ EOT;
 		$urlparam = "20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$expected = "20130609170256";
 
@@ -130,7 +130,7 @@ EOT;
 		$urlparam = "http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page/01346";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$expected = null;
 
@@ -147,7 +147,7 @@ EOT;
 		$urlparam = "20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$timestamp = "20130609170256";
 		$expected = "STANDARDIZED:$timestamp";
@@ -166,7 +166,7 @@ EOT;
 		$urlparam = "20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$timestamp = "BAD INPUT: 13435626";
 		$expected = null;
@@ -185,7 +185,7 @@ EOT;
 		$urlparam = "20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$expected = "http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page";
 
@@ -203,7 +203,7 @@ EOT;
 		$urlparam = "20130609170256/1/http://localhost/~smj/mediawiki-1.21.1/index.php/Awesome_Page";
 		$title = new MockTitleObject();
 
-		$tm = new TimeMapFullPage($out, $conf, $dbr, $urlparam, $title);
+		$tm = new TimeMapFullResource($out, $conf, $dbr, $urlparam, $title);
 
 		$expected = null;
 

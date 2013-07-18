@@ -62,13 +62,13 @@ $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoPage'] = __DIR__ . '/MementoPage.php';
 $wgAutoloadClasses['OriginalPage'] = __DIR__ . '/OriginalPage.php';
-$wgAutoloadClasses['TimeGatePage'] = __DIR__ . '/TimeGatePage.php';
-$wgAutoloadClasses['TimeMapPage'] = __DIR__ . '/TimeMapPage.php';
-$wgAutoloadClasses['TimeMapFullPage'] = __DIR__ . '/TimeMapFullPage.php';
-$wgAutoloadClasses['TimeMapPivotAscendingPage'] =
-	__DIR__ . '/TimeMapPivotAscendingPage.php';
-$wgAutoloadClasses['TimeMapPivotDescendingPage'] =
-	__DIR__ . '/TimeMapPivotDescendingPage.php';
+$wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
+$wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
+$wgAutoloadClasses['TimeMapFullResource'] = __DIR__ . '/TimeMapFullResource.php';
+$wgAutoloadClasses['TimeMapPivotAscendingResource'] =
+	__DIR__ . '/TimeMapPivotAscendingResource.php';
+$wgAutoloadClasses['TimeMapPivotDescendingResource'] =
+	__DIR__ . '/TimeMapPivotDescendingResource.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 
