@@ -61,7 +61,7 @@ class TimeGateResource extends MementoResource {
 	 *
 	 * returns $revision - associative array with id and timestamp keys
 	 */
-	public function fetchMementoFromDatabase( $sqlCondition, $sqlOrder ) {
+	public function fetchMementoFromDatabase( $dbr, $sqlCondition, $sqlOrder ) {
 
 		$results = $dbr->select(
 			'revision',
@@ -97,24 +97,15 @@ class TimeGateResource extends MementoResource {
 	 */
 	public function getFirstMemento( $dbr, $pageID ) {
 
-		$results = $dbr->select(
-			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+		$sqlCondition = 
 			array(
-				'rev_page' => $pageID,
-				),
-			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp ASC', 'LIMIT' => '1' )
-			);
+				'rev_page' => $pageID
+				);
+		$sqlOrder = 'rev_timestamp ASC';
 
-		$row = $dbr->fetchObject( $results );
 
-		$revision = array();
-
-		$revision['id'] = $row->rev_id;
-		$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
-
-		return $revision;
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -130,24 +121,15 @@ class TimeGateResource extends MementoResource {
 	 */
 	public function getLastMemento( $dbr, $pageID ) {
 
-		$results = $dbr->select(
-			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+		$sqlCondition = 
 			array(
-				'rev_page' => $pageID,
-				),
-			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp DESC', 'LIMIT' => '1' )
-			);
+				'rev_page' => $pageID
+				);
+		$sqlOrder = 'rev_timestamp DESC';
 
-		$row = $dbr->fetchObject( $results );
 
-		$revision = array();
-
-		$revision['id'] = $row->rev_id;
-		$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
-
-		return $revision;
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -163,25 +145,16 @@ class TimeGateResource extends MementoResource {
 	 */
 	public function getCurrentMemento( $dbr, $pageID, $pageTimestamp ) {
 
-		$results = $dbr->select(
-			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+		$sqlCondition = 
 			array(
 				'rev_page' => $pageID,
 				'rev_timestamp<=' . $dbr->addQuotes( $pageTimestamp )
-				),
-			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp DESC', 'LIMIT' => '1' )
-			);
+				);
+		$sqlOrder = 'rev_timestamp DESC';
 
-		$row = $dbr->fetchObject( $results );
 
-		$revision = array();
-
-		$revision['id'] = $row->rev_id;
-		$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
-
-		return $revision;
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -197,25 +170,16 @@ class TimeGateResource extends MementoResource {
 	 */
 	public function getNextMemento( $dbr, $pageID, $pageTimestamp ) {
 
-		$results = $dbr->select(
-			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+		$sqlCondition = 
 			array(
 				'rev_page' => $pageID,
 				'rev_timestamp>' . $dbr->addQuotes( $pageTimestamp )
-				),
-			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp ASC', 'LIMIT' => '1' )
-			);
+				);
+		$sqlOrder = 'rev_timestamp ASC';
 
-		$row = $dbr->fetchObject( $results );
 
-		$revision = array();
-
-		$revision['id'] = $row->rev_id;
-		$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
-
-		return $revision;
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -231,27 +195,16 @@ class TimeGateResource extends MementoResource {
 	 */
 	public function getPrevMemento( $dbr, $pageID, $pageTimestamp ) {
 
-		$results = $dbr->select(
-			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+		$sqlCondition = 
 			array(
 				'rev_page' => $pageID,
 				'rev_timestamp<' . $dbr->addQuotes( $pageTimestamp )
-				),
-			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp DESC', 'LIMIT' => '1' )
-			);
+				);
+		$sqlOrder = 'rev_timestamp DESC';
 
-		$row = $dbr->fetchObject( $results );
 
-		$revision = array();
-
-		if ($row) {
-			$revision['id'] = $row->rev_id;
-			$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
-		}
-
-		return $revision;
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -441,6 +394,30 @@ class TimeGateResource extends MementoResource {
 	}
 
 	/**
+	 * constructAdditionalLinkHeader
+	 *
+	 * This creates the entries for timemap and "original latest-version"
+	 * relations, for use in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 */
+	public function constructAdditionalLinkHeader( $scriptUrl, $title ) {
+		
+		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="original latest-version", ';
+
+		$entry .= '<' .
+			wfExpandUrl(
+				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
+				) . '/' .
+			wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="timemap"; type="application/link-format"';
+
+		return $entry;
+	}
+
+	/**
 	 * Render the page
 	 */
 	public function render() {
@@ -450,7 +427,7 @@ class TimeGateResource extends MementoResource {
 			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
 
 		$pageID = $this->title->getArticleID();
-		$title = $this->title->getText();
+		$title = $this->title->getPartialURL();
 
 		$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
 
@@ -465,7 +442,7 @@ class TimeGateResource extends MementoResource {
 		$mwMementoTimestamp = $this->chooseBestTimestamp(
 			$first['dt'], $last['dt'], $mwMementoTimestamp );
 
-		$current = $this->convertRevisionData( $this->mwrelurl,
+		$memento = $this->convertRevisionData( $this->mwrelurl,
 			$this->getCurrentMemento(
 				$this->dbr, $pageID, $mwMementoTimestamp ),
 			$title );
@@ -481,14 +458,15 @@ class TimeGateResource extends MementoResource {
 			$title );
 
 		$linkEntries = $this->constructLinkHeader(
-			$first, $last, $current, $next, $prev );
+			$first, $last, $memento, $next, $prev );
 
-		$mementoLocation = "looking for memento";
+		$linkEntries .= $this->constructAdditionalLinkHeader(
+			$this->mwrelurl, $title );
+
+		$mementoLocation = $memento['uri'];
 
 		$response->header( "HTTP", true, 302 );
 		$response->header( "Vary: negotiate,accept-datetime", true );
-
-		# TODO Link header should contain original and timemap entries
 		$response->header( "Link: $linkEntries", true );
 
 		# TODO Location header should contain location of Memento based on value from ACCEPT-DATETIME
