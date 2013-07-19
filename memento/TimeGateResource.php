@@ -404,10 +404,19 @@ class TimeGateResource extends SpecialPageResource {
 		$response = $this->out->getRequest()->response();
 		$requestDatetime =
 			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
+		$response->header( 'Vary: negotiate,accept-datetime', true );
+		$requestMethod = $this->out->getRequest()->getMethod();
+
+		if ( $requestMethod != 'GET' && $requestMethod != 'HEAD'  ) {
+			$response->header( 'Allow: GET, HEAD', true );
+			throw new MementoResourceException(
+				'timegate-405-badmethod', 'timegate',
+				$this->out, $response, 405
+				);
+		}
 
 		$pageID = $this->title->getArticleID();
 		$title = $this->title->getPartialURL();
-		$response->header( "Vary: negotiate,accept-datetime", true );
 
 		if ( !$this->title->exists() ) {
 			throw new MementoResourceException(
