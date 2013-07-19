@@ -157,6 +157,176 @@ abstract class MementoResource {
 	protected $mwrelurl;
 
 	/**
+	 * fetchMementoFromDatabase
+	 *
+	 * Make the actual database call.
+	 *
+	 * @param $sqlCondition - the conditional statement
+	 * @param $sqlOrder - order of the data returned (e.g. ASC, DESC)
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function fetchMementoFromDatabase( $dbr, $sqlCondition, $sqlOrder ) {
+
+		$results = $dbr->select(
+			'revision',
+			array( 'rev_id', 'rev_timestamp'),
+			$sqlCondition,
+			__METHOD__,
+			array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
+			);
+
+		$row = $dbr->fetchObject( $results );
+
+		$revision = array();
+
+		if ($row) {
+			$revision['id'] = $row->rev_id;
+			$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
+		}
+
+		return $revision;
+
+	}
+
+	/**
+	 * getFirstMemento
+	 *
+	 * Extract the first memento from the database.
+	 *
+	 * @param $dbr - DatabaseBase object
+	 * @param $pageID - page identifier
+	 * @param $pageTimestamp - timestamp used for finding the first memento
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function getFirstMemento( $dbr, $pageID ) {
+
+		$sqlCondition =
+			array(
+				'rev_page' => $pageID
+				);
+		$sqlOrder = 'rev_timestamp ASC';
+
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
+	}
+
+	/**
+	 * getLastMemento
+	 *
+	 * Extract the last memento from the database.
+	 *
+	 * @param $dbr - DatabaseBase object
+	 * @param $pageID - page identifier
+	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function getLastMemento( $dbr, $pageID ) {
+
+		$sqlCondition =
+			array(
+				'rev_page' => $pageID
+				);
+		$sqlOrder = 'rev_timestamp DESC';
+
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
+	}
+
+	/**
+	 * getCurrentMemento
+	 *
+	 * Extract the last memento from the database.
+	 *
+	 * @param $dbr - DatabaseBase object
+	 * @param $pageID - page identifier
+	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function getCurrentMemento( $dbr, $pageID, $pageTimestamp ) {
+
+		$sqlCondition =
+			array(
+				'rev_page' => $pageID,
+				'rev_timestamp<=' . $dbr->addQuotes( $pageTimestamp )
+				);
+		$sqlOrder = 'rev_timestamp DESC';
+
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
+	}
+
+	/**
+	 * getNextMemento
+	 *
+	 * Extract the last memento from the database.
+	 *
+	 * @param $dbr - DatabaseBase object
+	 * @param $pageID - page identifier
+	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function getNextMemento( $dbr, $pageID, $pageTimestamp ) {
+
+		$sqlCondition =
+			array(
+				'rev_page' => $pageID,
+				'rev_timestamp>' . $dbr->addQuotes( $pageTimestamp )
+				);
+		$sqlOrder = 'rev_timestamp ASC';
+
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
+	}
+
+	/**
+	 * getPrevMemento
+	 *
+	 * Extract the last memento from the database.
+	 *
+	 * @param $dbr - DatabaseBase object
+	 * @param $pageID - page identifier
+	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function getPrevMemento( $dbr, $pageID, $pageTimestamp ) {
+
+		$sqlCondition =
+			array(
+				'rev_page' => $pageID,
+				'rev_timestamp<' . $dbr->addQuotes( $pageTimestamp )
+				);
+		$sqlOrder = 'rev_timestamp DESC';
+
+		return $this->fetchMementoFromDatabase(
+			$dbr, $sqlCondition, $sqlOrder );
+	}
+
+	/**
+	 * getFullURIForID
+	 *
+	 * @param $mwBaseURL - Base URL of Mediawiki installation 
+	 * 			(e.g. http://e.com/index.php)
+	 * @param $id - ID of page
+	 * @param $title - article title
+	 *
+	 * return $fullURI - full URI referring to article and revision
+	 */
+	public function getFullURIForID( $scriptPath, $id, $title ) {
+
+		return wfAppendQuery(
+			wfExpandUrl( $scriptPath ),
+			array( 'title' => $title, 'oldid' => $id )
+			);
+
+	}
+
+	/**
 	 * generateSpecialURL
 	 *
 	 * @param $urlparam - url from the SpecialPage call
@@ -173,6 +343,76 @@ abstract class MementoResource {
 
 		return implode('/', array($baseURL, $specialPageText, $urlparam));
 	}
+
+	/**
+	 * parseRequestDateTime
+	 *
+	 * @param $requestDateTime
+	 *
+	 *
+	 * returns $dt - datetime in mediawiki database format
+	 */
+	public function parseRequestDateTime( $requestDateTime ) {
+
+		$req_dt = str_replace( '"', '', $requestDateTime );
+
+		$dt = wfTimestamp( TS_MW, $req_dt );
+
+		return $dt;
+	}
+
+	/**
+	 * chooseBestTimestamp
+	 *
+	 * If the requested time is earlier than the first memento,
+	 * the first memento will be returned.
+	 * If the requested time is past the last memento, or in the future,
+	 * the last memento will be returned.
+	 *
+	 * @param $firstTimestamp - the first timestamp for which we have a memento
+	 *				formatted in the TS_MW format
+	 * @param $lastTimestamp - the last timestamp for which we have a memento
+	 * @param $givenTimestamp - the timestamp given by the request header
+	 */
+	public function chooseBestTimestamp(
+		$firstTimestamp, $lastTimestamp, $givenTimestamp ) {
+
+		$firstTimestamp = wfTimestamp( TS_MW, $firstTimestamp );
+		$lastTimestamp = wfTimestamp( TS_MW, $lastTimestamp );
+
+		if ( $givenTimestamp < $firstTimestamp ) {
+			$chosenTimestamp = $firstTimestamp;
+		} elseif ( $givenTimestamp > $lastTimestamp ) {
+			$chosenTimestamp = $lastTimestamp;
+		}
+
+		return $chosenTimestamp;
+	}
+
+	/**
+	 * constructAdditionalLinkHeader
+	 *
+	 * This creates the entries for timemap and "original latest-version"
+	 * relations, for use in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 */
+	public function constructAdditionalLinkHeader( $scriptUrl, $title ) {
+
+		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="original latest-version", ';
+
+		$entry .= '<' .
+			wfExpandUrl(
+				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
+				) . '/' .
+			wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="timemap"; type="application/link-format"';
+
+		return $entry;
+	}
+
 
 	/**
 	 * renderError
