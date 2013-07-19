@@ -395,12 +395,26 @@ class TimeGateResource extends SpecialPageResource {
 	 */
 	public function render() {
 
+		$first = array();
+		$last = array();
+		$memento = array();
+		$next = array();
+		$prev = array();
+
 		$response = $this->out->getRequest()->response();
 		$requestDatetime =
 			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
 
 		$pageID = $this->title->getArticleID();
 		$title = $this->title->getPartialURL();
+		$response->header( "Vary: negotiate,accept-datetime", true );
+
+		if ( !$this->title->exists() ) {
+			throw new MementoResourceException(
+				'timegate-404-title', 'timegate',
+				$this->out, $response, 404, array( $title )
+			);
+		}
 
 		$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
 
@@ -412,23 +426,25 @@ class TimeGateResource extends SpecialPageResource {
 			$this->getLastMemento( $this->dbr, $pageID ),
 			$title );
 
-		$mwMementoTimestamp = $this->chooseBestTimestamp(
-			$first['dt'], $last['dt'], $mwMementoTimestamp );
+		if ( $mwMementoTimestamp ) {
+			$mwMementoTimestamp = $this->chooseBestTimestamp(
+				$first['dt'], $last['dt'], $mwMementoTimestamp );
 
-		$memento = $this->convertRevisionData( $this->mwrelurl,
-			$this->getCurrentMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp ),
-			$title );
+			$memento = $this->convertRevisionData( $this->mwrelurl,
+				$this->getCurrentMemento(
+					$this->dbr, $pageID, $mwMementoTimestamp ),
+				$title );
 
-		$next = $this->convertRevisionData( $this->mwrelurl,
-			$this->getNextMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp ),
-			$title );
+			$next = $this->convertRevisionData( $this->mwrelurl,
+				$this->getNextMemento(
+					$this->dbr, $pageID, $mwMementoTimestamp ),
+				$title );
 
-		$prev = $this->convertRevisionData( $this->mwrelurl,
-			$this->getPrevMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp ),
-			$title );
+			$prev = $this->convertRevisionData( $this->mwrelurl,
+				$this->getPrevMemento(
+					$this->dbr, $pageID, $mwMementoTimestamp ),
+				$title );
+		}
 
 		$linkEntries = $this->constructLinkHeader(
 			$first, $last, $memento, $next, $prev );
@@ -436,13 +452,21 @@ class TimeGateResource extends SpecialPageResource {
 		$linkEntries .= $this->constructAdditionalLinkHeader(
 			$this->mwrelurl, $title );
 
-		$mementoLocation = $memento['uri'];
+
+		$response->header( "Link: $linkEntries", true );
+		$response->header( "X-RequestedTimestamp:  $mwMementoTimestamp", true );
+
+		if ( !$mwMementoTimestamp ) {
+			throw new MementoResourceException(
+				'timegate-400-date', 'timegate',
+				$this->out, $response, 400,
+				array( $requestDatetime, $first['uri'], $last['uri'] )
+			);
+		}
 
 		$response->header( "HTTP", true, 302 );
-		$response->header( "Vary: negotiate,accept-datetime", true );
-		$response->header( "Link: $linkEntries", true );
 
-		# TODO Location header should contain location of Memento based on value from ACCEPT-DATETIME
+		$mementoLocation = $memento['uri'];
 		$response->header( "Location: $mementoLocation", true );
 
 		// no output for a 302 response
