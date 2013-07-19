@@ -62,9 +62,9 @@ $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['OriginalResource'] = __DIR__ . '/OriginalResource.php';
 $wgAutoloadClasses['OriginalWithTimeNegotiationResource'] =
-	__DIR__ . '/OriginalResource.php';
+	__DIR__ . '/OriginalWithTimeNegotiationResource.php';
 $wgAutoloadClasses['OriginalWithMementoHeadersOnlyResource'] =
-	__DIR__ . '/OriginalResource.php';
+	__DIR__ . '/OriginalWithMementoHeadersOnlyResource.php';
 $wgAutoloadClasses['SpecialPageResource'] =
 	__DIR__ . '/SpecialPageResource.php';
 $wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
@@ -145,7 +145,8 @@ class Memento {
 			$dbr = wfGetDB( DB_SLAVE );
 			$oldID = self::$oldID;
 
-			$page = OriginalResource( $out, $config, $dbr );
+			$page = new OriginalWithMementoHeadersOnlyResource(
+				$out, $config, $dbr );
 			$page->render();
 
 			echo "Memento is running<br />";

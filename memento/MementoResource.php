@@ -182,7 +182,8 @@ abstract class MementoResource {
 
 		if ($row) {
 			$revision['id'] = $row->rev_id;
-			$revision['timestamp'] = wfTimestamp( TS_RFC2822, $row->rev_timestamp );
+			$revision['timestamp'] = wfTimestamp(
+				TS_RFC2822, $row->rev_timestamp );
 		}
 
 		return $revision;
