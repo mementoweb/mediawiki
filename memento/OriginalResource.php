@@ -22,7 +22,7 @@
  * @file
  */
 
-abstract class OriginalPage extends MementoResource {
+abstract class OriginalResource extends MementoResource {
 
 	/**
 	 * Render the page
