@@ -103,38 +103,32 @@ deploy-default: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "#########################"
 	@echo ""
 
-deploy-traditional-errors: check-deploy-env ${BUILDDIR}/${BINFILE}
+alter-installation-traditional-errors:
 	@echo ""
 	@echo "#########################"
-	@echo "Deploying Memento extension"
-	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
-	echo 'require_once "$$IP/extensions/memento/Memento.php";' >> ${MWCONF}
-	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
-	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
-	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
+	@echo "Setting Traditional Error Page Type"
+	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}	
 	echo '$$wgMementoErrorPageType = "traditional";' >> ${MWCONF}
-	find ${DEPLOYDIR}/memento -type d -exec chmod 0755 {} \; 
-	find ${DEPLOYDIR}/memento -type f -exec chmod 0644 {} \; 
-	@echo "Deployment complete"
 	@echo "#########################"
 	@echo ""
 
-deploy-friendly-errors: check-deploy-env ${BUILDDIR}/${BINFILE}
+alter-installation-friendly-errors:
 	@echo ""
 	@echo "#########################"
-	@echo "Deploying Memento extension"
-	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
-	echo 'require_once "$$IP/extensions/memento/Memento.php";' >> ${MWCONF}
-	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
-	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
-	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
+	@echo "Setting Friendly Error Page Type"
+	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}	
 	echo '$$wgMementoErrorPageType = "friendly";' >> ${MWCONF}
-	find ${DEPLOYDIR}/memento -type d -exec chmod 0755 {} \; 
-	find ${DEPLOYDIR}/memento -type f -exec chmod 0644 {} \; 
-	@echo "Deployment complete"
 	@echo "#########################"
 	@echo ""
+	
 
+debugme:
+	@echo "I did stuff"
+
+deploy-traditional-errors: check-deploy-env ${BUILDDIR}/${BINFILE} deploy-default alter-installation-traditional-errors
+
+deploy-friendly-errors: check-deploy-env ${BUILDDIR}/${BINFILE} deploy-default
+#alter-installation-friendly-errors
 
 # undeploy the packaged software, requires that it be deployed
 undeploy: check-deploy-env ${DEPLOYDIR}/memento
@@ -162,15 +156,24 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-integration-test: deploy-traditional-errors traditional-error-integration-test undeploy deploy-friendly-errors friendly-error-integration-test undeploy
+integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test undeploy
+
+standard-integration-test: check-integration-env
+	@echo ""
+	@echo "#########################"
+	@echo "Running standard integration tests that apply in all cases"
+	-phpunit --include-path "memento:tests/lib" --group all tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
 
 # run all of the friendly error integration tests
 friendly-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	phpunit --include-path "memento:tests/lib" --group all tests/integration
-	phpunit --include-path "memento:tests/lib" --group friendlyErrorPages tests/integration
+	-phpunit --include-path "memento:tests/lib" --group friendlyErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -180,8 +183,7 @@ traditional-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
-	phpunit --include-path "memento:tests/lib" --group all tests/integration
-	phpunit --include-path "memento:tests/lib" --group traditionalErrorPages tests/integration
+	-phpunit --include-path "memento:tests/lib" --group traditionalErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
