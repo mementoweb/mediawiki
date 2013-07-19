@@ -60,11 +60,13 @@ $wgAutoloadClasses['MementoFactory'] = __DIR__ . '/MementoFactory.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
-$wgAutoloadClasses['MementoPage'] = __DIR__ . '/MementoPage.php';
-$wgAutoloadClasses['OriginalPage'] = __DIR__ . '/OriginalPage.php';
+$wgAutoloadClasses['OriginalResource'] = __DIR__ . '/OriginalResource.php';
+$wgAutoloadClasses['SpecialPageResource'] =
+	__DIR__ . '/SpecialPageResource.php';
 $wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
-$wgAutoloadClasses['TimeMapFullResource'] = __DIR__ . '/TimeMapFullResource.php';
+$wgAutoloadClasses['TimeMapFullResource'] =
+	__DIR__ . '/TimeMapFullResource.php';
 $wgAutoloadClasses['TimeMapPivotAscendingResource'] =
 	__DIR__ . '/TimeMapPivotAscendingResource.php';
 $wgAutoloadClasses['TimeMapPivotDescendingResource'] =
@@ -139,9 +141,7 @@ class Memento {
 			$dbr = wfGetDB( DB_SLAVE );
 			$oldID = self::$oldID;
 
-			$page = MementoFactory::PageFactory(
-				$out, "Original", $config, $dbr
-				);
+			$page = OriginalResource( $out, $config, $dbr );
 			$page->render();
 
 			echo "Memento is running<br />";

@@ -21,14 +21,12 @@
  * 
  * @file
  */
-
-class MementoPage extends MementoResource {
+class OriginalWithMementoHeadersOnlyResource extends OriginalResource {
 
 	/**
 	 * Render the page
 	 */
 	public function render() {
-		echo "I can't render a Memento yet!<br />";
+		echo "I can't render an Original Page With Time Negotiation yet!<br />";
 	}
-
 }

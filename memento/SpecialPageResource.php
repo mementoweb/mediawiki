@@ -22,13 +22,33 @@
  * @file
  */
 
-class OriginalPage extends MementoResource {
+abstract class SpecialPageResource extends MementoResource {
 
 	/**
-	 * Render the page
+	 * @var $urlparam - parameter part of the Special Page
 	 */
-	public function render() {
-		echo "I can't render an Original Page yet!<br />";
+	protected $urlparam;
+
+	/**
+	 * @var $title - Title Object created from calling Special Page
+	 */
+	protected $title;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param $out
+	 * @param $conf
+	 * @param $dbr
+	 * @param $urlparam
+	 * @param $title
+	 *
+	 */
+	public function __construct( $out, $conf, $dbr, $urlparam, $title ) {
+		$this->urlparam = $urlparam;
+		$this->title = $title;
+
+		parent::__construct( $out, $conf, $dbr );
 	}
 
 }

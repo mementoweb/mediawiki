@@ -25,34 +25,7 @@
 /**
  * This class provides the base functions for all Memento TimeMap types
  */
-abstract class TimeMapResource extends MementoResource {
-
-	/**
-	 * @var $urlparam - parameter part of the Special Page
-	 */
-	protected $urlparam;
-
-	/**
-	 * @var $title - Title Object created from calling Special Page
-	 */
-	protected $title;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param $out
-	 * @param $conf
-	 * @param $dbr
-	 * @param $urlparam
-	 * @param $title
-	 *
-	 */
-	public function __construct( $out, $conf, $dbr, $urlparam, $title ) {
-		$this->urlparam = $urlparam;
-		$this->title = $title;
-
-		parent::__construct( $out, $conf, $dbr );
-	}
+abstract class TimeMapResource extends SpecialPageResource {
 
 	/**
 	 * extractTimestampPivot
