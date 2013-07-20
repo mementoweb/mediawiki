@@ -445,6 +445,34 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * mementoPageResourceFactory
+	 *
+	 * A factory for creating the correct MementoPageResource type.
+	 *
+	 * @param $out - OutputPage object, passed to constructor
+	 * @param $conf - MementoConfig object, passed to constructor
+	 * @param $dbr - DatabaseBase object, passed to constructor
+	 * @param $oldID - string indicating revision ID
+	 *		used in decision
+	 *
+	 */
+	public static function mementoPageResourceFactory(
+		$out, $conf, $dbr, $oldID ) {
+
+		$page = null;
+
+		if ( $oldID == 0 ) {
+			$page = new OriginalWithMementoHeadersOnlyResource(
+				$out, $conf, $dbr );
+		} else {
+			$page = new MementoWithHeaderModificatiosResource(
+				$out, $conf, $dbr );
+		}
+
+		return $page;
+	}
+
+	/**
 	 * Constructor
 	 * 
 	 * @param $out

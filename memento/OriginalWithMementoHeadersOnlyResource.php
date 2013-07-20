@@ -27,6 +27,15 @@ class OriginalWithMementoHeadersOnlyResource extends OriginalResource {
 	 * Render the page
 	 */
 	public function render() {
-		echo "I can't render an Original Page With Time Negotiation yet!<br />";
+		$response = $this->out->getRequest()->response();
+		$articlePath = $this->conf->get( 'ArticlePath' );
+		$waddress = $this->mwrelurl;
+		$requestURL = $this->out->getRequest()->getRequestURL();
+		$timegateURL =
+			SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
+		$uri = wfExpandUrl( $waddress . '/' . $timegateURL ) .
+			'/' . wfExpandUrl( $requestURL );
+		$response->header(
+			'Link: <' . $uri . '>; rel="timegate"', true );
 	}
 }

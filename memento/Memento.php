@@ -140,16 +140,20 @@ class Memento {
 
 		$status = true;
 
+		// if we're an article, do memento processing, otherwise don't worry
 		if ( $out->isArticle() ) {
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
 			$oldID = self::$oldID;
 
-			$page = new OriginalWithMementoHeadersOnlyResource(
-				$out, $config, $dbr );
-			$page->render();
-
-			echo "Memento is running<br />";
+			try {
+				$page = MementoResource::MementoPageResourceFactory(
+					$out, $config, $dbr, $oldID );
+				$page->render();
+			} catch (MementoResourceException $e) {
+				MementoResource::renderError(
+					$out, $e, $config->get('ErrorPageType') );
+			}
 
 		}
 
