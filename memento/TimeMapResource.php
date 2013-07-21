@@ -25,7 +25,7 @@
 /**
  * This class provides the base functions for all Memento TimeMap types
  */
-abstract class TimeMapResource extends SpecialPageResource {
+abstract class TimeMapResource extends MementoResource {
 
 	/**
 	 * extractTimestampPivot

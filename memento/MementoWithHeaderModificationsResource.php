@@ -29,5 +29,55 @@ class MementoWithHeaderModificationsResource extends OriginalResource {
 	 */
 	public function render() {
 
+		/*
+		$title = $this->title->getPartialURL();
+
+		$first = $this->convertRevisionData( $this->mwrelurl,
+			$this->getFirstMemento( $this->dbr, $pageID ),
+			$title );
+
+		$last = $this->convertRevisionData( $this->mwrelurl,
+			$this->getLastMemento( $this->dbr, $pageID ),
+			$title );
+
+		/* resulting header needs:
+		 * 		Link:
+		 *			first memento
+		 *			last memento
+		 *			next successor-version memento
+		 *			original latest-version
+		 *			timemap
+		 *		Memento-Datetime
+		 *		
+		 */
+		/*
+		$requestDatetime =
+			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
+
+		$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
+
+		$memento = $this->convertRevisionData( $this->mwrelurl,
+			$this->getCurrentMemento(
+				$this->dbr, $pageID, $mwMementoTimestamp ),
+			$title );
+
+		$next = $this->convertRevisionData( $this->mwrelurl,
+			$this->getNextMemento(
+				$this->dbr, $pageID, $mwMementoTimestamp ),
+			$title );
+
+		$prev = $this->convertRevisionData( $this->mwrelurl,
+			$this->getPrevMemento(
+				$this->dbr, $pageID, $mwMementoTimestamp ),
+			$title );
+
+		$linkEntries = $this->constructLinkHeader(
+			$first, $last, $memento, $next, $prev );
+
+		$linkEntries .= $this->constructAdditionalLinkHeader(
+			$this->mwrelurl, $title );
+			*/
+		echo "Memento With Header MOdifications not implemented yet!<br />\n";
+
 	}
 }

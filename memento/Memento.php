@@ -67,8 +67,6 @@ $wgAutoloadClasses['OriginalWithMementoHeadersOnlyResource'] =
 	__DIR__ . '/OriginalWithMementoHeadersOnlyResource.php';
 $wgAutoloadClasses['MementoWithHeaderModificationsResource'] =
 	__DIR__ . '/MementoWithHeaderModificationsResource.php';
-$wgAutoloadClasses['SpecialPageResource'] =
-	__DIR__ . '/SpecialPageResource.php';
 $wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
 $wgAutoloadClasses['TimeMapFullResource'] =
@@ -103,9 +101,9 @@ $wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
 class Memento {
 
 	/**
-	 * @var string $oldID: the identifier used for the revision of the article
+	 * @var string $article: access to the Article Object for this page 
 	 */
-	static private $oldID;
+	static private $article;
 
 	/**
 	 * The ArticleViewHeader hook, used to feed values into lodal memeber
@@ -125,7 +123,8 @@ class Memento {
 
 		$status = true;
 
-		self::$oldID = $article->getOldID();
+//		self::$oldID = $article->getOldID();
+		self::$article = $article;
 
 		return $status;
 	}
@@ -146,11 +145,12 @@ class Memento {
 		if ( $out->isArticle() ) {
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
-			$oldID = self::$oldID;
+			$oldID = self::$article->getOldID();
+			$title = self::$article->getTitle();
 
 			try {
 				$page = MementoResource::MementoPageResourceFactory(
-					$out, $config, $dbr, $oldID );
+					$out, $config, $dbr, $oldID, $title );
 				$page->render();
 			} catch (MementoResourceException $e) {
 				MementoResource::renderError(

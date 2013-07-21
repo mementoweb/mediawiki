@@ -157,6 +157,16 @@ abstract class MementoResource {
 	protected $mwrelurl;
 
 	/**
+	 * @var $urlparam - parameter part of the Special Page
+	 */
+	protected $urlparam;
+
+	/**
+	 * @var $title - Title Object created from calling Special Page
+	 */
+	protected $title;
+
+	/**
 	 * fetchMementoFromDatabase
 	 *
 	 * Make the actual database call.
@@ -166,7 +176,7 @@ abstract class MementoResource {
 	 *
 	 * returns $revision - associative array with id and timestamp keys
 	 */
-	public function fetchMementoFromDatabase( $dbr, $sqlCondition, $sqlOrder ) {
+	public function fetchMementoFromDatabase($dbr, $sqlCondition, $sqlOrder ) {
 
 		$results = $dbr->select(
 			'revision',
@@ -579,16 +589,16 @@ abstract class MementoResource {
 	 *
 	 */
 	public static function mementoPageResourceFactory(
-		$out, $conf, $dbr, $oldID ) {
+		$out, $conf, $dbr, $oldID, $title ) {
 
 		$page = null;
 
 		if ( $oldID == 0 ) {
 			$page = new OriginalWithMementoHeadersOnlyResource(
-				$out, $conf, $dbr );
+				$out, $conf, $dbr, $title, null );
 		} else {
 			$page = new MementoWithHeaderModificationsResource(
-				$out, $conf, $dbr );
+				$out, $conf, $dbr, $title, null );
 		}
 
 		return $page;
@@ -600,11 +610,15 @@ abstract class MementoResource {
 	 * @param $out
 	 * @param $conf
 	 * @param $dbr
+	 * @param $title
+	 * @param $urlparam
 	 */
-	public function __construct( $out, $conf, $dbr ) {
+	public function __construct( $out, $conf, $dbr, $title, $urlparam ) {
 		$this->out = $out;
 		$this->conf = $conf;
 		$this->dbr = $dbr;
+		$this->title = $title;
+		$this->urlparam = $urlparam;
 
 		$waddress = str_replace( '/$1', '', $conf->get('ArticlePath') );
 
