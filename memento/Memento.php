@@ -65,6 +65,8 @@ $wgAutoloadClasses['OriginalWithTimeNegotiationResource'] =
 	__DIR__ . '/OriginalWithTimeNegotiationResource.php';
 $wgAutoloadClasses['OriginalWithMementoHeadersOnlyResource'] =
 	__DIR__ . '/OriginalWithMementoHeadersOnlyResource.php';
+$wgAutoloadClasses['MementoWithHeaderModificationsResource'] =
+	__DIR__ . '/MementoWithHeaderModificationsResource.php';
 $wgAutoloadClasses['SpecialPageResource'] =
 	__DIR__ . '/SpecialPageResource.php';
 $wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
