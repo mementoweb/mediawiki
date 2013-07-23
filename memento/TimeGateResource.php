@@ -98,7 +98,6 @@ class TimeGateResource extends MementoResource {
 			$this->mwrelurl, $title );
 
 		$response->header( "Link: $linkEntries", true );
-		$response->header( "X-RequestedTimestamp:  $mwMementoTimestamp", true );
 
 		if ( !$mwMementoTimestamp ) {
 			throw new MementoResourceException(

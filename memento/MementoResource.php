@@ -201,6 +201,39 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * getInforForThisMemento
+	 *
+	 * Get information for the given oldID.
+	 *
+	 * @param $dbr - DatabaseBase object
+	 * @param $oldid - the oldid for this page
+	 *
+	 * returns $revision - associative array with id and timestamp keys
+	 */
+	public function getInfoForThisMemento( $dbr, $oldid ) {
+
+		$results = $dbr->select(
+					'revision',
+					array( 'rev_page', 'rev_timestamp' ),
+					array( 'rev_id' => $oldid ),
+					__METHOD__,
+					array()
+					);
+
+		$row = $dbr->fetchObject( $results );
+
+		$revision = array();
+
+		if ( $row ) {
+			$revision['id'] = $row->rev_page;
+			$revision['timestamp'] = $row->rev_timestamp;
+		}
+
+		return $revision;
+
+	}
+
+	/**
 	 * getFirstMemento
 	 *
 	 * Extract the first memento from the database.
@@ -401,6 +434,61 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * constructTimeMapLinkHeader
+	 *
+	 * This creates the entry for timemap in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 */
+	public function constructTimeMapLinkHeader( $scriptUrl, $title ) {
+		$entry = '<' .
+			wfExpandUrl(
+				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
+				) . '/' .
+			wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="timemap"; type="application/link-format"';
+
+		return $entry;
+	}
+
+	/**
+	 * constructTimeGateLinkHeader
+	 *
+	 * This creates the entry for timegate in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 */
+	public function constructTimeGateLinkHeader( $scriptUrl, $title ) {
+		$entry = '<' .
+			wfExpandUrl(
+				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
+				) . '/' .
+			wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="timegate"';
+
+		return $entry;
+	}
+
+	/**
+	 * constructOriginalLatestVersionHeader
+	 *
+	 * This creates the entry for timegate in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 */
+	public function constructOriginalLatestVersionLinkHeader(
+		$scriptUrl, $title ) {
+
+		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
+			'>; rel="original latest-version"';
+
+		return $entry;
+	}
+
+	/**
 	 * constructAdditionalLinkHeader
 	 *
 	 * This creates the entries for timemap and "original latest-version"
@@ -589,16 +677,16 @@ abstract class MementoResource {
 	 *
 	 */
 	public static function mementoPageResourceFactory(
-		$out, $conf, $dbr, $oldID, $title ) {
+		$out, $conf, $dbr, $oldID, $title, $article ) {
 
 		$page = null;
 
 		if ( $oldID == 0 ) {
 			$page = new OriginalWithMementoHeadersOnlyResource(
-				$out, $conf, $dbr, $title, null );
+				$out, $conf, $dbr, $title, null, $article );
 		} else {
 			$page = new MementoWithHeaderModificationsResource(
-				$out, $conf, $dbr, $title, null );
+				$out, $conf, $dbr, $title, null, $article );
 		}
 
 		return $page;
@@ -613,12 +701,15 @@ abstract class MementoResource {
 	 * @param $title
 	 * @param $urlparam
 	 */
-	public function __construct( $out, $conf, $dbr, $title, $urlparam ) {
+	public function __construct(
+		$out, $conf, $dbr, $title, $urlparam, $article ) {
+
 		$this->out = $out;
 		$this->conf = $conf;
 		$this->dbr = $dbr;
 		$this->title = $title;
 		$this->urlparam = $urlparam;
+		$this->article = $article;
 
 		$waddress = str_replace( '/$1', '', $conf->get('ArticlePath') );
 

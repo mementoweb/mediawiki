@@ -89,7 +89,7 @@ class TimeGate extends SpecialPage {
 
 			try {
 				$page = new TimeGateResource(
-					$out, $config, $dbr, $title, $urlparam );
+					$out, $config, $dbr, $title, $urlparam, null );
 				$page->render();
 			} catch (MementoResourceException $e) {
 				MementoResource::renderError(

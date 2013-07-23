@@ -150,7 +150,7 @@ class Memento {
 
 			try {
 				$page = MementoResource::MementoPageResourceFactory(
-					$out, $config, $dbr, $oldID, $title );
+					$out, $config, $dbr, $oldID, $title, self::$article );
 				$page->render();
 			} catch (MementoResourceException $e) {
 				MementoResource::renderError(

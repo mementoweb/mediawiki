@@ -90,13 +90,13 @@ class TimeMap extends SpecialPage {
 
 		if ( $this->isFull( $urlparam ) ) {
 			$tm = new TimeMapFullResource(
-				$out, $config, $dbr, $title, $urlparam );
+				$out, $config, $dbr, $title, $urlparam, null );
 		} elseif ( $this->isPivotAscending( $urlparam ) ) {
 			$tm = new TimeMapPivotAscendingResource(
-				$out, $config, $dbr, $title, $urlparam );
+				$out, $config, $dbr, $title, $urlparam, null );
 		} elseif ( $this->isPivotDescending( $urlparam ) ) {
 			$tm = new TimeMapPivotDescendingResource(
-				$out, $config, $dbr, $title, $urlparam );
+				$out, $config, $dbr, $title, $urlparam, null );
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-400-date';

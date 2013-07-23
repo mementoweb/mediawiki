@@ -29,55 +29,58 @@ class MementoWithHeaderModificationsResource extends OriginalResource {
 	 */
 	public function render() {
 
-		/*
 		$title = $this->title->getPartialURL();
+		$pageID = $this->title->getArticleID();
+		$response = $this->out->getRequest()->response();
+		$oldID = $this->article->getOldID();
+
+		$mementoInfo = $this->getInfoForThisMemento( $this->dbr, $oldID );
+		$mementoInfoID = $mementoInfo['id'];
+		$mementoDatetime = $mementoInfo['timestamp'];
 
 		$first = $this->convertRevisionData( $this->mwrelurl,
-			$this->getFirstMemento( $this->dbr, $pageID ),
+			$this->getFirstMemento( $this->dbr, $mementoInfoID ),
 			$title );
 
 		$last = $this->convertRevisionData( $this->mwrelurl,
-			$this->getLastMemento( $this->dbr, $pageID ),
+			$this->getLastMemento( $this->dbr, $mementoInfoID ),
 			$title );
-
-		/* resulting header needs:
-		 * 		Link:
-		 *			first memento
-		 *			last memento
-		 *			next successor-version memento
-		 *			original latest-version
-		 *			timemap
-		 *		Memento-Datetime
-		 *		
-		 */
-		/*
-		$requestDatetime =
-			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
-
-		$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
 
 		$memento = $this->convertRevisionData( $this->mwrelurl,
 			$this->getCurrentMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp ),
+				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
 		$next = $this->convertRevisionData( $this->mwrelurl,
 			$this->getNextMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp ),
+				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
 		$prev = $this->convertRevisionData( $this->mwrelurl,
 			$this->getPrevMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp ),
+				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
 		$linkEntries = $this->constructLinkHeader(
 			$first, $last, $memento, $next, $prev );
 
-		$linkEntries .= $this->constructAdditionalLinkHeader(
-			$this->mwrelurl, $title );
-			*/
-		echo "Memento With Header MOdifications not implemented yet!<br />\n";
+		$linkEntries .= 
+			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )
+			. ',';
 
+		$linkEntries .= 
+			$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
+			. ',';
+
+		$linkEntries .= 
+			$this->constructOriginalLatestVersionLinkHeader(
+				$this->mwrelurl, $title );
+
+		// convert for display
+		$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoDatetime );
+
+		$response->header( "Link: $linkEntries", true );
+		$response->header( "Memento-Datetime:  $mementoDatetime", true );
+		$response->header( "X-Memento-ID: $mementoInfoID", true );
 	}
 }
