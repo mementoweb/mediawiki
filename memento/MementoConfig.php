@@ -53,6 +53,7 @@ class MementoConfig {
 		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
 		global $wgMementoPattern;
+		global $wgMementoTimeNegotiation;
 
 		$this->settings['ArticlePath'] =
 			$this->setDefault(
@@ -78,6 +79,10 @@ class MementoConfig {
 		$this->settings['Pattern'] =
 			$this->setDefault(
 				$wgMementoPattern, 'separate' );
+
+		$this->settings['Negotiation'] =
+			$this->setDefault(
+				$wgMementoTimeNegotiation, false );
 
 	}
 

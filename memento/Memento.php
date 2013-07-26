@@ -43,7 +43,7 @@ $wgExtensionCredits['specialpage'][] = array(
 		'Robert Sanderson',
 		'Shawn M. Jones'
 		),
-	'version' => 'development'
+	'version' => '2.0-SNAPSHOT'
 );
 
 //require_once( ( __DIR__ ) . '/MementoUtilities.php');
@@ -61,8 +61,8 @@ $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['OriginalResource'] = __DIR__ . '/OriginalResource.php';
-$wgAutoloadClasses['OriginalWithTimeNegotiationResource'] =
-	__DIR__ . '/OriginalWithTimeNegotiationResource.php';
+$wgAutoloadClasses['MementoWithTimeNegotiationResource'] =
+	__DIR__ . '/MementoWithTimeNegotiationResource.php';
 $wgAutoloadClasses['OriginalWithMementoHeadersOnlyResource'] =
 	__DIR__ . '/OriginalWithMementoHeadersOnlyResource.php';
 $wgAutoloadClasses['MementoWithHeaderModificationsResource'] =
@@ -123,7 +123,6 @@ class Memento {
 
 		$status = true;
 
-//		self::$oldID = $article->getOldID();
 		self::$article = $article;
 
 		return $status;

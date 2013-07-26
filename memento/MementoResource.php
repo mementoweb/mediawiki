@@ -424,10 +424,14 @@ abstract class MementoResource {
 		$firstTimestamp = wfTimestamp( TS_MW, $firstTimestamp );
 		$lastTimestamp = wfTimestamp( TS_MW, $lastTimestamp );
 
+		$chosenTimestamp = null;
+
 		if ( $givenTimestamp < $firstTimestamp ) {
 			$chosenTimestamp = $firstTimestamp;
 		} elseif ( $givenTimestamp > $lastTimestamp ) {
 			$chosenTimestamp = $lastTimestamp;
+		} else {
+			$chosenTimestamp = $givenTimestamp;
 		}
 
 		return $chosenTimestamp;
@@ -680,10 +684,24 @@ abstract class MementoResource {
 		$out, $conf, $dbr, $oldID, $title, $article ) {
 
 		$page = null;
+		$request = $out->getRequest();
 
 		if ( $oldID == 0 ) {
-			$page = new OriginalWithMementoHeadersOnlyResource(
-				$out, $conf, $dbr, $title, null, $article );
+
+			if ( $conf->get('Negotiation') ) {
+
+				if ( $request->getHeader('ACCEPT-DATETIME') ) {
+					$page = new MementoWithTimeNegotiationResource(
+						$out, $conf, $dbr, $title, null, $article );
+				} else {
+					$page = new OriginalWithMementoHeadersOnlyResource(
+						$out, $conf, $dbr, $title, null, $article );
+				}
+
+			} else {
+				$page = new OriginalWithMementoHeadersOnlyResource(
+					$out, $conf, $dbr, $title, null, $article );
+			}
 		} else {
 			$page = new MementoWithHeaderModificationsResource(
 				$out, $conf, $dbr, $title, null, $article );

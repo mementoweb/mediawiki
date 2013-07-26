@@ -32,6 +32,15 @@ DEPLOYDIR=${MWDIR}/extensions
 MWCONF=${MWDIR}/LocalSettings.php
 UNZIPCMD=unzip -o -d ${DEPLOYDIR}
 
+.PHONY: clean
+.PHONY: unit-test
+.PHONY: alter-installation-traditional-errors
+.PHONY: alter-installation-friendly-errors
+.PHONY: alter-installation-time-negotiation
+.PHONY: alter-installation-no-time-negotiation
+.PHONY: check-integration-env
+.PHONY: verify
+
 # default target
 all: package
 	@echo "Done with build"
@@ -120,15 +129,24 @@ alter-installation-friendly-errors:
 	echo '$$wgMementoErrorPageType = "friendly";' >> ${MWCONF}
 	@echo "#########################"
 	@echo ""
-	
 
-debugme:
-	@echo "I did stuff"
+alter-installation-time-negotiation:
+	@echo ""
+	@echo "#########################"
+	@echo "Setting Time Negotiation"
+	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
+	echo '$$wgMementoTimeNegotiation = true;' >> ${MWCONF}
+	@echo "#########################"
+	@echo ""
 
-deploy-traditional-errors: check-deploy-env ${BUILDDIR}/${BINFILE} deploy-default alter-installation-traditional-errors
-
-deploy-friendly-errors: check-deploy-env ${BUILDDIR}/${BINFILE} deploy-default
-#alter-installation-friendly-errors
+alter-installation-no-time-negotiation:
+	@echo ""
+	@echo "#########################"
+	@echo "Setting Time Negotiation"
+	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
+	echo '$$wgMementoTimeNegotiation = false;' >> ${MWCONF}
+	@echo "#########################"
+	@echo ""
 
 # undeploy the packaged software, requires that it be deployed
 undeploy: check-deploy-env ${DEPLOYDIR}/memento
@@ -141,6 +159,7 @@ undeploy: check-deploy-env ${DEPLOYDIR}/memento
 	sed -i "" -e '/$$wgUsePathInfo = true;/d' ${MWCONF}
 	sed -i "" -e '/$$wgMementoTimemapNumberOfMementos = 3;/d' ${MWCONF}
 	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}
+	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
 	@echo "Removal complete"
 	@echo "#########################"
 	@echo ""
@@ -156,7 +175,7 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test undeploy
+integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test alter-installation-time-negotiation undeploy
 
 standard-integration-test: check-integration-env
 	@echo ""
