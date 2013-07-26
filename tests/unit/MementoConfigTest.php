@@ -84,7 +84,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(500, $config->get('NumberOfMementos'));
 
 		$this->assertEquals(
-			'traditional', $config->get('ErrorPageType'));
+			'friendly', $config->get('ErrorPageType'));
 
 		$this->assertEquals(
 			'separate', $config->get('Pattern'));

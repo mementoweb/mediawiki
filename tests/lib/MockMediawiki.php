@@ -128,7 +128,7 @@ class MWException extends Exception {
 class SpecialPage {
 
 	public static function getTitleFor( $sometext ) {
-		return $sometext;
+		return "Special:" . $sometext;
 	}
 
 }
