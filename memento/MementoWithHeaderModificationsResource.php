@@ -64,15 +64,15 @@ class MementoWithHeaderModificationsResource extends OriginalResource {
 		$linkEntries = $this->constructLinkHeader(
 			$first, $last, $memento, $next, $prev );
 
-		$linkEntries .= 
+		$linkEntries .=
 			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )
 			. ',';
 
-		$linkEntries .= 
+		$linkEntries .=
 			$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
 			. ',';
 
-		$linkEntries .= 
+		$linkEntries .=
 			$this->constructOriginalLatestVersionLinkHeader(
 				$this->mwrelurl, $title );
 

@@ -26,11 +26,13 @@ class MementoWithTimeNegotiationResource extends OriginalResource {
 
 	/**
 	 * Render the page
+	 *
+	 * 1.  get the ID for the page you want, based on Accept-Datetime
+	 * 2.  replace the existing page with the contents of that page
+	 * 3.  ensure that the Content-Location header contains the memento URI
+	 *
 	 */
 	public function render() {
-		// 1.  get the ID for the page you want, based on Accept-Datetime
-		// 2.  replace the existing page with the contents of that page
-		// 3.  ensure that the Link header contains the memento URI 
 
 		$requestDatetime = $this->out->getRequest()->getHeader(
 			'ACCEPT-DATETIME');
