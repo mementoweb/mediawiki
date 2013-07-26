@@ -74,7 +74,7 @@ class MementoConfig {
 
 		$this->settings['ErrorPageType'] =
 			$this->setDefault(
-				$wgMementoErrorPageType, 'traditional' );
+				$wgMementoErrorPageType, 'friendly' );
 
 		$this->settings['Pattern'] =
 			$this->setDefault(
