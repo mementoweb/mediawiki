@@ -2,6 +2,7 @@
 
 define("MEDIAWIKI", true);
 define("TS_RFC2822", "GOOD CONST");
+define("TS_MW", "GOOD CONST" );
 
 /**
  * Mocked version of wfTimestamp, so we don't need all of Mediawiki

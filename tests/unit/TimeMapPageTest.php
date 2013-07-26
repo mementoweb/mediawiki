@@ -50,7 +50,7 @@ class TimeMapPageTest extends PHPUnit_Framework_TestCase {
 <http://www.example.com/wiki/index.php?title=MyPage&oldid=1>;rel="memento";datetime="Good Date 1"
 EOT;
 
-		$this->assertEquals(count($expectedOutputA), count($outputA));
+		$this->assertEquals(count($expectedOutput), count($output));
 
 		$this->assertEquals($expectedOutput, $output);
 
@@ -99,7 +99,7 @@ EOT;
 <http://www.example.com/wiki/index.php?title=MyPage&oldid=1>;rel="memento";datetime="Good Date 1"
 EOT;
 
-		$this->assertEquals(count($expectedOutputA), count($outputA));
+		$this->assertEquals(count($expectedOutput), count($output));
 
 		$this->assertEquals($expectedOutput, $output);
 

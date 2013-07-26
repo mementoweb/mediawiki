@@ -23,7 +23,7 @@
 BUILDDIR=build
 
 # the resulting packaged binary
-BINFILE=memento.zip
+BINFILE=Memento.zip
 
 # commands and variables used for deployment/undeployment
 ZIPCMD=zip -r
@@ -60,7 +60,7 @@ package: ${BUILDDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Creating package"
-	${ZIPCMD} ${BUILDDIR}/${BINFILE} memento	
+	${ZIPCMD} ${BUILDDIR}/${BINFILE} Memento	
 	@echo "Packaging complete"
 	@echo "#########################"
 	@echo ""
@@ -80,7 +80,7 @@ clean:
 unit-test:
 	@echo ""
 	@echo "#########################"
-	phpunit --include-path "memento:tests/lib" tests/unit
+	phpunit --include-path "Memento:tests/lib" tests/unit
 	@echo "#########################"
 	@echo ""
 
@@ -102,12 +102,12 @@ deploy-default: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "#########################"
 	@echo "Deploying Memento extension"
 	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
-	echo 'require_once "$$IP/extensions/memento/Memento.php";' >> ${MWCONF}
+	echo 'require_once "$$IP/extensions/Memento/Memento.php";' >> ${MWCONF}
 	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
 	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
 	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
-	find ${DEPLOYDIR}/memento -type d -exec chmod 0755 {} \; 
-	find ${DEPLOYDIR}/memento -type f -exec chmod 0644 {} \; 
+	find ${DEPLOYDIR}/Memento -type d -exec chmod 0755 {} \; 
+	find ${DEPLOYDIR}/Memento -type f -exec chmod 0644 {} \; 
 	@echo "Deployment complete"
 	@echo "#########################"
 	@echo ""
@@ -149,12 +149,12 @@ alter-installation-no-time-negotiation:
 	@echo ""
 
 # undeploy the packaged software, requires that it be deployed
-undeploy: check-deploy-env ${DEPLOYDIR}/memento
+undeploy: check-deploy-env ${DEPLOYDIR}/Memento
 	@echo ""
 	@echo "#########################"
-	@echo "Removing deployed memento extension"
-	${RM} -rf ${DEPLOYDIR}/memento
-	sed -i "" -e '/require_once "$$IP\/extensions\/memento\/Memento.php";/d' ${MWCONF}
+	@echo "Removing deployed Memento extension"
+	${RM} -rf ${DEPLOYDIR}/Memento
+	sed -i "" -e '/require_once "$$IP\/extensions\/Memento\/Memento.php";/d' ${MWCONF}
 	sed -i "" -e '/$$wgArticlePath="$$wgScriptPath\/index.php\/$$1";/d' ${MWCONF}
 	sed -i "" -e '/$$wgUsePathInfo = true;/d' ${MWCONF}
 	sed -i "" -e '/$$wgMementoTimemapNumberOfMementos = 3;/d' ${MWCONF}
@@ -181,7 +181,7 @@ standard-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
-	-phpunit --include-path "memento:tests/lib" --group all tests/integration
+	-phpunit --include-path "Memento:tests/lib" --group all tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -192,7 +192,7 @@ friendly-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	-phpunit --include-path "memento:tests/lib" --group friendlyErrorPages tests/integration
+	-phpunit --include-path "Memento:tests/lib" --group friendlyErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -202,7 +202,7 @@ traditional-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
-	-phpunit --include-path "memento:tests/lib" --group traditionalErrorPages tests/integration
+	-phpunit --include-path "Memento:tests/lib" --group traditionalErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -217,6 +217,6 @@ verify:
 	@echo ""
 	@echo "#########################"
 	@echo "Verifying against Mediawiki coding standards"
-	phpcs --standard=externals/mediawiki-codesniffer/Mediawiki memento
+	phpcs --standard=externals/mediawiki-codesniffer/MediaWiki Memento
 	@echo "#########################"
 	@echo ""
