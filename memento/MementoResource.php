@@ -691,19 +691,19 @@ abstract class MementoResource {
 			if ( $conf->get('Negotiation') ) {
 
 				if ( $request->getHeader('ACCEPT-DATETIME') ) {
-					$page = new MementoWithTimeNegotiationResource(
+					$page = new MementoResourceFromTimeNegotiation(
 						$out, $conf, $dbr, $title, null, $article );
 				} else {
-					$page = new OriginalWithMementoHeadersOnlyResource(
+					$page = new OriginalResourceWithHeaderModificationsOnly(
 						$out, $conf, $dbr, $title, null, $article );
 				}
 
 			} else {
-				$page = new OriginalWithMementoHeadersOnlyResource(
+				$page = new OriginalResourceWithHeaderModificationsOnly(
 					$out, $conf, $dbr, $title, null, $article );
 			}
 		} else {
-			$page = new MementoWithHeaderModificationsResource(
+			$page = new MementoResourceWithHeaderModificationsOnly(
 				$out, $conf, $dbr, $title, null, $article );
 		}
 

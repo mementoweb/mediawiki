@@ -22,7 +22,7 @@
  * @file
  */
 
-class MementoWithHeaderModificationsResource extends OriginalResource {
+class MementoResourceWithHeaderModificationsOnly extends OriginalResource {
 
 	/**
 	 * Render the page
