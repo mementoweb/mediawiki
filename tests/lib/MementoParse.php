@@ -2,78 +2,62 @@
 
 /*
  * Given the string $linkvalues, which is the value part of the Link: header,
- * return an array of key-value pairs for easier access.
+ * return an array of key-value pairs for easier access, but only the ones
+ * that correspond to the Memento standard.
+ *
+ * Note:  str_getcsv doesn't work because the Link header isn't actually in 
+ *		the CSV format:  
+ *			<url>;rel="something";datetime="somethingwith ,",<url>...
+ *		because datetime="something with ," 
+ *		instead of "datetime=something with ,"
+ *
+ * This function had to use regex instead, which limits it to just the memento
+ * items.
+ *
  */
 function extractItemsFromLink($linkvalues) {
-
-#    echo "\r\n";
-#    echo "=$linkvalues\r\n";
 
     $relations = array();
 
     $datetime = NULL;
     $item = NULL;
 
-    # TODO: create a better Link splitter, this doesn't split correctly
-    # but is good enough for current testing on the Mediawiki Memento Plugin
-    $items = preg_split('/", /', $linkvalues);  
+	preg_match_all('/<([^>]*)>;[ ]*rel="timegate"/', $linkvalues, $matches);
 
-    foreach ($items as $item) {
-        
-#        echo "\r\n";
-#        echo "+$item\r\n";
+	if ( count($matches[0]) > 0 ) {
+		$relations['timegate']['url'] = $matches[1][0];
+	}
 
-        # TODO: switch to explode
-        $data = preg_split('/;/', $item);
+	preg_match_all('/<([^>]*)>;[ ]*rel="timemap"/', $linkvalues, $matches);
 
-        foreach ($data as $datum) {
+	if ( count($matches[0]) > 0 ) {
+		$relations['timemap']['url'] = $matches[1][0];
+	}
 
-            #echo "-$datum\r\n";
+	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version"/', $linkvalues, $matches);
 
-            $datum = trim($datum);
+	if ( count($matches[0]) > 0 ) {
+		$relations['original latest-version']['url'] = $matches[1][0];
+	}
 
-            if ($datum[0] == '<') {
-                $url = preg_replace("/<([^>]*)>.*/", "$1", $datum);
-            }
 
-            if (substr($datum, 0, 3) == "rel") {
-                $rel = substr($datum, 3);
-                list($kw, $rel) = preg_split('/=/', $rel);
-                $rel = str_replace('"', '', $rel);
-            }
+	// get the 'normal' memento link entries
+	preg_match_all('/<([^>]*)>;[ ]*rel="([^"]*)";[ ]*datetime="([^"]*)"/',
+		$linkvalues, $matches);
 
-            if (substr($datum, 0, 8) == "datetime") {
-                $datetime = substr($datum, 8);
-                list($kw, $datetime) = preg_split('/=/', $datetime);
-                $datetime = str_replace('"', '', $datetime);
-            }
+	if ( count($matches[0]) > 0 ) {
 
-            #echo "datetime = $datetime\r\n";
+		for ( $i = 0; $i < count($matches[0]); $i++ ) {
 
-        }
+			$url = $matches[1][$i];
+			$rel = $matches[2][$i];
+			$datetime = $matches[3][$i];
 
-#        echo "++setting relations with datetime = $datetime\r\n";
-        $relations[$rel] = array();
-        $relations[$rel]["url"] = $url;
-        $relations[$rel]["datetime"] = $datetime;
-        $datetime = NULL;
+			$relations[$rel]['url'] = $url;
+			$relations[$rel]['datetime'] = $datetime;
 
-    }
-
-#    echo "\r\n";
-#    echo "FINAL\r\n";
-#    echo "\r\n";
-#
-#    foreach ($relations as $key => $value) {
-#
-#        echo "relations['$key'] = ". $relations[$key] . "\r\n";
-#        echo "relations['$key']['url'] = " . $relations[$key]['url'] . "\r\n";
-#
-#        if (array_key_exists('datetime', $relations[$key])) {
-#            echo "relations['$key']['datetime'] = " . $relations[$key]['datetime'] . "\r\n";
-#        }
-#
-#    }
+		}
+	}
 
     return $relations;    
 }

@@ -59,6 +59,18 @@ type in the address of the wiki page in this format:
 where, the address that follows the TimeGate URL is the address of the article.
 EOT;
 
+$timemap_welcome = <<<EOT
+This is a Memento TimeMap for your wiki.  
+
+For a specific page, it lists the Mementos archived for that page.
+
+To see Memento in action, either follow instructions from the 
+[http://www.mediawiki.org/wiki/Extension:Memento MediaWiki Extension] page or 
+type in the address of the wiki page in this format:
+	http://yourwikisite/wiki/index.php/Special:TimeMap/http://yourwikisite/wiki/index.php/YourPage
+where, the address that follows the TimeMap URL is the address of the article.
+EOT;
+
 $timegate_404_namespace_title = <<<EOT
 Error 404: Either the resource does not exist or the namespace is not 
 understood by memento for the title: '$1'.
@@ -87,6 +99,7 @@ $messages['en'] = array(
 	'timegate' => 'Memento TimeGate',
 	'timegate-desc' => $timegate_desc,
 	'timegate-welcome-message' => $timegate_welcome,
+	'timemap-welcome-message' => $timemap_welcome,
 	'timegate-404-namespace-title' => $timegate_404_namespace_title,
 	'timegate-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
 	'timegate-404-inaccessible' => "Error 404: Resource '$1' is not accessible.",
@@ -96,6 +109,6 @@ $messages['en'] = array(
 	'timemap-404-namespace-title' => $timemap_404_namespace_title,
 	'timemap-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
 	'timemap-404-inaccessible' => "Error 404: Resource '$1' is not accessible.",
-	'timemap-400-date' => "Error 400: Requested date $1 not parseable.<br/>",
+	'timemap-400-date' => "Error 400: Requested date not parseable.<br/>",
 	'timegate-405-badmethod' => "Unsupported method used for page operation.<br />",
 );

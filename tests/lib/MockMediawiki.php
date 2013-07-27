@@ -2,12 +2,18 @@
 
 define("MEDIAWIKI", true);
 define("TS_RFC2822", "GOOD CONST");
+define("TS_MW", "GOOD CONST" );
 
 /**
  * Mocked version of wfTimestamp, so we don't need all of Mediawiki
  * to run unit tests.
  */
 function wfTimestamp($standard, $input) {
+
+	if ( strstr($input, "BAD INPUT" ) ) {
+		throw new MWException("bad bad mojo!");
+	}
+
 	return "STANDARDIZED:$input";
 }
 
@@ -43,6 +49,28 @@ class MockResultWrapper {
 	public $rev_id;
 	
 	public $rev_timestamp;
+
+	public function fetchRow() {
+
+		static $counter = 0;
+
+		if ($counter > 3) {
+
+			$data = array(
+				array(
+					'rev_id' => 42,
+					'rev_timestamp' => 123456789,
+				)
+			);
+
+		} else {
+			$data == null;
+		}
+
+		$counter++;
+
+		return $data;
+	}
 }
 
 /**
@@ -65,7 +93,46 @@ class MockDatabaseBase {
 
 		return $res; 
 	}
+}
+
+/**
+ * Mocked version of the OutputPage class, so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class MockOutputPage {
 
 }
+
+/**
+ * Mocked version of the TitleObject class so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class MockTitleObject {
+
+}
+
+/**
+ * Mocked version of the MWException object so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class MWException extends Exception {
+
+	public function __construct( $message, $code = 0, Exception $previous = null ) {
+		parent::__construct( $message, $code, $previous );
+	}
+}
+
+/**
+ * Mocked version of the SpecialPage object so we don't need a full
+ * Mediawiki install for unit testing.
+ */
+class SpecialPage {
+
+	public static function getTitleFor( $sometext ) {
+		return "Special:" . $sometext;
+	}
+
+}
+
 
 ?>

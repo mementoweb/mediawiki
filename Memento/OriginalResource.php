@@ -22,15 +22,13 @@
  * @file
  */
 
-// ensure that the script can't be executed outside of Mediawiki
-if ( ! defined( 'MEDIAWIKI' ) ) {
-	echo "Not a valid entry point";
-	exit( 1 );
+abstract class OriginalResource extends MementoResource {
+
+	/**
+	 * Render the page
+	 */
+	public function render() {
+		echo "I can't render an Original Page yet!<br />";
+	}
+
 }
-
-$aliases = array();
-
-/** English */
-$aliases['en'] = array(
-	'TimeGate' => array( 'TimeGate' ),
-);

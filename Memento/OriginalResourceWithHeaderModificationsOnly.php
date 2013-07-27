@@ -21,16 +21,21 @@
  * 
  * @file
  */
+class OriginalResourceWithHeaderModificationsOnly extends OriginalResource {
 
-# ensure that the script can't be executed outside of Mediawiki
-if ( ! defined( 'MEDIAWIKI' ) ) {
-	echo "Not a valid entry point";
-	exit( 1 );
+	/**
+	 * Render the page
+	 */
+	public function render() {
+		$response = $this->out->getRequest()->response();
+		$articlePath = $this->conf->get( 'ArticlePath' );
+		$waddress = $this->mwrelurl;
+		$requestURL = $this->out->getRequest()->getRequestURL();
+		$timegateURL =
+			SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
+		$uri = wfExpandUrl( $waddress . '/' . $timegateURL ) .
+			'/' . wfExpandUrl( $requestURL );
+		$response->header(
+			'Link: <' . $uri . '>; rel="timegate"', true );
+	}
 }
-
-$aliases = array();
-
-/** English */
-$aliases['en'] = array(
-	'TimeMap' => array( 'TimeMap' ),
-);
