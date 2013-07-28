@@ -65,9 +65,29 @@ class MementoResourceFromTimeNegotiation extends OriginalResource {
 
 		$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
 
+
 		$this->out->clearHTML();
 		$this->out->addWikiText($mementoArticleText);
+
+		# the following headers comply with Pattern 1.2 of the Memento RFC
 		$this->out->getRequest()->response()->header(
 			"Content-Location: $url", true );
+
+		$this->out->getRequest()->response()->header(
+			"Vary: accept-datetime", true );
+
+		$linkValues = '<' . $this->out->getRequest()->getFullRequestURL() . 
+			'>; rel="original timegate",';
+
+		$linkValues .= $this->constructMementoLinkHeaderEntry(
+			$this->mwrelurl, $title, $first['id'],
+			$first['timestamp'], 'memento first' ) . ',';
+			
+		$linkValues .= $this->constructMementoLinkHeaderEntry(
+			$this->mwrelurl, $title, $last['id'],
+			$last['timestamp'], 'memento last' );
+
+		$this->out->getRequest()->response()->header(
+			"Link: $linkValues", true );
 	}
 }

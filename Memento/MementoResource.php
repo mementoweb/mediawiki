@@ -438,6 +438,30 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * constructFirstMementoLinkHeader
+	 *
+	 * This creates the entry for the first memento in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 * @param $oldid
+	 * @param $timestamp
+	 * @param $relation
+	 */
+	public function constructMementoLinkHeaderEntry(
+		$scriptUrl, $title, $id, $timestamp, $relation ) {
+
+		$url = $this->getFullURIForID( $scriptUrl, $id, $title );
+
+		$entry = '<' . $url . '>; rel="' . $relation . '"; datetime="' .
+			$timestamp . '"';
+
+		return $entry;
+
+	}
+
+
+	/**
 	 * constructTimeMapLinkHeader
 	 *
 	 * This creates the entry for timemap in the Link Header.
