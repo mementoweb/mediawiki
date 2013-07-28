@@ -73,9 +73,6 @@ class MementoResourceFromTimeNegotiation extends OriginalResource {
 		$this->out->getRequest()->response()->header(
 			"Content-Location: $url", true );
 
-		$this->out->getRequest()->response()->header(
-			"Vary: accept-datetime", true );
-
 		$linkValues = '<' . $this->out->getRequest()->getFullRequestURL() . 
 			'>; rel="original timegate",';
 
@@ -89,5 +86,13 @@ class MementoResourceFromTimeNegotiation extends OriginalResource {
 
 		$this->out->getRequest()->response()->header(
 			"Link: $linkValues", true );
+
+		$mwMementoTimestamp = wfTimestamp( TS_RFC2822, $mwMementoTimestamp );
+
+		$this->out->getRequest()->response()->header(
+			"Memento-Datetime: $mwMementoTimestamp", true );
+
+		$this->out->addVaryHeader( 'Accept-Datetime' );
+
 	}
 }
