@@ -27,7 +27,8 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 	 * Render the page
 	 */
 	public function render() {
-		$requestURL = $this->out->getRequest()->getRequestURL();
+		$response = $this->out->getRequest()->response();
+		$requestURL = $this->out->getRequest()->getFullRequestURL();
 
 		$response->header(
 			'Link: <' . $requestURL . '>; rel="original timegate"', true );
