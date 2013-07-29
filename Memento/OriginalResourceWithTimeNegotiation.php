@@ -32,5 +32,7 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 
 		$response->header(
 			'Link: <' . $requestURL . '>; rel="original timegate"', true );
+
+		$this->out->addVaryHeader( 'Accept-Datetime' );
 	}
 }
