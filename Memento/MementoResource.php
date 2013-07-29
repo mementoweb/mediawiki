@@ -684,6 +684,7 @@ abstract class MementoResource {
 
 			$out->disable();
 		} else {
+
 			$out->showErrorPage(
 				$error->getTitleMessage(),
 				$error->getTextMessage(),
@@ -718,7 +719,7 @@ abstract class MementoResource {
 					$page = new MementoResourceFromTimeNegotiation(
 						$out, $conf, $dbr, $title, null, $article );
 				} else {
-					$page = new OriginalResourceWithHeaderModificationsOnly(
+					$page = new OriginalResourceWithTimeNegotiation(
 						$out, $conf, $dbr, $title, null, $article );
 				}
 

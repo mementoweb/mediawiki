@@ -21,7 +21,7 @@
  * 
  * @file
  */
-class OriginalResourceWithHeaderModificationsOnly extends OriginalResource {
+class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 
 	/**
 	 * Render the page

@@ -40,7 +40,15 @@ class TimeGateResource extends MementoResource {
 		$response = $this->out->getRequest()->response();
 		$requestDatetime =
 			$this->out->getRequest()->getHeader( 'ACCEPT-DATETIME' );
-		$response->header( 'Vary: negotiate,accept-datetime', true );
+
+		/*
+		 this is peculiar about Mediawiki, if we only use addVaryHeader
+		 then it will not display for the 302 response, but if we don't
+		 use addVaryHeader, it will not display for "friendly" error pages
+		*/
+		$response->header( 'Vary: Accept-Datetime', true );
+		$this->out->addVaryHeader( 'Accept-Datetime' );
+
 		$requestMethod = $this->out->getRequest()->getMethod();
 
 		if ( $requestMethod != 'GET' && $requestMethod != 'HEAD'  ) {
@@ -55,6 +63,7 @@ class TimeGateResource extends MementoResource {
 		$title = $this->title->getPartialURL();
 
 		if ( !$this->title->exists() ) {
+
 			throw new MementoResourceException(
 				'timegate-404-title', 'timegate',
 				$this->out, $response, 404, array( $title )

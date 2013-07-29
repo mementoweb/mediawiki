@@ -175,7 +175,7 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test alter-installation-time-negotiation undeploy
+integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test alter-installation-time-negotiation time-negotiation-integration-test undeploy
 
 standard-integration-test: check-integration-env
 	@echo ""
@@ -203,6 +203,16 @@ traditional-error-integration-test: check-integration-env
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
 	-phpunit --include-path "Memento:tests/lib" --group traditionalErrorPages tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
+# run all of the tests using 200-style time negotiation
+time-negotiation-integration-test: check-integration-env
+	@echo ""
+	@echo "#########################"
+	@echo "Running time negotiation integration tests"
+	-phpunit --include-path "Memento:tests/lib" --group timeNegotiation tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""

@@ -60,9 +60,10 @@ $wgAutoloadClasses['MementoFactory'] = __DIR__ . '/MementoFactory.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
-$wgAutoloadClasses['OriginalResource'] = __DIR__ . '/OriginalResource.php';
 $wgAutoloadClasses['MementoResourceFromTimeNegotiation'] =
 	__DIR__ . '/MementoResourceFromTimeNegotiation.php';
+$wgAutoloadClasses['OriginalResourceWithTimeNegotiation'] = 
+	__DIR__ . 'OriginalResourceWithTimeNegotiation.php';
 $wgAutoloadClasses['OriginalResourceWithHeaderModificationsOnly'] =
 	__DIR__ . '/OriginalResourceWithHeaderModificationsOnly.php';
 $wgAutoloadClasses['MementoResourceWithHeaderModificationsOnly'] =

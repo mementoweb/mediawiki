@@ -21,14 +21,15 @@
  * 
  * @file
  */
-
-abstract class OriginalResource extends MementoResource {
+class OriginalResourceWithTimeNegotiation extends MementoResource {
 
 	/**
 	 * Render the page
 	 */
 	public function render() {
-		echo "I can't render an Original Page yet!<br />";
-	}
+		$requestURL = $this->out->getRequest()->getRequestURL();
 
+		$response->header(
+			'Link: <' . $requestURL . '>; rel="original timegate"', true );
+	}
 }

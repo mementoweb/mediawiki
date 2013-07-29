@@ -40,6 +40,11 @@ function extractItemsFromLink($linkvalues) {
 		$relations['original latest-version']['url'] = $matches[1][0];
 	}
 
+	preg_match_all('/<([^>]*)>;[ ]*rel="original timegate"/', $linkvalues, $matches);
+
+	if ( count($matches[0]) > 0 ) {
+		$relations['original timegate']['url'] = $matches[1][0];
+	}
 
 	// get the 'normal' memento link entries
 	preg_match_all('/<([^>]*)>;[ ]*rel="([^"]*)";[ ]*datetime="([^"]*)"/',

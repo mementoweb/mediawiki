@@ -90,8 +90,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
 
         # Vary: appropriate entries
-        $this->assertContains('negotiate', $varyItems);
-        $this->assertContains('accept-datetime', $varyItems);
+        //$this->assertContains('negotiate', $varyItems);
+        $this->assertContains('Accept-Datetime', $varyItems);
 
         $this->assertEquals($headers['Location'], $URIM);
 	}
@@ -237,7 +237,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals("404", $statusline["code"]);
-		$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
+
+        $headers = extractHeadersFromResponse($response);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+        $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -280,7 +283,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals("200", $statusline["code"]);
-		//$this->assertEquals($headers["Vary"], "negotiate,accept-datetime");
+
+        $headers = extractHeadersFromResponse($response);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+        $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -315,6 +321,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
         $this->assertEquals("405", $statusline["code"]);
 
+        $headers = extractHeadersFromResponse($response);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+        $this->assertContains('Accept-Datetime', $varyItems);
+
 		# To catch any PHP errors that the test didn't notice
 		if ($entity) {
 			$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -347,8 +357,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
+        $headers = extractHeadersFromResponse($response);
 
         $this->assertEquals("200", $statusline["code"]);
+
+        $headers = extractHeadersFromResponse($response);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+        $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
 		if ($entity) {

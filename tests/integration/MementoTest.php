@@ -61,7 +61,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
         $this->assertEquals("$URIG", $relations['timegate']['url']);
 
-
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         $request = "GET $URIG HTTP/1.1\r\n";
         $request .= "Host: $HOST\r\n";
@@ -114,15 +113,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertNotNull($relations['last memento']['datetime']);
         $this->assertNotNull(
             $relations['next successor-version memento']['datetime']);
-        $this->assertEquals($relations['first memento']['url'],
-            $FIRSTMEMENTO); 
-        $this->assertEquals($relations['last memento']['url'],
-            $LASTMEMENTO);
+        $this->assertEquals($relations['first memento']['url'], $FIRSTMEMENTO); 
+        $this->assertEquals($relations['last memento']['url'], $LASTMEMENTO);
         $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
 
         # Vary: appropriate entries
-        $this->assertContains('negotiate', $varyItems);
-        $this->assertContains('accept-datetime', $varyItems);
+        //$this->assertContains('negotiate', $varyItems);
+        $this->assertContains('Accept-Datetime', $varyItems);
 
         $this->assertEquals($headers['Location'], $URIM);
 
@@ -223,6 +220,79 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Warning</b>", $entity);
 	}
+
+	/**
+	 * @group timeNegotiation
+	 *
+	 * @dataProvider acquire302IntegrationData
+     */
+    public function testTimeNegotiation(
+            $ACCEPTDATETIME,
+            $URIR,
+            $FIRSTMEMENTO,
+            $LASTMEMENTO,
+            $NEXTSUCCESSOR,
+            $URIM,
+			$URIG,
+			$URIT
+			) {
+
+        global $HOST;
+        global $DEBUG;
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
+        $request = "GET $URIR HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+        $request .= "Accept-Datetime: $ACCEPTDATETIME\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+        # UA <--- 200; Link: URI-G ---- URI-R
+        $response = HTTPFetch('localhost', 80, $request);
+
+        if ($DEBUG) {
+            echo "\n";
+            echo $response;
+            echo "\n";
+        }
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+
+        $this->assertArrayHasKey('Link', $headers);
+		$this->assertArrayHasKey('Memento-Datetime', $headers);
+        $this->assertArrayHasKey('Vary', $headers);
+
+        $relations = extractItemsFromLink($headers['Link']);
+
+        $this->assertArrayHasKey('memento first', $relations);
+        $this->assertArrayHasKey('memento last', $relations);
+        $this->assertArrayHasKey('original timegate', $relations);
+
+        $this->assertNotNull($relations['memento first']['datetime']);
+        $this->assertNotNull($relations['memento last']['datetime']);
+
+        $this->assertEquals($relations['memento first']['url'], $FIRSTMEMENTO); 
+        $this->assertEquals($relations['memento last']['url'], $LASTMEMENTO);
+		$this->assertEquals($relations['original timegate']['url'],
+			$URIR);
+
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        $this->assertContains('Accept-Datetime', $varyItems);
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+	}
+
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(

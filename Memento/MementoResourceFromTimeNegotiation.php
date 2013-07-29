@@ -22,7 +22,7 @@
  * @file
  */
 
-class MementoResourceFromTimeNegotiation extends OriginalResource {
+class MementoResourceFromTimeNegotiation extends MementoResource {
 
 	/**
 	 * Render the page
