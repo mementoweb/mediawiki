@@ -62,7 +62,7 @@ $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceFromTimeNegotiation'] =
 	__DIR__ . '/MementoResourceFromTimeNegotiation.php';
-$wgAutoloadClasses['OriginalResourceWithTimeNegotiation'] = 
+$wgAutoloadClasses['OriginalResourceWithTimeNegotiation'] =
 	__DIR__ . '/OriginalResourceWithTimeNegotiation.php';
 $wgAutoloadClasses['OriginalResourceWithHeaderModificationsOnly'] =
 	__DIR__ . '/OriginalResourceWithHeaderModificationsOnly.php';
@@ -86,6 +86,7 @@ $wgSpecialPages['TimeMap'] = 'TimeMap';
 // Set up the hooks
 $wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
 $wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
+$wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
 
 /**
  * Main Memento class, used by hooks.
@@ -105,6 +106,11 @@ class Memento {
 	 * @var string $article: access to the Article Object for this page 
 	 */
 	static private $article;
+
+	/**
+	 * @var bool $diffPage: flag indicating that this is a diff page
+	 */
+	static private $diffPage;
 
 	/**
 	 * The ArticleViewHeader hook, used to feed values into lodal memeber
@@ -130,6 +136,24 @@ class Memento {
 	}
 
 	/**
+	 * This hook runs when diffs are viewed.
+	 *
+	 * Note: The arguments to this function have been omitted because they are
+	 * 		not used and also to ensure backward compatibility between
+	 *		different versions of Mediawiki.
+	 *
+	 * @return boolean
+	 */
+	public static function onDiffViewHeader() {
+
+		$status = true;
+
+		self::$diffPage = true;
+
+		return $status;
+	}
+
+	/**
 	 * The main hook for the plugin.
 	 *
 	 * @param $out: pointer to the OutputPage Object from the hook
@@ -143,20 +167,22 @@ class Memento {
 
 		// if we're an article, do memento processing, otherwise don't worry
 		if ( $out->isArticle() ) {
-			$config = new MementoConfig();
-			$dbr = wfGetDB( DB_SLAVE );
-			$oldID = self::$article->getOldID();
-			$title = self::$article->getTitle();
+			// if we're a diff page, Memento doesn't make sense
+			if ( ! self::$diffPage ) {
+				$config = new MementoConfig();
+				$dbr = wfGetDB( DB_SLAVE );
+				$oldID = self::$article->getOldID();
+				$title = self::$article->getTitle();
 
-			try {
-				$page = MementoResource::MementoPageResourceFactory(
-					$out, $config, $dbr, $oldID, $title, self::$article );
-				$page->render();
-			} catch (MementoResourceException $e) {
-				MementoResource::renderError(
-					$out, $e, $config->get('ErrorPageType') );
+				try {
+					$page = MementoResource::MementoPageResourceFactory(
+						$out, $config, $dbr, $oldID, $title, self::$article );
+					$page->render();
+				} catch (MementoResourceException $e) {
+					MementoResource::renderError(
+						$out, $e, $config->get('ErrorPageType') );
+				}
 			}
-
 		}
 
 		return $status;

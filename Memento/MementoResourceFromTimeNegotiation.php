@@ -65,7 +65,6 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 
 		$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
 
-
 		$this->out->clearHTML();
 		$this->out->addWikiText($mementoArticleText);
 
@@ -73,13 +72,13 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 		$this->out->getRequest()->response()->header(
 			"Content-Location: $url", true );
 
-		$linkValues = '<' . $this->out->getRequest()->getFullRequestURL() . 
+		$linkValues = '<' . $this->out->getRequest()->getFullRequestURL() .
 			'>; rel="original timegate",';
 
 		$linkValues .= $this->constructMementoLinkHeaderEntry(
 			$this->mwrelurl, $title, $first['id'],
 			$first['timestamp'], 'memento first' ) . ',';
-			
+
 		$linkValues .= $this->constructMementoLinkHeaderEntry(
 			$this->mwrelurl, $title, $last['id'],
 			$last['timestamp'], 'memento last' );
