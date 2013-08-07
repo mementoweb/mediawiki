@@ -212,7 +212,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         }
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error", $entity);
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
 
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Notice</b>", $entity);
@@ -284,7 +284,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error", $entity);
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
 
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Notice</b>", $entity);
@@ -347,7 +347,46 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error", $entity);
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+	}
+
+	/**
+	 * @group all
+	 *
+	 * @dataProvider acquireDiffUrls()
+	 */
+	public function testDiffPage($URIR) {
+
+        global $HOST;
+        global $DEBUG;
+
+        $request = "GET $URIR HTTP/1.1\r\n";
+        $request .= "Host: $HOST\r\n";
+        $request .= "Connection: close\r\n\r\n";
+
+        # UA <--- 200; Link: URI-G ---- URI-R
+        $response = HTTPFetch('localhost', 80, $request);
+
+        if ($DEBUG) {
+            echo "\n";
+            echo $response;
+            echo "\n";
+        }
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals($statusline["code"], "200");
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
 
 		# To catch any PHP notices that the test didn't notice
 		$this->assertNotContains("<b>Notice</b>", $entity);
@@ -365,6 +404,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	public function acquireEditUrls() {
 		return acquireLinesFromFile(
 			'tests/integration/test-data/memento-editpage-testdata.csv');
+	}
+
+	public function acquireDiffUrls() {
+		return acquireLinesFromFile(
+			'tests/integration/test-data/memento-diffpage-testdata.csv');
 	}
 
 }

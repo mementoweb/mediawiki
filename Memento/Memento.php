@@ -48,9 +48,6 @@ $wgExtensionCredits['specialpage'][] = array(
 
 //require_once( ( __DIR__ ) . '/MementoUtilities.php');
 
-// TODO:  have the make file change 'version' above to an actual
-// version upon release
-
 // Set up the messages file
 $wgExtensionMessagesFiles['Memento'] = ( __DIR__ ) . '/Memento.i18n.php';
 
