@@ -28,17 +28,16 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 			$URIT
 		) {
 
+		global $sessionCookieString;
+
 		global $HOST;
 		global $TGDEBUG;
 
-        # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
-        $request = "GET $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Accept-Datetime: $ACCEPTDATETIME\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
+        # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIG'`;
 
         if ($TGDEBUG) {
             echo "\n";
@@ -102,15 +101,15 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeGate200Urls
 	 */
 	public function test400TimeGate($URIG) {
+
+		global $sessionCookieString;
+
 		global $HOST;
 		global $TGDEBUG;
 
-        $request = "GET $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-		$request .= "Accept-DateTime:  bad-input\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -174,15 +173,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeGate200Urls
 	 */
 	public function testFriendly400TimeGate($URIG) {
+		global $sessionCookieString;
+
 		global $HOST;
 		global $TGDEBUG;
 
-        $request = "GET $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-		$request .= "Accept-DateTime:  bad-input\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -217,14 +215,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test404TimeGate($URIG) {
 	
+		global $sessionCookieString;
+
 		global $HOST;
 		global $TGDEBUG;
 
-        $request = "GET $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -263,14 +261,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testFriendly404TimeGate($URIG) {
 
+		global $sessionCookieString;
+
 		global $HOST;
 		global $TGDEBUG;
 
-        $request = "GET $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -308,13 +306,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeGate405Urls
 	 */
 	public function test405TimeGate($URIG) {
+
+		global $sessionCookieString;
+
 		global $HOST;
 
-        $request = "POST $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$response = `curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -347,13 +346,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeGate405Urls
 	 */
 	public function testFriendly405TimeGate($URIG) {
+
+		global $sessionCookieString;
+
 		global $HOST;
 
-        $request = "POST $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
-
-		$response = HTTPFetch($HOST, 80, $request);
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+		$response = `curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);

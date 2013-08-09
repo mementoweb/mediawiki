@@ -17,15 +17,15 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeMap404Urls
 	 */
 	public function test404TimeMap($TIMEMAP) {
-	
+
 		global $HOST;
 		global $TMDEBUG;
 
-        $request = "GET $TIMEMAP HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'`;
 
 		if ($TMDEBUG) {
 			echo "\n";
@@ -59,14 +59,14 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testFriendlyErrorTimeMap($TIMEMAP) {
 	
+		global $sessionCookieString;
+
 		global $HOST;
 		global $TMDEBUG;
 
-        $request = "GET $TIMEMAP HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'`;
 
 		if ($TMDEBUG) {
 			echo "\n";
@@ -106,11 +106,12 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
         global $HOST;
 		global $TMDEBUG;
 
-        $request = "GET $TIMEMAP HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'`;
+
 
 		if ($TMDEBUG) {
 			echo "\n";

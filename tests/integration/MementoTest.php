@@ -30,14 +30,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         global $HOST;
         global $DEBUG;
 
-        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
-        $request = "GET $URIR HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Accept-Datetime: $ACCEPTDATETIME\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
 
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIR'`;
 
         if ($DEBUG) {
             echo "\n";
@@ -62,13 +61,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("$URIG", $relations['timegate']['url']);
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
-        $request = "GET $URIG HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Accept-Datetime: $ACCEPTDATETIME\r\n";
-        $request .= "Connection: close\r\n\r\n";
-
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIG'`;
 
         if ($DEBUG) {
             echo "\n";
@@ -124,13 +118,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($headers['Location'], $URIM);
 
         # UA --- GET $URIM; Accept-DateTime: T -----> URI-M
-        $request = "GET $URIM HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Accept-Datetime: $ACCEPTDATETIME\r\n";
-        $request .= "Connection: close\r\n\r\n";
-
         # UA <--- 200; Memento-Datetime: T; Link: URI-R, URI-T, URI-G --- URI-M
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIM'`;
 
         if ($DEBUG) {
             echo "\n";
@@ -194,11 +183,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		global $HOST;
 		global $DEBUG;
 
-        $request = "GET $URIR HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
 
-		$response = HTTPFetch($HOST, 80, $request);
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIR'`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -240,14 +229,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         global $HOST;
         global $DEBUG;
 
-        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
-        $request = "GET $URIR HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Accept-Datetime: $ACCEPTDATETIME\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
 
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIR'`;
 
         if ($DEBUG) {
             echo "\n";
@@ -312,13 +300,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         global $HOST;
         global $DEBUG;
 
-        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
-        $request = "GET $URIR HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
 
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIR'`;
 
         if ($DEBUG) {
             echo "\n";
@@ -366,12 +354,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         global $HOST;
         global $DEBUG;
 
-        $request = "GET $URIR HTTP/1.1\r\n";
-        $request .= "Host: $HOST\r\n";
-        $request .= "Connection: close\r\n\r\n";
+		global $sessionCookieString;
+
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
         # UA <--- 200; Link: URI-G ---- URI-R
-        $response = HTTPFetch('localhost', 80, $request);
+		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIR'`;
 
         if ($DEBUG) {
             echo "\n";
