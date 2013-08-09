@@ -6,7 +6,6 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
-$HOST = $_ENV["TESTHOST"];
 $TMDEBUG = false;
 
 class TimeMapTest extends PHPUnit_Framework_TestCase {
@@ -29,7 +28,6 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test404TimeMap($TIMEMAP) {
 
-		global $HOST;
 		global $TMDEBUG;
 
 		global $sessionCookieString;
@@ -72,7 +70,6 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	
 		global $sessionCookieString;
 
-		global $HOST;
 		global $TMDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -114,7 +111,6 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$EXPECTEDFILE
 		) {
 
-        global $HOST;
 		global $TMDEBUG;
 
 		global $sessionCookieString;

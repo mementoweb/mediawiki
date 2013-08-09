@@ -4,10 +4,8 @@ require_once("MementoParse.php");
 require_once("TestSupport.php");
 require_once('PHPUnit/Extensions/TestDecorator.php');
 
-
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
-$HOST = $_ENV["TESTHOST"];
 $TGDEBUG = false;
 
 class TimeGateTest extends PHPUnit_Framework_TestCase {
@@ -41,7 +39,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		global $sessionCookieString;
 
-		global $HOST;
 		global $TGDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -115,7 +112,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		global $sessionCookieString;
 
-		global $HOST;
 		global $TGDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -186,7 +182,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	public function testFriendly400TimeGate($URIG) {
 		global $sessionCookieString;
 
-		global $HOST;
 		global $TGDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -228,7 +223,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	
 		global $sessionCookieString;
 
-		global $HOST;
 		global $TGDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -274,7 +268,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		global $sessionCookieString;
 
-		global $HOST;
 		global $TGDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -320,8 +313,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		global $sessionCookieString;
 
-		global $HOST;
-
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
 		$response = `curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
@@ -359,8 +350,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	public function testFriendly405TimeGate($URIG) {
 
 		global $sessionCookieString;
-
-		global $HOST;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 		$response = `curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;

@@ -218,9 +218,13 @@ time-negotiation-integration-test: check-integration-env
 	@echo ""
 
 check-integration-env:
-ifndef TESTHOST
-	$(error TESTHOST is not defined, type 'export TESTHOST=<host to test>')
-endif
+	echo "Ensuring environment is set up correctly"
+#ifndef TESTDATADIR
+#	$(error TESTDATADIR is not defined, type 'export TESTDATADIR=<folder holding test data files>')
+#endif
+#ifndef TESTUSERNAME
+#	$(error TESTUSERNAME is not defined, type 'export TESTUSERNAME=<username of test user>')
+#endif
 
 # verify code against coding standards
 verify:

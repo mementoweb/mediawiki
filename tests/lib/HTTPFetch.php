@@ -8,7 +8,7 @@ require_once("authentication-data.php");
  * NOTE:  Does not work with HTTP Pipelining!
  */
 function HTTPFetch($host, $port, $request) {
-	echo("[Deprecated function called]");
+	echo("[Deprecated function HTTPFetch called]");
 
     $fp = fsockopen('localhost', $port, $errno, $errstr, 30);
     

@@ -6,7 +6,6 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
-$HOST = $_ENV["TESTHOST"];
 $DEBUG = false;
 
 class MementoTest extends PHPUnit_Framework_TestCase {
@@ -38,7 +37,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIT
 			) {
 
-        global $HOST;
         global $DEBUG;
 
 		global $sessionCookieString;
@@ -191,7 +189,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testEditPage($URIR) {
 
-		global $HOST;
 		global $DEBUG;
 
 		global $sessionCookieString;
@@ -237,7 +234,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIT
 			) {
 
-        global $HOST;
         global $DEBUG;
 
 		global $sessionCookieString;
@@ -308,7 +304,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIT
 			) {
 
-        global $HOST;
         global $DEBUG;
 
 		global $sessionCookieString;
@@ -362,7 +357,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testDiffPage($URIR) {
 
-        global $HOST;
         global $DEBUG;
 
 		global $sessionCookieString;
