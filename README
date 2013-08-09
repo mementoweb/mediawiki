@@ -37,7 +37,6 @@ to the shell where Mediawiki is installed, then run the appropriate make target.
 
 Once the code is deployed, the integration tests can be run.
 
-    export TESTHOST=<hostname of your Mediawiki server to test>
     make integration-test
 
 Note that the tests will fail if the software is not deployed.
