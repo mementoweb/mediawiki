@@ -11,6 +11,17 @@ $DEBUG = false;
 
 class MementoTest extends PHPUnit_Framework_TestCase {
 
+	public static function setUpBeforeClass() {
+		global $sessionCookieString;
+
+		$sessionCookieString = authenticateWithMediawiki();
+	}
+
+	public static function tearDownAfterClass() {
+
+		logOutOfMediawiki();
+	}
+
     /**
 	 * @group all
 	 *

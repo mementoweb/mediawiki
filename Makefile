@@ -181,7 +181,7 @@ standard-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
-	-phpunit --include-path "Memento:tests/lib" --group all tests/integration
+	-phpunit --include-path "Memento:tests/lib:tests/integration/test-data" --group all tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -192,7 +192,7 @@ friendly-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	-phpunit --include-path "Memento:tests/lib" --group friendlyErrorPages tests/integration
+	-phpunit --include-path "Memento:tests/lib:tests/integration/test-data" --group friendlyErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -202,7 +202,7 @@ traditional-error-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
-	-phpunit --include-path "Memento:tests/lib" --group traditionalErrorPages tests/integration
+	-phpunit --include-path "Memento:tests/lib:tests/integration/test-data" --group traditionalErrorPages tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -212,7 +212,7 @@ time-negotiation-integration-test: check-integration-env
 	@echo ""
 	@echo "#########################"
 	@echo "Running time negotiation integration tests"
-	-phpunit --include-path "Memento:tests/lib" --group timeNegotiation tests/integration
+	-phpunit --include-path "Memento:tests/lib:tests/integration/test-data" --group timeNegotiation tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
