@@ -21,20 +21,27 @@ function acquireLinesFromFile($filename) {
 
 function acquireCSVDataFromFile($filename, $columns) {
 	$data = array();
+	$counter = 0;
 
-	if (($handle = fopen($filename, 'r')) !== FALSE) {
-		while (($filedata = fgetcsv($handle, 1000, ",")) !== FALSE) {
+	$lines = file($filename);
 
+	foreach ($lines as $line) {
+
+		if ($counter != 0) {
+	
+			$filedata = str_getcsv($line);
+	
 			$cur = array();
-
+	
 			for ($i = 0; $i < $columns; $i++) {
 				$tmp = $filedata[$i];
 				array_push($cur, $tmp);
 			}
-
+	
 			array_push($data, $cur);
-
 		}
+
+		$counter++;
 	}
 
 	return $data;
@@ -46,7 +53,7 @@ function acquireFormattedI18NString($lang, $key) {
 		define("MEDIAWIKI", true);
 	}
 
-	require('memento.i18n.php');
+	require('Memento.i18n.php');
 
 	$format = $messages[$lang][$key];
 	$format = str_replace(array('$1', '$2', '$3'), '%s', $format);

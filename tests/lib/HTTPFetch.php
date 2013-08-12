@@ -1,5 +1,5 @@
 <?php
-require_once("authentication-data.php");
+require_once('authentication-data.php');
 
 /*
  * Given a $host and a $port, sends the $request and returns
@@ -173,6 +173,16 @@ function authenticateWithMediawiki() {
 
 		$response = `curl -s -i -X POST -d '$requestEntity' -H 'Content-Type: application/x-www-form-urlencoded' -b '$cookies' --url '$mwLoginActionUrl'`;
 
+		$statusline = extractStatuslineFromResponse($response);
+
+		if ($statusline['code'] != "302") {
+			echo 'TESTUSERNAME = [' . $_ENV['TESTUSERNAME'] . "]\n";
+			echo 'TESTPASSWORD = [' . $_ENV['TESTPASSWORD'] . "]\n";
+			echo 'wpName = [' . $wpName . "]\n";
+			echo 'wpPassword = [' . $wpPassword . "]\n";
+			trigger_error("Authentication failed, check that the TESTUSERNAME and TESTPASSWORD environment variables are set correctly.", E_USER_ERROR);
+		}
+
 		$cookies = extractCookiesSetInResponse($response);
 
 		$cookieUserID = $cookies["${mwDbName}UserID"];
@@ -196,6 +206,28 @@ function logOutOfMediawiki() {
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
 		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$mwLogoutActionUrl'`;
+}
+
+/*
+ * only get the headers as a string, no processing
+ */
+function extractHeadersStringFromResponse($response) {
+
+    $lines = preg_split("/\r\n/", $response);
+
+	$headers = '';
+    
+    foreach ($lines as $line) {
+    
+        if (strlen($line) == 0) {
+            break;
+        }
+
+		$headers .= $line . "\r\n";
+    
+    }
+
+    return $headers;
 }
 
 ?>

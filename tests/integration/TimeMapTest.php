@@ -140,11 +140,11 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeMapTestData() {
 		return acquireCSVDataFromFile(
-			"tests/integration/test-data/timemap-testdata.csv", 2);
+			$_ENV['TESTDATADIR'] . '/timemap-testdata.csv', 2);
 	}
 
 	public function acquireTimeMap404Urls() {
 		return acquireLinesFromFile(
-			"tests/integration/test-data/timemap404-testdata.csv");
+			$_ENV['TESTDATADIR'] . '/timemap404-testdata.csv');
 	}
 }

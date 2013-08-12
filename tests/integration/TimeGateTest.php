@@ -31,10 +31,12 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
             $URIR,
             $FIRSTMEMENTO,
             $LASTMEMENTO,
+			$PREVPREDECESSOR,
             $NEXTSUCCESSOR,
             $URIM,
 			$URIG,
-			$URIT
+			$URIT,
+			$COMMENT
 		) {
 
 		global $sessionCookieString;
@@ -45,7 +47,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIG'`;
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIG'";
+		#echo "running: $curlCmd\n";
+
+		$response = `$curlCmd`;
 
         if ($TGDEBUG) {
             echo "\n";
@@ -57,50 +62,75 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $statusline = extractStatuslineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-		if ($entity) {
-			$this->fail("302 response should not contain entity for $URIG");
-		}
-
         # 302, Location, Vary, Link
-        $this->assertEquals("302", $statusline["code"]);
-        $this->assertArrayHasKey('Location', $headers);
-        $this->assertArrayHasKey('Vary', $headers);
-        $this->assertArrayHasKey('Link', $headers);
+		if ($entity) {
+			$this->fail("302 response should not contain entity for $URIG\n" . $response );
+		}
+        $this->assertEquals("302", $statusline["code"], "Status is not 302");
+
+        $this->assertArrayHasKey('Location', $headers, "Location field not present in headers");
+        $this->assertArrayHasKey('Vary', $headers, "Vary field not present in headers");
+        $this->assertArrayHasKey('Link', $headers, "Link field not present in headers");
 
         $relations = extractItemsFromLink($headers['Link']);
         $varyItems = extractItemsFromVary($headers['Vary']);
 
-        # Link
-        $this->assertArrayHasKey('first memento', $relations);
-        $this->assertArrayHasKey('last memento', $relations);
-        $this->assertArrayHasKey('next successor-version memento', $relations);
-        $this->assertArrayHasKey('original latest-version', $relations);
-        $this->assertArrayHasKey('timemap', $relations);
-
         # Link: URI-R
         $this->assertEquals($URIR, 
-            $relations['original latest-version']['url']);
+            $relations['original latest-version']['url'],
+			"'original latest-version' relation does not have the correct value");
 
         # Link: URI-T
-        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
-        $this->assertEquals($URIT, $relations['timemap']['url']);
+        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link'], "'timemap' relation not present in Link header field");
+        $this->assertEquals($URIT, $relations['timemap']['url'], "'timemap' relation URL not correct");
 
-        # Link: other entries
-        $this->assertNotNull($relations['first memento']['datetime']);
-        $this->assertNotNull($relations['last memento']['datetime']);
-        $this->assertNotNull(
-            $relations['next successor-version memento']['datetime']);
-        $this->assertEquals($relations['first memento']['url'],
-            $FIRSTMEMENTO); 
-        $this->assertEquals($relations['last memento']['url'],
-            $LASTMEMENTO);
-        $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
+        # Link: Other Relations
+
+		if ( ($NEXTSUCCESSOR == 'N/A') and ($PREVPREDECESSOR == 'N/A') ) {
+			$this->assertArrayHasKey('first last memento', $relations);
+			$this->assertNotNull($relations['first last memento']['datetime']);
+			$this->assertEquals($URIM, $relations['first last memento']['url']);
+		} else {
+        	$this->assertArrayHasKey('first memento', $relations, "'first memento' relation not present in Link field:\n" . extractHeadersStringFromResponse($response) );
+        	$this->assertNotNull($relations['first memento']['datetime'], "'first memento' relation does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+
+        	$this->assertArrayHasKey('last memento', $relations, "'last memento' relation not present in Link field");
+        	$this->assertNotNull($relations['last memento']['datetime'], "'last memento' relation does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+        	$this->assertEquals($FIRSTMEMENTO,
+				$relations['first memento']['url'],
+            	"first memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+
+        	$this->assertEquals($LASTMEMENTO,
+				$relations['last memento']['url'],
+				"last memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+
+			if ($NEXTSUCCESSOR == 'N/A') {
+       			$this->assertArrayNotHasKey('next successor-version memento',
+					$relations,
+					"'next successor-version memento' should not be present in Link field");
+			} else {
+				$this->assertArrayHasKey('next successor-version memento',
+					$relations,
+					"'next successor-version memento' not present in Link field");
+        		$this->assertNotNull(
+        	    	$relations['next successor-version memento']['datetime'],
+					"'next successor-version memento' does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+        		$this->assertEquals($NEXTSUCCESSOR,
+					$relations['next successor-version memento']['url'],
+					"next successor-version memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+			}
+		}
+
+        $this->assertArrayHasKey('original latest-version', $relations, "'original latest-version' relation not present in Link field");
+        $this->assertArrayHasKey('timemap', $relations, "'timemap' relation not present in Link field");
 
         # Vary: appropriate entries
         //$this->assertContains('negotiate', $varyItems);
-        $this->assertContains('Accept-Datetime', $varyItems);
+        $this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary header");
 
-        $this->assertEquals($headers['Location'], $URIM);
+        $this->assertEquals($URIM,
+			$headers['Location'], 
+			"Location field contains incorrect URL value");
 	}
 
 	/**
@@ -197,7 +227,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals("200", $statusline["code"]);
+        $this->assertEquals("200", $statusline["code"], "expected 200 status code");
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -383,22 +413,22 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeGate404Urls() {
 		return acquireLinesFromFile(
-			'tests/integration/test-data/timegate404-testdata.csv');
+			$_ENV['TESTDATADIR'] . '/timegate-dneurls-testdata.csv');
 	}
 
 	public function acquireTimeGate405Urls() {
 		return acquireLinesFromFile(
-			'tests/integration/test-data/timegate405-testdata.csv');
+			$_ENV['TESTDATADIR'] . '/timegate-goodurls-testdata.csv');
 	}
 
 	public function acquireTimeGate200Urls() {
 		return acquireLinesFromFile(
-			'tests/integration/test-data/timegate200-testdata.csv');
+			$_ENV['TESTDATADIR'] . '/timegate-goodurls-testdata.csv');
 	}
 
 	public function acquireTimeGatesWithAcceptDateTime() {
 		return acquireCSVDataFromFile(
-			'tests/integration/test-data/timegate-302-testdata.csv', 8);
+			$_ENV['TESTDATADIR'] . '/full-302-negotiation-testdata.csv', 10);
 	}
 
 }

@@ -391,17 +391,17 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
-			'tests/integration/test-data/timegate-302-testdata.csv', 8);
+			$_ENV['TESTDATADIR'] . '/timegate-302-testdata.csv', 8);
     }
 
 	public function acquireEditUrls() {
 		return acquireLinesFromFile(
-			'tests/integration/test-data/memento-editpage-testdata.csv');
+			$_ENV['TESTDATADIR'] . '/memento-editpage-testdata.csv');
 	}
 
 	public function acquireDiffUrls() {
 		return acquireLinesFromFile(
-			'tests/integration/test-data/memento-diffpage-testdata.csv');
+			$_ENV['TESTDATADIR'] . '/memento-diffpage-testdata.csv');
 	}
 
 }
