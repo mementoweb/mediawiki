@@ -81,11 +81,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 			"'original latest-version' relation does not have the correct value");
 
         # Link: URI-T
+        $this->assertArrayHasKey('timemap', $relations);
         $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link'], "'timemap' relation not present in Link header field");
         $this->assertEquals($URIT, $relations['timemap']['url'], "'timemap' relation URL not correct");
 
         # Link: Other Relations
-
 		if ( ($NEXTSUCCESSOR == 'N/A') and ($PREVPREDECESSOR == 'N/A') ) {
 			$this->assertArrayHasKey('first last memento', $relations);
 			$this->assertNotNull($relations['first last memento']['datetime']);
@@ -181,14 +181,6 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         # Link: other entries
         $this->assertNotNull($relations['first memento']['datetime']);
         $this->assertNotNull($relations['last memento']['datetime']);
-
-		/*
-        $this->assertEquals($relations['first memento']['url'],
-            $FIRSTMEMENTO); 
-        $this->assertEquals($relations['last memento']['url'],
-            $LASTMEMENTO);
-        $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
-		*/
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);

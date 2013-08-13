@@ -31,10 +31,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
             $URIR,
             $FIRSTMEMENTO,
             $LASTMEMENTO,
+			$PREVPREDECESSOR,
             $NEXTSUCCESSOR,
             $URIM,
 			$URIG,
-			$URIT
+			$URIT,
+			$COMMENT
 			) {
 
         global $DEBUG;
@@ -96,29 +98,51 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $relations = extractItemsFromLink($headers['Link']);
         $varyItems = extractItemsFromVary($headers['Vary']);
 
-        # Link
-        $this->assertArrayHasKey('first memento', $relations);
-        $this->assertArrayHasKey('last memento', $relations);
-        $this->assertArrayHasKey('next successor-version memento', $relations);
-        $this->assertArrayHasKey('original latest-version', $relations);
-        $this->assertArrayHasKey('timemap', $relations);
-
         # Link: URI-R
         $this->assertEquals($URIR, 
-            $relations['original latest-version']['url']);
+            $relations['original latest-version']['url'],
+			"'original latest-version' relation does not have the correct value");
 
         # Link: URI-T
+        $this->assertArrayHasKey('timemap', $relations);
         $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
         $this->assertEquals("$URIT", $relations['timemap']['url']);
 
-        # Link: other entries
-        $this->assertNotNull($relations['first memento']['datetime']);
-        $this->assertNotNull($relations['last memento']['datetime']);
-        $this->assertNotNull(
-            $relations['next successor-version memento']['datetime']);
-        $this->assertEquals($relations['first memento']['url'], $FIRSTMEMENTO); 
-        $this->assertEquals($relations['last memento']['url'], $LASTMEMENTO);
-        $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
+        # Link: Other Relations
+		if ( ($NEXTSUCCESSOR == 'N/A') and ($PREVPREDECESSOR == 'N/A') ) {
+			$this->assertArrayHasKey('first last memento', $relations);
+			$this->assertNotNull($relations['first last memento']['datetime']);
+			$this->assertEquals($URIM, $relations['first last memento']['url']);
+		} else {
+        	$this->assertArrayHasKey('first memento', $relations, "'first memento' relation not present in Link field:\n" . extractHeadersStringFromResponse($response) );
+        	$this->assertNotNull($relations['first memento']['datetime'], "'first memento' relation does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+
+        	$this->assertArrayHasKey('last memento', $relations, "'last memento' relation not present in Link field");
+        	$this->assertNotNull($relations['last memento']['datetime'], "'last memento' relation does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+        	$this->assertEquals($FIRSTMEMENTO,
+				$relations['first memento']['url'],
+            	"first memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+
+        	$this->assertEquals($LASTMEMENTO,
+				$relations['last memento']['url'],
+				"last memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+
+			if ($NEXTSUCCESSOR == 'N/A') {
+       			$this->assertArrayNotHasKey('next successor-version memento',
+					$relations,
+					"'next successor-version memento' should not be present in Link field");
+			} else {
+				$this->assertArrayHasKey('next successor-version memento',
+					$relations,
+					"'next successor-version memento' not present in Link field");
+        		$this->assertNotNull(
+        	    	$relations['next successor-version memento']['datetime'],
+					"'next successor-version memento' does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+        		$this->assertEquals($NEXTSUCCESSOR,
+					$relations['next successor-version memento']['url'],
+					"next successor-version memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+			}
+		}
 
         # Vary: appropriate entries
         //$this->assertContains('negotiate', $varyItems);
@@ -147,26 +171,51 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $relations = extractItemsFromLink($headers['Link']);
 
-        # Link
-        $this->assertArrayHasKey('first memento', $relations);
-        $this->assertArrayHasKey('last memento', $relations);
-        $this->assertArrayHasKey('next successor-version memento', $relations);
-        $this->assertArrayHasKey('original latest-version', $relations);
-        $this->assertArrayHasKey('timemap', $relations);
-
-        $this->assertEquals($relations['first memento']['url'],
-            $FIRSTMEMENTO); 
-        $this->assertEquals($relations['last memento']['url'],
-            $LASTMEMENTO);
-        $this->assertEquals($relations['next successor-version memento']['url'],            $NEXTSUCCESSOR);
-
         # Link: URI-R
         $this->assertEquals($URIR, 
-            $relations['original latest-version']['url']);
+            $relations['original latest-version']['url'],
+			"'original latest-version' relation does not have the correct value");
 
         # Link: URI-T
+        $this->assertArrayHasKey('timemap', $relations);
         $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
         $this->assertEquals("$URIT", $relations['timemap']['url']);
+
+        # Link: Other Relations
+		if ( ($NEXTSUCCESSOR == 'N/A') and ($PREVPREDECESSOR == 'N/A') ) {
+			$this->assertArrayHasKey('first last memento', $relations);
+			$this->assertNotNull($relations['first last memento']['datetime']);
+			$this->assertEquals($URIM, $relations['first last memento']['url']);
+		} else {
+        	$this->assertArrayHasKey('first memento', $relations, "'first memento' relation not present in Link field:\n" . extractHeadersStringFromResponse($response) );
+        	$this->assertNotNull($relations['first memento']['datetime'], "'first memento' relation does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+
+        	$this->assertArrayHasKey('last memento', $relations, "'last memento' relation not present in Link field");
+        	$this->assertNotNull($relations['last memento']['datetime'], "'last memento' relation does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+        	$this->assertEquals($FIRSTMEMENTO,
+				$relations['first memento']['url'],
+            	"first memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+
+        	$this->assertEquals($LASTMEMENTO,
+				$relations['last memento']['url'],
+				"last memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+
+			if ($NEXTSUCCESSOR == 'N/A') {
+       			$this->assertArrayNotHasKey('next successor-version memento',
+					$relations,
+					"'next successor-version memento' should not be present in Link field");
+			} else {
+				$this->assertArrayHasKey('next successor-version memento',
+					$relations,
+					"'next successor-version memento' not present in Link field");
+        		$this->assertNotNull(
+        	    	$relations['next successor-version memento']['datetime'],
+					"'next successor-version memento' does not contain a datetime field\n" . extractHeadersStringFromResponse($response) );
+        		$this->assertEquals($NEXTSUCCESSOR,
+					$relations['next successor-version memento']['url'],
+					"next successor-version memento url is not correct\n" . extractHeadersStringFromResponse($response) );
+			}
+		}
 
         # Link: URI-G
         $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
@@ -391,7 +440,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
-			$_ENV['TESTDATADIR'] . '/timegate-302-testdata.csv', 8);
+			$_ENV['TESTDATADIR'] . '/full-302-negotiation-testdata.csv', 10);
     }
 
 	public function acquireEditUrls() {
