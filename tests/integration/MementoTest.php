@@ -29,6 +29,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function testVaryAcceptDateTime302WholeProcess(
             $ACCEPTDATETIME,
             $URIR,
+			$ORIGINALLATEST,
             $FIRSTMEMENTO,
             $LASTMEMENTO,
 			$PREVPREDECESSOR,
@@ -37,7 +38,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIG,
 			$URIT,
 			$COMMENT
-			) {
+		) {
 
         global $DEBUG;
 
@@ -99,7 +100,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $varyItems = extractItemsFromVary($headers['Vary']);
 
         # Link: URI-R
-        $this->assertEquals($URIR, 
+        $this->assertEquals($ORIGINALLATEST, 
             $relations['original latest-version']['url'],
 			"'original latest-version' relation does not have the correct value" . extractHeadersStringFromResponse($response) );
 
@@ -172,7 +173,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $relations = extractItemsFromLink($headers['Link']);
 
         # Link: URI-R
-        $this->assertEquals($URIR, 
+        $this->assertEquals($ORIGINALLATEST,
             $relations['original latest-version']['url'],
 			"'original latest-version' relation does not have the correct value");
 
@@ -275,12 +276,15 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function testTimeNegotiation(
             $ACCEPTDATETIME,
             $URIR,
+			$ORIGINALLATEST,
             $FIRSTMEMENTO,
             $LASTMEMENTO,
+			$PREVPREDECESSOR,
             $NEXTSUCCESSOR,
             $URIM,
 			$URIG,
-			$URIT
+			$URIT,
+			$COMMENT
 			) {
 
         global $DEBUG;
@@ -345,12 +349,15 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function testTimeNegotiationWithoutAcceptDatetime(
             $ACCEPTDATETIME,
             $URIR,
+			$ORIGINALLATEST,
             $FIRSTMEMENTO,
             $LASTMEMENTO,
+			$PREVPREDECESSOR,
             $NEXTSUCCESSOR,
             $URIM,
 			$URIG,
-			$URIT
+			$URIT,
+			$COMMENT
 			) {
 
         global $DEBUG;
@@ -440,7 +447,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 10);
+			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 11);
     }
 
 	public function acquireEditUrls() {

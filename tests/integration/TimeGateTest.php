@@ -29,6 +29,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	public function test302TimeGate(
             $ACCEPTDATETIME,
             $URIR,
+			$ORIGINALLATEST,
             $FIRSTMEMENTO,
             $LASTMEMENTO,
 			$PREVPREDECESSOR,
@@ -47,7 +48,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIG'";
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
 		#echo "running: $curlCmd\n";
 
 		$response = `$curlCmd`;
@@ -76,13 +77,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $varyItems = extractItemsFromVary($headers['Vary']);
 
         # Link: URI-R
-        $this->assertEquals($URIR, 
+        $this->assertEquals($ORIGINALLATEST,
             $relations['original latest-version']['url'],
-			"'original latest-version' relation does not have the correct value");
+			"'original latest-version' relation does not have the correct value\n" .
+			extractHeadersStringFromResponse($response) );
 
         # Link: URI-T
         $this->assertArrayHasKey('timemap', $relations);
-        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link'], "'timemap' relation not present in Link header field");
+        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link'], "'timemap' relation not present in Link header field\n" . extractHeadersStringFromResponse($response) );
         $this->assertEquals($URIT, $relations['timemap']['url'], "'timemap' relation URL not correct");
 
         # Link: Other Relations
@@ -420,7 +422,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeGatesWithAcceptDateTime() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 10);
+			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 11);
 	}
 
 }

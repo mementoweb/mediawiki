@@ -60,7 +60,7 @@ class TimeGateResource extends MementoResource {
 		}
 
 		$pageID = $this->title->getArticleID();
-		$title = $this->title->getPartialURL();
+		$title = $this->title->getDBkey();
 
 		if ( !$this->title->exists() ) {
 
