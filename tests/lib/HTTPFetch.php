@@ -144,8 +144,8 @@ function authenticateWithMediawiki() {
 		$statusline = extractStatuslineFromResponse($response);
 
 		if ($statusline['code'] != "302") {
-			echo 'TESTUSERNAME = [' . $_ENV['TESTUSERNAME'] . "]\n";
-			echo 'TESTPASSWORD = [' . $_ENV['TESTPASSWORD'] . "]\n";
+			echo 'TESTUSERNAME = [' . getenv('TESTUSERNAME') . "]\n";
+			echo 'TESTPASSWORD = [' . getenv('TESTPASSWORD') . "]\n";
 			echo 'wpName = [' . $wpName . "]\n";
 			echo 'wpPassword = [' . $wpPassword . "]\n";
 			trigger_error("Authentication failed, check that the TESTUSERNAME and TESTPASSWORD environment variables are set correctly.", E_USER_ERROR);

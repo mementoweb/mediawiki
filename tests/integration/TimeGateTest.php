@@ -405,22 +405,22 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeGate404Urls() {
 		return acquireLinesFromFile(
-			$_ENV['TESTDATADIR'] . '/timegate-dneurls-testdata.csv');
+			getenv('TESTDATADIR') . '/timegate-dneurls-testdata.csv');
 	}
 
 	public function acquireTimeGate405Urls() {
 		return acquireLinesFromFile(
-			$_ENV['TESTDATADIR'] . '/timegate-goodurls-testdata.csv');
+			getenv('TESTDATADIR') . '/timegate-goodurls-testdata.csv');
 	}
 
 	public function acquireTimeGate200Urls() {
 		return acquireLinesFromFile(
-			$_ENV['TESTDATADIR'] . '/timegate-goodurls-testdata.csv');
+			getenv('TESTDATADIR') . '/timegate-goodurls-testdata.csv');
 	}
 
 	public function acquireTimeGatesWithAcceptDateTime() {
 		return acquireCSVDataFromFile(
-			$_ENV['TESTDATADIR'] . '/full-302-negotiation-testdata.csv', 10);
+			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 10);
 	}
 
 }

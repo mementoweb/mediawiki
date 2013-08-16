@@ -101,7 +101,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         # Link: URI-R
         $this->assertEquals($URIR, 
             $relations['original latest-version']['url'],
-			"'original latest-version' relation does not have the correct value");
+			"'original latest-version' relation does not have the correct value" . extractHeadersStringFromResponse($response) );
 
         # Link: URI-T
         $this->assertArrayHasKey('timemap', $relations);
@@ -440,17 +440,17 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
-			$_ENV['TESTDATADIR'] . '/full-302-negotiation-testdata.csv', 10);
+			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 10);
     }
 
 	public function acquireEditUrls() {
 		return acquireLinesFromFile(
-			$_ENV['TESTDATADIR'] . '/memento-editpage-testdata.csv');
+			getenv('TESTDATADIR') . '/memento-editpage-testdata.csv');
 	}
 
 	public function acquireDiffUrls() {
 		return acquireLinesFromFile(
-			$_ENV['TESTDATADIR'] . '/memento-diffpage-testdata.csv');
+			getenv('TESTDATADIR') . '/memento-diffpage-testdata.csv');
 	}
 
 }
