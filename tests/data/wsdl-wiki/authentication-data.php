@@ -10,8 +10,8 @@ $mwDbName = "mediawiki_1_21_1";
 $mwLoginFormUrl = "https://ws-dl.cs.odu.edu/wiki/index.php?title=Special:UserLogin";
 $mwLoginActionUrl = "https://ws-dl.cs.odu.edu/wiki/index.php?title=Special:UserLogin&action=submitlogin&type=login";
 $mwLogoutActionUrl = "http://ws-dl.cs.odu.edu/wiki/index.php?title=Special:UserLogout";
-$wpName = urlencode($_ENV['TESTUSERNAME']);
-$wpPassword = urlencode($_ENV['TESTPASSWORD']);
+$wpName = urlencode(getenv('TESTUSERNAME'));
+$wpPassword = urlencode(getenv('TESTPASSWORD'));
 $mwDbName = "wikidb";
 
 

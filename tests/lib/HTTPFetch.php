@@ -1,5 +1,6 @@
 <?php
-require_once($_ENV['TESTDATADIR'] . '/authentication-data.php');
+
+require_once(getenv('TESTDATADIR') . '/authentication-data.php');
 
 /* 
  * Given an HTTP $response, extracts the headers into a more easy-to-use
