@@ -1,34 +1,5 @@
 <?php
-require_once('authentication-data.php');
-
-/*
- * Given a $host and a $port, sends the $request and returns
- * a string containing the complete $response.
- *
- * NOTE:  Does not work with HTTP Pipelining!
- */
-function HTTPFetch($host, $port, $request) {
-	echo("[Deprecated function HTTPFetch called]");
-
-    $fp = fsockopen('localhost', $port, $errno, $errstr, 30);
-    
-    if (!$fp) {
-        $this->assertTrue(FALSE);
-    } else {
-    
-        fwrite($fp, $request);
-    
-        $response = "";
-    
-        while (!feof($fp)) {
-             $response .= fgets($fp);
-        }
-    
-        fclose($fp);
-    }
-
-    return $response;
-}
+require_once($_ENV['TESTDATADIR'] . '/authentication-data.php');
 
 /* 
  * Given an HTTP $response, extracts the headers into a more easy-to-use
@@ -140,10 +111,6 @@ function authenticateWithMediawiki() {
 		global $wpRemember;
 		global $wpLoginAttempt;
 		global $wpLoginToken;
-		global $mediawiki_1_21_1UserID;
-		global $mediawiki_1_21_1UserName;
-		global $mediawiki_1_21_1Token;
-		global $mediawiki_1_21_1_session;
 		global $sessionCookieString;
 		global $mwDbName;
 
