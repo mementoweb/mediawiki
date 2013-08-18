@@ -489,6 +489,9 @@ abstract class MementoResource {
 	 * @param $title
 	 */
 	public function constructTimeGateLinkHeader( $scriptUrl, $title ) {
+
+		$title = rawurlencode($title);
+
 		$entry = '<' .
 			wfExpandUrl(
 				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )

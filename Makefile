@@ -21,6 +21,7 @@
 
 # Settings
 BUILDDIR=build
+TESTOUTPUTDIR=${BUILDDIR}/test-output
 
 # the resulting packaged binary
 BINFILE=Memento.zip
@@ -31,6 +32,8 @@ RM=rm
 DEPLOYDIR=${MWDIR}/extensions
 MWCONF=${MWDIR}/LocalSettings.php
 UNZIPCMD=unzip -o -d ${DEPLOYDIR}
+TESTINCLUDEPATH="`pwd`/Memento:`pwd`/tests/lib"
+STARTINGDIR=`pwd`
 
 .PHONY: clean
 .PHONY: unit-test
@@ -50,8 +53,17 @@ ${BUILDDIR}:
 	@echo ""
 	@echo "#########################"
 	@echo "Preparing build directory '${BUILDDIR}'"
-	-mkdir ${BUILDDIR}
+	-mkdir -p "${BUILDDIR}"
 	@echo "Done with preparation"
+	@echo "#########################"
+	@echo ""
+
+# create the test output directory
+${TESTOUTPUTDIR}:
+	@echo ""
+	@echo "#########################"
+	@echo "Preparing test output directory '${TESTOUTPUTDIR}'"
+	-mkdir -p "${TESTOUTPUTDIR}"
 	@echo "#########################"
 	@echo ""
 
@@ -70,6 +82,7 @@ clean:
 	@echo ""
 	@echo "#########################"
 	@echo "Cleaning up"
+	-${RM} -rf ${TESTOUTPUT}
 	-${RM} -rf ${BUILDDIR}
 	@echo "Done cleaning..."
 	@echo "#########################"
@@ -80,7 +93,7 @@ clean:
 unit-test:
 	@echo ""
 	@echo "#########################"
-	phpunit --include-path "Memento:tests/lib" tests/unit
+	phpunit --include-path "${TESTINCLUDEPATH}" tests/unit
 	@echo "#########################"
 	@echo ""
 
@@ -177,42 +190,42 @@ endif
 
 integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test alter-installation-time-negotiation time-negotiation-integration-test undeploy
 
-standard-integration-test: check-integration-env
+standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
-	-phpunit --include-path "Memento:tests/lib:${TESTDATADIR}" --group all tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group all ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
 
 
 # run all of the friendly error integration tests
-friendly-error-integration-test: check-integration-env
+friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	-phpunit --include-path "Memento:tests/lib:${TESTDATADIR}" --group friendlyErrorPages tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages ${STARTINGDIR}/../../tests/integration/TimeGateTest.php
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
 
 # run all of the traditional error integration tests
-traditional-error-integration-test: check-integration-env
+traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
-	-phpunit --include-path "Memento:tests/lib:${TESTDATADIR}" --group traditionalErrorPages tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration/TimeGateTest.php
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
 
 # run all of the tests using 200-style time negotiation
-time-negotiation-integration-test: check-integration-env
+time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running time negotiation integration tests"
-	-phpunit --include-path "Memento:tests/lib:${TESTDATADIR}" --group timeNegotiation tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timeNegotiation ${STARTINGDIR}/../../tests/integration/TimeGateTest.php
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""

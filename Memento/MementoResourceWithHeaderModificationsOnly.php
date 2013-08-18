@@ -29,7 +29,7 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 	 */
 	public function render() {
 
-		$title = $this->title->getPartialURL();
+		$title = $this->title->getDBkey();
 		$pageID = $this->title->getArticleID();
 		$response = $this->out->getRequest()->response();
 		$oldID = $this->article->getOldID();
@@ -81,6 +81,5 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 
 		$response->header( "Link: $linkEntries", true );
 		$response->header( "Memento-Datetime:  $mementoDatetime", true );
-		$response->header( "X-Memento-ID: $mementoInfoID", true );
 	}
 }

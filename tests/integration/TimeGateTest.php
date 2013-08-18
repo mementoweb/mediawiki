@@ -27,6 +27,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeGatesWithAcceptDateTime
 	 */
 	public function test302TimeGate(
+			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
 			$ORIGINALLATEST,
@@ -45,13 +46,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		global $TGDEBUG;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
 		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
 		#echo "running: $curlCmd\n";
 
-		$response = `$curlCmd`;
+		$response = `$curlCmd | tee "$outputfile"`;
 
         if ($TGDEBUG) {
             echo "\n";
@@ -148,7 +150,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'`;
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -210,13 +213,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
 
-		if ($TGDEBUG) {
-			echo "\n";
-			echo $response . "\n";
-			echo "\n";
-		}
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -251,7 +251,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -296,7 +298,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		if ($TGDEBUG) {
 			echo "\n";
@@ -339,7 +343,9 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
+		$curlCmd = "curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -376,7 +382,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-		$response = `curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'`;
+
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
+		$curlCmd = "curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -422,7 +431,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeGatesWithAcceptDateTime() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 11);
+			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 12);
 	}
 
 }

@@ -27,6 +27,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
      * @dataProvider acquire302IntegrationData
      */
     public function testVaryAcceptDateTime302WholeProcess(
+			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
 			$ORIGINALLATEST,
@@ -45,16 +46,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIR'`;
-
-        if ($DEBUG) {
-            echo "\n";
-            echo $response;
-            echo "\n";
-        }
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
+		#echo '[' . $curlCmd . "]\n";
+		$response = `$curlCmd | tee -a "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -74,13 +72,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIG'`;
-
-        if ($DEBUG) {
-            echo "\n";
-            echo $response;
-            echo "\n";
-        }
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
+		$response = `$curlCmd | tee -a "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -153,13 +146,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIM; Accept-DateTime: T -----> URI-M
         # UA <--- 200; Memento-Datetime: T; Link: URI-R, URI-T, URI-G --- URI-M
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIM'`;
-
-        if ($DEBUG) {
-            echo "\n";
-            echo $response;
-            echo "\n";
-        }
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIM\"";
+		$response = `$curlCmd | tee -a "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -245,18 +233,15 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIR'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIR); 
+
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$response = `$curlCmd | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
         $this->assertEquals($statusline["code"], "200");
-
-        if ($DEBUG) {
-            echo "\n";
-            echo $entity;
-            echo "\n";
-        }
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -274,6 +259,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquire302IntegrationData
      */
     public function testTimeNegotiation(
+			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
 			$ORIGINALLATEST,
@@ -293,15 +279,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url '$URIR'`;
-
-        if ($DEBUG) {
-            echo "\n";
-            echo $response;
-            echo "\n";
-        }
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
+		$response = `$curlCmd | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -347,6 +330,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquire302IntegrationData
      */
     public function testTimeNegotiationWithoutAcceptDatetime(
+			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
 			$ORIGINALLATEST,
@@ -366,15 +350,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIR'`;
-
-        if ($DEBUG) {
-            echo "\n";
-            echo $response;
-            echo "\n";
-        }
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$response = `$curlCmd | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -419,14 +400,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-        # UA <--- 200; Link: URI-G ---- URI-R
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIR'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIR); 
 
-        if ($DEBUG) {
-            echo "\n";
-            echo $response;
-            echo "\n";
-        }
+        # UA <--- 200; Link: URI-G ---- URI-R
+		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$response = `$curlCmd | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -447,7 +425,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 11);
+			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 12);
     }
 
 	public function acquireEditUrls() {

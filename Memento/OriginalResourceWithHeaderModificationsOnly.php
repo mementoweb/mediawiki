@@ -31,11 +31,9 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 		$articlePath = $this->conf->get( 'ArticlePath' );
 		$waddress = $this->mwrelurl;
 		$requestURL = $this->out->getRequest()->getRequestURL();
-		$timegateURL =
-			SpecialPage::getTitleFor( 'TimeGate' )->getPrefixedText();
-		$uri = wfExpandUrl( $waddress . '/' . $timegateURL ) .
-			'/' . wfExpandUrl( $requestURL );
+		$title = $this->title->getDBkey();
+		$timeGateLinkEntry = $this->constructTimeGateLinkHeader( $waddress, $title );
 		$response->header(
-			'Link: <' . $uri . '>; rel="timegate"', true );
+			'Link: ' . $timeGateLinkEntry, true );
 	}
 }
