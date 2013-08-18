@@ -527,8 +527,14 @@ abstract class MementoResource {
 	 */
 	public function constructAdditionalLinkHeader( $scriptUrl, $title ) {
 
-		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
-			'>; rel="original latest-version", ';
+		$title = rawurlencode($title);
+
+		$originalURI = wfAppendQuery(
+				wfExpandUrl( $scriptUrl . '/' . $title ),
+				array()
+				);
+
+		$entry = '<' . $originalURI .  '>; rel="original latest-version", ';
 
 		$entry .= '<' .
 			wfExpandUrl(
