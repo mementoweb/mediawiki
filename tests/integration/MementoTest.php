@@ -6,8 +6,6 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
-$DEBUG = false;
-
 class MementoTest extends PHPUnit_Framework_TestCase {
 
 	public static function setUpBeforeClass() {
@@ -41,8 +39,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
-        global $DEBUG;
-
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -53,6 +49,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
 		#echo '[' . $curlCmd . "]\n";
 		$response = `$curlCmd | tee -a "$outputfile"`;
+		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -74,6 +71,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
 		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
 		$response = `$curlCmd | tee -a "$outputfile"`;
+
+		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -148,6 +147,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         # UA <--- 200; Memento-Datetime: T; Link: URI-R, URI-T, URI-G --- URI-M
 		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIM\"";
 		$response = `$curlCmd | tee -a "$outputfile"`;
+
+		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -227,8 +228,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testEditPage($URIR) {
 
-		global $DEBUG;
-
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -272,8 +271,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIT,
 			$COMMENT
 			) {
-
-        global $DEBUG;
 
 		global $sessionCookieString;
 
@@ -344,8 +341,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 			) {
 
-        global $DEBUG;
-
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
@@ -393,8 +388,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireDiffUrls()
 	 */
 	public function testDiffPage($URIR) {
-
-        global $DEBUG;
 
 		global $sessionCookieString;
 
