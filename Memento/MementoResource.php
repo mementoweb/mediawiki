@@ -470,6 +470,9 @@ abstract class MementoResource {
 	 * @param $title
 	 */
 	public function constructTimeMapLinkHeader( $scriptUrl, $title ) {
+
+        $title = rawurlencode($title);
+
 		$entry = '<' .
 			wfExpandUrl(
 				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
@@ -512,6 +515,8 @@ abstract class MementoResource {
 	 */
 	public function constructOriginalLatestVersionLinkHeader(
 		$scriptUrl, $title ) {
+
+        $title = rawurlencode($title);
 
 		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
 			'>; rel="original latest-version"';
