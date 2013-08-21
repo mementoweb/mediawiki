@@ -6,9 +6,9 @@ require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
-$TMDEBUG = false;
-
 class TimeMapTest extends PHPUnit_Framework_TestCase {
+
+	public static $instance = 0;
 
 	public static function setUpBeforeClass() {
 		global $sessionCookieString;
@@ -19,6 +19,10 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 
 		logOutOfMediawiki();
+	}
+
+	protected function setUp() {
+		self::$instance++;
 	}
 
 	/**
@@ -34,13 +38,11 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		if ($TMDEBUG) {
-			echo "\n";
-			echo $response . "\n";
-			echo "\n";
-		}
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -74,13 +76,11 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		if ($TMDEBUG) {
-			echo "\n";
-			echo $response . "\n";
-			echo "\n";
-		}
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -106,36 +106,34 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider acquireTimeMapTestData
 	 */
-	#public function testGetTimeMap(
-	#	$TIMEMAP,
-	#	$EXPECTEDFILE
-	#	) {
+	public function testGetTimeMap(
+		$TIMEMAP,
+		$EXPECTEDFILE
+		) {
 
-	#	global $TMDEBUG;
+		global $TMDEBUG;
 
-	#	global $sessionCookieString;
+		global $sessionCookieString;
 
-	#	$uagent = "Memento-Mediawiki-Plugin/Test";
+		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-	#	$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
-	#	if ($TMDEBUG) {
-	#		echo "\n";
-	#		echo $response . "\n";
-	#		echo "\n";
-	#	}
+		# Note that this test is disabled until we can acquire test data
+		#$expectedOutput = file_get_contents($EXPECTEDFILE);
 
-	#	$expectedOutput = file_get_contents($EXPECTEDFILE);
+		$entity = extractEntityFromResponse($response);
 
-	#	$entity = extractEntityFromResponse($response);
+		# Note that this test is disabled until we can acquire test data
+		#$this->assertEquals($expectedOutput, $entity);
 
-	#	# Note that this test may assume $wgMementoTimemapNumberOfMementos = 3
-	#	$this->assertEquals($expectedOutput, $entity);
-
-	#	# To catch any PHP errors that the test didn't notice
-	#	$this->assertNotContains("Fatal error", $entity);
-	#}
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("Fatal error", $entity);
+	}
 
 
 	public function acquireTimeMapTestData() {

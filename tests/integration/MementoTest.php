@@ -8,6 +8,8 @@ error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 class MementoTest extends PHPUnit_Framework_TestCase {
 
+	public static $instance = 0;
+
 	public static function setUpBeforeClass() {
 		global $sessionCookieString;
 
@@ -17,6 +19,10 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 
 		logOutOfMediawiki();
+	}
+
+	protected function setUp() {
+		self::$instance++;
 	}
 
     /**
@@ -42,14 +48,16 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
 		#echo '[' . $curlCmd . "]\n";
-		$response = `$curlCmd | tee -a "$outputfile"`;
+		$response = `$curlCmd 2> $debugfile | tee -a "$outputfile"`;
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
+		file_put_contents( $debugfile, "\n#########################################\n", FILE_APPEND );
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -69,10 +77,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
-		$response = `$curlCmd | tee -a "$outputfile"`;
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
+		$response = `$curlCmd 2>> $debugfile | tee -a "$outputfile"`;
 
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
+		file_put_contents( $debugfile, "\n#########################################\n", FILE_APPEND );
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -145,10 +154,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIM; Accept-DateTime: T -----> URI-M
         # UA <--- 200; Memento-Datetime: T; Link: URI-R, URI-T, URI-G --- URI-M
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIM\"";
-		$response = `$curlCmd | tee -a "$outputfile"`;
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIM\"";
+		$response = `$curlCmd 2>> $debugfile | tee -a "$outputfile"`;
 
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
+		file_put_contents( $debugfile, "\n#########################################\n", FILE_APPEND );
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -232,10 +242,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIR); 
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -277,11 +288,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
 		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -346,11 +358,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
 		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -393,11 +406,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIR); 
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);

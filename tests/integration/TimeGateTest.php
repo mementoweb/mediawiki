@@ -8,6 +8,8 @@ error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
 class TimeGateTest extends PHPUnit_Framework_TestCase {
 
+	public static $instance = 0;
+
 	public static function setUpBeforeClass() {
 		global $sessionCookieString;
 
@@ -17,6 +19,10 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 
 		logOutOfMediawiki();
+	}
+
+	protected function setUp() {
+		self::$instance++;
 	}
 
 	/**
@@ -43,13 +49,14 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
 		#echo "running: $curlCmd\n";
 
-		$response = `$curlCmd | tee "$outputfile"`;
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
@@ -138,8 +145,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -193,10 +203,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -229,9 +240,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
         $headers = extractHeadersFromResponse($response);
@@ -268,9 +281,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
         $headers = extractHeadersFromResponse($response);
@@ -307,9 +322,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
-		$curlCmd = "curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$curlCmd = "curl -v -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
@@ -347,9 +364,11 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . urlencode($URIG); 
-		$curlCmd = "curl -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
-		$response = `$curlCmd | tee "$outputfile"`;
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$curlCmd = "curl -v -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
