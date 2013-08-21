@@ -61,7 +61,7 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 
 		$mementoArticleText = $oldArticleContent->getWikitextForTransclusion();
 
-		$title = $this->title->getPartialURL();
+		$title = $this->title->getDBkey();
 
 		$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
 

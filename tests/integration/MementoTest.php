@@ -62,7 +62,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $headers = extractHeadersFromResponse($response);
         $statusline = extractStatuslineFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
         $this->assertArrayHasKey('Link', $headers);
 
         $relations = extractItemsFromLink($headers['Link']);
@@ -165,7 +165,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$entity = extractEntityFromResponse($response);
 
         # 200, Memento-Datetime, Link
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
         $this->assertArrayHasKey('Memento-Datetime', $headers);
         $this->assertArrayHasKey('Link', $headers);
 
@@ -251,7 +251,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -299,7 +299,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $statusline = extractStatuslineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"], "200");
 
         $this->assertArrayHasKey('Link', $headers);
 		$this->assertArrayHasKey('Memento-Datetime', $headers);
@@ -314,10 +314,9 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertNotNull($relations['memento first']['datetime']);
         $this->assertNotNull($relations['memento last']['datetime']);
 
-        $this->assertEquals($relations['memento first']['url'], $FIRSTMEMENTO); 
-        $this->assertEquals($relations['memento last']['url'], $LASTMEMENTO);
-		$this->assertEquals($relations['original timegate']['url'],
-			$URIR);
+        $this->assertEquals($FIRSTMEMENTO, $relations['memento first']['url']);
+        $this->assertEquals($LASTMEMENTO, $relations['memento last']['url']);
+		$this->assertEquals($URIR, $relations['original timegate']['url']);
 
         $varyItems = extractItemsFromVary($headers['Vary']);
 
@@ -369,7 +368,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $statusline = extractStatuslineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-        $this->assertEquals($statusline["code"], "200");
+        $this->assertEquals("200", $statusline["code"]);
 
         $this->assertArrayHasKey('Link', $headers);
         $this->assertArrayHasKey('Vary', $headers);
@@ -378,8 +377,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $this->assertArrayHasKey('original timegate', $relations);
 
-		$this->assertEquals($relations['original timegate']['url'],
-			$URIR);
+		$this->assertEquals($URIR, $relations['original timegate']['url']);
 
         $varyItems = extractItemsFromVary($headers['Vary']);
 

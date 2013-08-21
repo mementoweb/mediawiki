@@ -205,7 +205,7 @@ friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages ${STARTINGDIR}/../../tests/integration/TimeGateTest.php
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -215,7 +215,7 @@ traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration/TimeGateTest.php
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -225,7 +225,7 @@ time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running time negotiation integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timeNegotiation ${STARTINGDIR}/../../tests/integration/TimeGateTest.php
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timeNegotiation ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""

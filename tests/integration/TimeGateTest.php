@@ -164,20 +164,19 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $varyItems = extractItemsFromVary($headers['Vary']);
 
         # Link
-        $this->assertArrayHasKey('first memento', $relations);
-        $this->assertArrayHasKey('last memento', $relations);
-        $this->assertArrayHasKey('original latest-version', $relations);
-        $this->assertArrayHasKey('timemap', $relations);
-
-		/*
-        # Link: URI-T
-        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
-        $this->assertEquals($URIT, $relations['timemap']['url']);
-		*/
-
-        # Link: other entries
-        $this->assertNotNull($relations['first memento']['datetime']);
-        $this->assertNotNull($relations['last memento']['datetime']);
+		if ( array_key_exists('first last memento', $relations ) ) {
+			$this->assertArrayHasKey('first last memento', $relations);
+        	$this->assertArrayHasKey('original latest-version', $relations);
+        	$this->assertArrayHasKey('timemap', $relations);
+        	$this->assertNotNull($relations['first last memento']['datetime']);
+		} else {
+        	$this->assertArrayHasKey('first memento', $relations);
+        	$this->assertArrayHasKey('last memento', $relations);
+        	$this->assertArrayHasKey('original latest-version', $relations);
+        	$this->assertArrayHasKey('timemap', $relations);
+        	$this->assertNotNull($relations['first memento']['datetime']);
+        	$this->assertNotNull($relations['last memento']['datetime']);
+		}
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
