@@ -91,9 +91,9 @@ abstract class TimeMapResource extends MementoResource {
 
 		$pageURL = null;
 
-		if (strpos( $urlparam, "http://" ) {
+		if ( strpos( $urlparam, "http://" ) ) {
 			$pattern = "/^.*(http:\/\/.*$)/";
-		} elseif {
+		} elseif ( strpos( $urlparam, "https://" ) ) {
 			$pattern = "/^.*(https:\/\/.*$)/";
 		} else {
 			$pageUrl = null;
