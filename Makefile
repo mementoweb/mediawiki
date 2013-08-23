@@ -21,10 +21,13 @@
 
 # Settings
 BUILDDIR=build
-TESTOUTPUTDIR=${BUILDDIR}/test-output
+TESTOUTPUTDIRNAME=test-output
 
 # the resulting packaged binary
 BINFILE=Memento.zip
+
+# file for storing test output so it can be shared for review
+TESTOUTPUTFILE=Memento-test-output.zip
 
 # commands and variables used for deployment/undeployment
 ZIPCMD=zip -r
@@ -34,6 +37,7 @@ MWCONF=${MWDIR}/LocalSettings.php
 UNZIPCMD=unzip -o -d ${DEPLOYDIR}
 TESTINCLUDEPATH="`pwd`/Memento:`pwd`/tests/lib"
 STARTINGDIR=`pwd`
+TESTOUTPUTDIR=${BUILDDIR}/${TESTOUTPUTDIRNAME}
 
 .PHONY: clean
 .PHONY: unit-test
@@ -232,9 +236,26 @@ time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 
 anonymize-test-output: ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
 	@echo "Anonymizing sensitive data"
 	sed -i '' -e 's/> Cookie:.*/> Cookie: ANONYMIZED/g' ${TESTOUTPUTDIR}/*-debug.txt
 	@echo "Done with anonymization"
+	@echo "#########################"
+	@echo ""
+
+# packaging the output test for external review and analysis
+package-test-output: ${TESTOUTPUTDIR} tests/integration/how-to-read-output.txt tests/integration/integration-test-description.html
+	@echo ""
+	@echo "#########################"
+	@echo "Packaging test output"
+	cp tests/integration/README ${TESTOUTPUTDIR}
+	cp tests/integration/how-to-read-output.txt ${TESTOUTPUTDIR}
+	cp tests/integration/integration-test-description.html ${TESTOUTPUTDIR}
+	cd ${TESTOUTPUTDIR}/..; ${ZIPCMD} ${TESTOUTPUTFILE} ${TESTOUTPUTDIRNAME}
+	@echo "#########################"
+	@echo ""
+	
 
 check-integration-env:
 	echo "Ensuring environment is set up correctly"

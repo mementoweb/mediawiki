@@ -91,7 +91,13 @@ abstract class TimeMapResource extends MementoResource {
 
 		$pageURL = null;
 
-		$pattern = "/^.*(http:\/\/.*$)/";
+		if (strpos( $urlparam, "http://" ) {
+			$pattern = "/^.*(http:\/\/.*$)/";
+		} elseif {
+			$pattern = "/^.*(https:\/\/.*$)/";
+		} else {
+			$pageUrl = null;
+		}
 
 		preg_match( $pattern, $urlparam, $matches );
 
