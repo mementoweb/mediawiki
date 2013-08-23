@@ -216,6 +216,7 @@ traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
 	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration
+
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -229,6 +230,11 @@ time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
+
+anonymize-test-output: ${TESTOUTPUTDIR}
+	@echo "Anonymizing sensitive data"
+	sed -i '' -e 's/> Cookie:.*/> Cookie: ANONYMIZED/g' ${TESTOUTPUTDIR}/*-debug.txt
+	@echo "Done with anonymization"
 
 check-integration-env:
 	echo "Ensuring environment is set up correctly"

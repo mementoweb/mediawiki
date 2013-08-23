@@ -30,7 +30,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	 * 
 	 * @dataProvider acquireTimeGatesWithAcceptDateTime
 	 */
-	public function test302TimeGate(
+	public function test302StyleTimeGate(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
@@ -53,7 +53,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIG\"";
 		#echo "running: $curlCmd\n";
 
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
@@ -148,7 +148,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -162,6 +162,8 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
         $relations = extractItemsFromLink($headers['Link']);
         $varyItems = extractItemsFromVary($headers['Vary']);
+
+        $this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary header");
 
         # Link
 		if ( array_key_exists('first last memento', $relations ) ) {
@@ -205,13 +207,37 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
+        $headers = extractHeadersFromResponse($response);
 
         $this->assertEquals("200", $statusline["code"], "expected 200 status code");
+		
+        $this->assertArrayHasKey('Vary', $headers);
+        $this->assertArrayHasKey('Link', $headers);
+
+        $relations = extractItemsFromLink($headers['Link']);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        $this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary header");
+
+        # Link
+		if ( array_key_exists('first last memento', $relations ) ) {
+			$this->assertArrayHasKey('first last memento', $relations);
+        	$this->assertArrayHasKey('original latest-version', $relations);
+        	$this->assertArrayHasKey('timemap', $relations);
+        	$this->assertNotNull($relations['first last memento']['datetime']);
+		} else {
+        	$this->assertArrayHasKey('first memento', $relations);
+        	$this->assertArrayHasKey('last memento', $relations);
+        	$this->assertArrayHasKey('original latest-version', $relations);
+        	$this->assertArrayHasKey('timemap', $relations);
+        	$this->assertNotNull($relations['first memento']['datetime']);
+        	$this->assertNotNull($relations['last memento']['datetime']);
+		}
 
 		# To catch any PHP errors that the test didn't notice
 		$this->assertNotContains("<b>Fatal error</b>", $entity);
@@ -242,7 +268,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -283,7 +309,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -324,7 +350,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$curlCmd = "curl -v -s -X POST -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -366,7 +392,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -X POST -e '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
+		$curlCmd = "curl -v -s -X POST -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -413,7 +439,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeGatesWithAcceptDateTime() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 12);
+			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 12);
 	}
 
 }

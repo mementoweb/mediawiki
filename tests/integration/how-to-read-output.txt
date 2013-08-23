@@ -1,0 +1,12 @@
+How To Read Test Output Data
+
+The test output data consists of 2 files:
+* [TestClass].[TestName].[identifier].txt - just the header and entity output from the CURL command
+* [TestClass].[TestName]-debug.[identifier].txt - all debug output from the CURL command
+
+The "debug" files contain only headers and SSL information.  HTTP requests are indicated by lines starting with ">" and HTTP replies are indicated by lines starting with "<".
+
+The request HTTP headers have the following fields of interest:
+* User-Agent - set to "Memento-Mediawiki-Plugin/Test" to indicate to the server administrator our purpose for visiting the site
+* Cookie - the session data used for visiting the site which has been anonymized for security purposes
+* X-TestComment - indicates intent for this specific data set

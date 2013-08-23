@@ -41,7 +41,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -68,7 +68,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
      * 
 	 * @dataProvider acquireTimeMap404Urls
 	 */
-	public function testFriendlyErrorTimeMap($TIMEMAP) {
+	public function testFriendly404TimeMap($TIMEMAP) {
 	
 		global $sessionCookieString;
 
@@ -79,7 +79,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -107,8 +107,10 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider acquireTimeMapTestData
 	 */
 	public function testGetTimeMap(
+		$IDENTIFIER,
 		$TIMEMAP,
-		$EXPECTEDFILE
+		$EXPECTEDFILE,
+		$COMMENT
 		) {
 
 		global $TMDEBUG;
@@ -120,7 +122,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
+		$curlCmd = "curl -v -s -A '$uagent' -H \"X-TestComment: $COMMENT\" -b '$sessionCookieString' -k -i --url '$TIMEMAP'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		# Note that this test is disabled until we can acquire test data
@@ -138,7 +140,7 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeMapTestData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/timemap-testdata.csv', 2);
+			getenv('TESTDATADIR') . '/timemap-testdata.csv', 4);
 	}
 
 	public function acquireTimeMap404Urls() {

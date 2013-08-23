@@ -30,7 +30,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 *
      * @dataProvider acquire302IntegrationData
      */
-    public function testVaryAcceptDateTime302WholeProcess(
+    public function test302StyleTimeNegotiationWholeProcess(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
@@ -53,7 +53,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIR\"";
 		#echo '[' . $curlCmd . "]\n";
 		$response = `$curlCmd 2> $debugfile | tee -a "$outputfile"`;
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
@@ -77,7 +77,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIG\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIG\"";
 		$response = `$curlCmd 2>> $debugfile | tee -a "$outputfile"`;
 
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
@@ -154,7 +154,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- GET $URIM; Accept-DateTime: T -----> URI-M
         # UA <--- 200; Memento-Datetime: T; Link: URI-R, URI-T, URI-G --- URI-M
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIM\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIM\"";
 		$response = `$curlCmd 2>> $debugfile | tee -a "$outputfile"`;
 
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
@@ -245,7 +245,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$statusline = extractStatusLineFromResponse($response);
@@ -268,7 +268,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider acquire302IntegrationData
      */
-    public function testTimeNegotiation(
+    public function test200StyleTimeNegotiation(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
@@ -292,7 +292,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
@@ -304,6 +304,9 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey('Link', $headers);
 		$this->assertArrayHasKey('Memento-Datetime', $headers);
         $this->assertArrayHasKey('Vary', $headers);
+		$this->assertArrayHasKey('Content-Location', $headers);
+
+		$this->assertEquals($URIM, $headers['Content-Location']);
 
         $relations = extractItemsFromLink($headers['Link']);
 
@@ -337,7 +340,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider acquire302IntegrationData
      */
-    public function testTimeNegotiationWithoutAcceptDatetime(
+    public function test200StyleTimeNegotiationWithoutAcceptDatetime(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
@@ -361,7 +364,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$curlCmd = "curl -s -A '$uagent' -b '$sessionCookieString' -H \"X-TestComment: $COMMENT\" -k -i --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
@@ -408,7 +411,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -v -s -e '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
@@ -430,7 +433,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquire302IntegrationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/full-302-negotiation-testdata.csv', 12);
+			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 12);
     }
 
 	public function acquireEditUrls() {
