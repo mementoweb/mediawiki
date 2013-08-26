@@ -75,6 +75,8 @@ $wgAutoloadClasses['TimeMapPivotDescendingResource'] =
 	__DIR__ . '/TimeMapPivotDescendingResource.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
+$wgAutoloadClasses['TimeGateAction'] = __DIR__ . '/TimeGateAction.php';
+$wgAutoloadClasses['TimeMapAction'] = __DIR__ . '/TimeMapAction.php';
 
 // Set up the special pages
 $wgSpecialPages['TimeGate'] = 'TimeGate';
@@ -84,6 +86,9 @@ $wgSpecialPages['TimeMap'] = 'TimeMap';
 $wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
 $wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
 $wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
+
+$wgActions['timegate'] = 'TimeGateAction';
+$wgActions['timemap'] = 'TimeMapAction';
 
 /**
  * Main Memento class, used by hooks.
