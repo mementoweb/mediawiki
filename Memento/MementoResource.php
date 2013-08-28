@@ -476,8 +476,7 @@ abstract class MementoResource {
 		$entry = '<' .
 			wfExpandUrl(
 				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
-				) . '/' .
-			wfExpandUrl( $scriptUrl . '/' . $title ) .
+				) . '/' . $title .
 			'>; rel="timemap"; type="application/link-format"';
 
 		return $entry;
@@ -498,8 +497,7 @@ abstract class MementoResource {
 		$entry = '<' .
 			wfExpandUrl(
 				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
-				) . '/' .
-			wfExpandUrl( $scriptUrl . '/' . $title ) .
+				) . '/' .  $title .
 			'>; rel="timegate"';
 
 		return $entry;

@@ -103,7 +103,10 @@ class TimeGateResource extends MementoResource {
 		$linkEntries = $this->constructLinkHeader(
 			$first, $last, $memento, $next, $prev );
 
-		$linkEntries .= $this->constructAdditionalLinkHeader(
+		$linkEntries .= $this->constructOriginalLatestVersionLinkHeader(
+			$this->mwrelurl, $title );
+
+		$linkEntries .= $this->constructTimeMapLinkHeader(
 			$this->mwrelurl, $title );
 
 		$response->header( "Link: $linkEntries", true );

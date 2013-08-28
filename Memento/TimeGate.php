@@ -53,12 +53,14 @@ class TimeGate extends SpecialPage {
 	 *
 	 * This function extracts the Title from the URL
 	 */
+	/*
 	public function getPageTitle( $server, $waddress, $urlparam ) {
 
 		$title = str_replace( $server . $waddress, "", $urlparam );
 
 		return $title;
 	}
+	*/
 
 	/**
 	 * The init function that is called by Mediawiki when loading this
@@ -83,9 +85,9 @@ class TimeGate extends SpecialPage {
 
 			$server = $config->get('Server');
 			$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
-			$title = $this->getPageTitle( $server, $waddress, $urlparam );
-
-			$title = Title::newFromText( $title );
+			#$title = $this->getPageTitle( $server, $waddress, $urlparam );
+			#$title = Title::newFromText( $title );
+			$title = Title::newFromText( $urlparam );
 
 			try {
 				$page = new TimeGateResource(
