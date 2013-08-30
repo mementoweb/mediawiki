@@ -37,12 +37,14 @@ abstract class TimeMapResource extends MementoResource {
 	public function extractTimestampPivot( $urlparam ) {
 		$pivot = null;
 
-		$pattern = "/^([0-9]+)\/.*/";
+		$pattern = "/^([0-9]{14})\/.*/";
 
 		preg_match($pattern, $urlparam, $matches);
 
 		if ( count($matches) == 2 ) {
 			$pivot = $matches[1];
+		} else {
+			$pivot = null;
 		}
 
 		return $pivot;
@@ -81,34 +83,6 @@ abstract class TimeMapResource extends MementoResource {
 	}
 
 	/**
-	 * extractPageURL
-	 *
-	 * Extracts the Page URL from the URL parameter that is passed into the 
-	 * execute function of SpecialPage.
-	 *
-	 */
-	public function extractPageURL( $urlparam ) {
-
-		$pageURL = null;
-
-		if ( strpos( $urlparam, "http://" ) ) {
-			$pattern = "/^.*(http:\/\/.*$)/";
-		} elseif ( strpos( $urlparam, "https://" ) ) {
-			$pattern = "/^.*(https:\/\/.*$)/";
-		} else {
-			$pageUrl = null;
-		}
-
-		preg_match( $pattern, $urlparam, $matches );
-
-		if ( count($matches) == 2 ) {
-			$pageURL = $matches[1];
-		}
-
-		return $pageURL;
-	}
-
-	/**
 	 * generateTimeMapText
 	 *
 	 * Generates Time Map text as per examples in Memento TimeMap RFC
@@ -125,7 +99,7 @@ abstract class TimeMapResource extends MementoResource {
 		$outputArray = array();
 
 		$timegateURL = $this->generateSpecialURL(
-			$pageURL, "TimeGate", $baseURL);
+			$title, "TimeGate", $baseURL);
 
 		$selfURL = $this->generateSpecialURL(
 				$urlparam, "TimeMap", $baseURL);

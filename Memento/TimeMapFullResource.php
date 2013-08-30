@@ -78,7 +78,7 @@ class TimeMapFullResource extends TimeMapResource {
 
 			echo $this->generateTimeMapText(
 				$results, $this->urlparam, $this->mwbaseurl, $title,
-				$this->urlparam
+				$this->title->getFullURL()
 				);
 
 			$response->header("Content-Type: text/plain", true);

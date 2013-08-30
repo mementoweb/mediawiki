@@ -65,6 +65,12 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 
 	/**
 	 * Render the page
+	 * 
+	 * TODO: There is too much duplication here with 
+	 * TimeMapPivotAscendingResource; centralize this functionality into
+	 * a method inside TimeMapResource and pass in an argument for which
+	 * results method to use.
+	 *
 	 */
 	public function render() {
 
@@ -77,6 +83,15 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 
 			$timestamp = $this->extractTimestampPivot( $this->urlparam );
 
+			if (!$timestamp) {
+				// we can't trust what came back, and we don't know the pivot
+				// so the parameter array is empty below
+				throw new MementoResourceException(
+					'timemap-400-date', 'timemap',
+					$this->out, $response, 400,
+					array( '' ) );
+			}
+
 			$formattedTimestamp =
 				$this->formatTimestampForDatabase( $timestamp );
 
@@ -85,7 +100,18 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 				$formattedTimestamp
 				);
 
-			$pageURL = $this->extractPageURL($this->urlparam);
+			// this section is rather redundant when we throw 400 for
+			// the timestamp above, but exists in case some how an invalid
+			// timestamp is extracted
+			if (!$results) {
+				throw new MementoResourceException(
+					'timemap-400-date', 'timemap',
+					$this->out, $response, 400,
+					array( $timestamp )
+				);
+			}
+
+			$pageURL = $this->title->getFullURL();
 
 			echo $this->generateTimeMapText(
 				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL
@@ -102,7 +128,7 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 
 			$title = str_replace(
 				$server . $waddress, "",
-				$this->extractPageURL( $this->urlparam )
+				$this->title->getFullURL()
 				);
 
 			throw new MementoResourceException(
