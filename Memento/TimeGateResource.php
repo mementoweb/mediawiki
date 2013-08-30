@@ -49,16 +49,6 @@ class TimeGateResource extends MementoResource {
 		$response->header( 'Vary: Accept-Datetime', true );
 		$this->out->addVaryHeader( 'Accept-Datetime' );
 
-		$requestMethod = $this->out->getRequest()->getMethod();
-
-		if ( $requestMethod != 'GET' && $requestMethod != 'HEAD'  ) {
-			$response->header( 'Allow: GET, HEAD', true );
-			throw new MementoResourceException(
-				'timegate-405-badmethod', 'timegate',
-				$this->out, $response, 405
-				);
-		}
-
 		$pageID = $this->title->getArticleID();
 		$title = $this->title->getDBkey();
 
