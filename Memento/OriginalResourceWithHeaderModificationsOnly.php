@@ -28,9 +28,7 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 	 */
 	public function render() {
 		$response = $this->out->getRequest()->response();
-		$articlePath = $this->conf->get( 'ArticlePath' );
 		$waddress = $this->mwrelurl;
-		$requestURL = $this->out->getRequest()->getRequestURL();
 		$title = $this->title->getDBkey();
 		$timeGateLinkEntry = $this->constructTimeGateLinkHeader( $waddress, $title );
 		$response->header(
