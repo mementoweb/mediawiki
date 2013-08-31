@@ -1,8 +1,8 @@
 Identifier,URIT,TimeMap File,Comment
-1,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/https://ws-dl.cs.odu.edu/wiki/index.php/Synchronicity,,Normal TimeMap Operation
-2,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/https://ws-dl.cs.odu.edu/wiki/index.php/Randomly_Sampling_URLs,,Page with only 1 Memento
-3,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/https://ws-dl.cs.odu.edu/wiki/index.php/Personal_Information,,Page with underscore
-4,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/https://ws-dl.cs.odu.edu/wiki/index.php/Vivens%3A_Finding_alternative_copies_of_YouTube%27s_missing_videos_in_real_time,,Page with URL Encoding
-5,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/https://ws-dl.cs.odu.edu/wiki/index.php/Vivens:_Finding_alternative_copies_of_YouTube%27s_missing_videos_in_real_time,,Page with URL Encoding with request using colons
-6,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/20110429223300/-1/https://ws-dl.cs.odu.edu/wiki/index.php/Synchronicity,,Paginated TimeMap Pivot Decreasing
-7,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/20110429223300/1/https://ws-dl.cs.odu.edu/wiki/index.php/Synchronicity,,Paginated TimeMap Pivot Increasing
+1,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/Synchronicity,,Normal TimeMap Operation
+2,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/Randomly_Sampling_URLs,,Page with only 1 Memento
+3,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/Personal_Information,,Page with underscore
+4,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/Vivens%3A_Finding_alternative_copies_of_YouTube%27s_missing_videos_in_real_time,,Page with URL Encoding
+5,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/Vivens:_Finding_alternative_copies_of_YouTube%27s_missing_videos_in_real_time,,Page with URL Encoding with request using colons
+6,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/20110429223300/-1/Synchronicity,,Paginated TimeMap Pivot Decreasing
+7,https://ws-dl.cs.odu.edu/wiki/index.php/Special:TimeMap/20110429223300/1/Synchronicity,,Paginated TimeMap Pivot Increasing
