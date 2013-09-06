@@ -10,6 +10,7 @@ require_once('TimeMapFullResource.php');
 class TimeMapPageTest extends PHPUnit_Framework_TestCase {
 
 	public function testgenerateTimeMapText() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -57,6 +58,7 @@ EOT;
 	}
 
 	public function testgenerateTimeMapTextPivotIncreasing() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -106,6 +108,7 @@ EOT;
 	}
 
 	public function testExtractTimestampPivot() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 		
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -123,6 +126,7 @@ EOT;
 	}
 
 	public function testExtractBadTimestampPivot() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 		
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -140,6 +144,7 @@ EOT;
 	}
 
 	public function testFormatTimestampForDatabase() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 		
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -159,6 +164,7 @@ EOT;
 	}
 
 	public function testFormatTimestampForDatabaseBadInput() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 		
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -178,6 +184,7 @@ EOT;
 	}
 
 	public function testExtractPageURL() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
@@ -196,6 +203,7 @@ EOT;
 	}
 
 	public function testExtractPageURLBadInput() {
+		$this->markTestSkipped('This unit test is no longer valid and is under consideration for removal');
 
 		$out = new MockOutputPage();
 		$conf = new MementoConfig();
