@@ -460,6 +460,23 @@ abstract class MementoResource {
 
 	}
 
+	/**
+	 * constructTimeMapLinkHeaderWithBounds
+	 *
+	 * This creates the entry for timemap in the Link Header.
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 */
+	public function constructTimeMapLinkHeaderWithBounds(
+		$scriptUrl, $title, $from, $until ) {
+
+		$entry = $this->constructTimeMapLinkHeader( $scriptUrl, $title );
+
+		$entry .= "; from=\"$from\"; until=\"$until\"";
+
+		return $entry;
+	}
 
 	/**
 	 * constructTimeMapLinkHeader

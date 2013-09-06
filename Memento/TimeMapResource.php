@@ -91,6 +91,9 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param $data - array with entries containing the keys
 	 *					rev_id and rev_timestamp
 	 *
+	 * TODO:  Seeing as all entries here are link relations, convert to use
+	 * 		those functions rather than duplicating the functionality here.
+	 *
 	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(

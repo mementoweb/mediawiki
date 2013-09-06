@@ -32,6 +32,7 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 
 		$timeGateLinkEntry = $this->constructTimeGateLinkHeader(
 			$this->mwrelurl, $title );
+
 		$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
 			$this->mwrelurl, $title );
 

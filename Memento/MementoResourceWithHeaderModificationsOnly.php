@@ -43,6 +43,10 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
+		$linkEntries .=
+			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )
+			. ',';
+
 		if ( $this->conf->get('RecommendedRelations') ) {
 
 			$first = $this->convertRevisionData( $this->mwrelurl,
@@ -63,23 +67,26 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 					$this->dbr, $mementoInfoID, $mementoDatetime ),
 				$title );
 
+			$linkValues .=
+				$this->constructTimeMapLinkHeaderWithBounds(
+					$this->mwrelurl, $title,
+					$first['dt'], $last['dt'] )
+				. ',';
 
 			$linkEntries = $this->constructLinkHeader(
 				$first, $last, $memento, $next, $prev );
 
 		} else  {
+			$linkEntries .=
+				$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
+				. ',';
+
 			$linkEntries = $this->constructMementoLinkHeaderEntry(
 				$this->mwrelurl, $title, $memento['id'], 
 				$memento['dt'], 'memento' );
 		}
 
-		$linkEntries .=
-			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )
-			. ',';
 
-		$linkEntries .=
-			$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
-			. ',';
 
 		$linkEntries .=
 			$this->constructOriginalLatestVersionLinkHeader(
