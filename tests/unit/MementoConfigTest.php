@@ -7,7 +7,7 @@ $wgServer = null;
 $wgMementoExcludeNamespaces = null;
 $wgMementoTimemapNumberOfMementos = null;
 $wgMementoErrorPageType = null;
-$wgMementoPattern = null;
+$wgMementoRecommendedRelations = null;
 
 class ConfigurationTest extends PHPUnit_Framework_TestCase {
 
@@ -18,14 +18,15 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
-		global $wgMementoPattern;
+		global $wgMementoRecommendedRelations;
+
 
 		$this->expectedArticlePath = "/somepath/somewhere/";
 		$this->expectedServer = "http://localhost";
 		$this->expectedExcludeNamespaces = "notsurehere";
 		$this->expectedNumberOfMementos = 20;
 		$this->expectedErrorPageType = "traditional";
-		$this->expectedPattern = "separate";
+		$this->expectedRecommendedRelations = true;
 		
 		$wgArticlePath = $this->expectedArticlePath;
 		$wgServer = $this->expectedServer;
@@ -33,7 +34,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$wgMementoTimemapNumberOfMementos = 
 			$this->expectedNumberOfMementos;
 		$wgMementoErrorPageType = $this->expectedErrorPageType;
-		$wgMementoPattern = $this->expectedPattern;
+		$wgMementoRecommendedRelations = true;
 
 
 	}
@@ -59,7 +60,8 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 			$this->expectedErrorPageType, $config->get('ErrorPageType'));
 
 		$this->assertEquals(
-			$this->expectedPattern, $config->get('Pattern'));
+			$this->expectedRecommendedRelations, $config->get('RecommendedRelations'));
+
 
 	}
 
@@ -73,6 +75,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		unset($GLOBALS['wgMementoExcludeNamespaces']);
 		unset($GLOBALS['wgMementoTimemapNumberOfMementos']);
 		unset($GLOBALS['wgMementoErrorPageType']);
+		unset($GLOBALS['wgMementoRecommendedRelations']);
 
 		$config = new MementoConfig();
 
@@ -86,8 +89,6 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(
 			'friendly', $config->get('ErrorPageType'));
 
-		$this->assertEquals(
-			'separate', $config->get('Pattern'));
 
 	}
 

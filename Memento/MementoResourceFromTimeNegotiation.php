@@ -75,13 +75,19 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 		$linkValues = '<' . $this->out->getRequest()->getFullRequestURL() .
 			'>; rel="original timegate",';
 
-		$linkValues .= $this->constructMementoLinkHeaderEntry(
-			$this->mwrelurl, $title, $first['id'],
-			$first['timestamp'], 'memento first' ) . ',';
+		$linkValues .=
+			$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
+			. ',';
 
-		$linkValues .= $this->constructMementoLinkHeaderEntry(
-			$this->mwrelurl, $title, $last['id'],
-			$last['timestamp'], 'memento last' );
+		if ( $this->conf->get('RecommendedRelations') ) {
+			$linkValues .= $this->constructMementoLinkHeaderEntry(
+				$this->mwrelurl, $title, $first['id'],
+				$first['timestamp'], 'memento first' ) . ',';
+
+			$linkValues .= $this->constructMementoLinkHeaderEntry(
+				$this->mwrelurl, $title, $last['id'],
+				$last['timestamp'], 'memento last' );
+		}
 
 		$this->out->getRequest()->response()->header(
 			"Link: $linkValues", true );

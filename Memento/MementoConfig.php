@@ -52,8 +52,8 @@ class MementoConfig {
 		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
-		global $wgMementoPattern;
 		global $wgMementoTimeNegotiation;
+		global $wgMementoRecommendedRelations;
 
 		$this->settings['ArticlePath'] =
 			$this->setDefault(
@@ -76,13 +76,13 @@ class MementoConfig {
 			$this->setDefault(
 				$wgMementoErrorPageType, 'friendly' );
 
-		$this->settings['Pattern'] =
-			$this->setDefault(
-				$wgMementoPattern, 'separate' );
-
 		$this->settings['Negotiation'] =
 			$this->setDefault(
 				$wgMementoTimeNegotiation, false );
+
+		$this->settings['RecommendedRelations'] =
+			$this->setDefault(
+				$wgMementoRecommendedRelations, true );
 
 	}
 

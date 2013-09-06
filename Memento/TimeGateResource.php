@@ -90,8 +90,14 @@ class TimeGateResource extends MementoResource {
 				$title );
 		}
 
-		$linkEntries = $this->constructLinkHeader(
-			$first, $last, $memento, $next, $prev );
+		if ( $this->conf->get('RecommendedRelations') ) {
+			$linkEntries = $this->constructLinkHeader(
+				$first, $last, $memento, $next, $prev );
+		} else {
+			$linkEntries = $this->constructMementoLinkHeaderEntry(
+				$this->mwrelurl, $title, $memento['id'], 
+				$memento['dt'], 'memento' );
+		}
 
 		$linkEntries .= $this->constructOriginalLatestVersionLinkHeader(
 			$this->mwrelurl, $title );

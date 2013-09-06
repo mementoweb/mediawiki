@@ -38,31 +38,40 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 		$mementoInfoID = $mementoInfo['id'];
 		$mementoDatetime = $mementoInfo['timestamp'];
 
-		$first = $this->convertRevisionData( $this->mwrelurl,
-			$this->getFirstMemento( $this->dbr, $mementoInfoID ),
-			$title );
-
-		$last = $this->convertRevisionData( $this->mwrelurl,
-			$this->getLastMemento( $this->dbr, $mementoInfoID ),
-			$title );
-
 		$memento = $this->convertRevisionData( $this->mwrelurl,
 			$this->getCurrentMemento(
 				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
-		$next = $this->convertRevisionData( $this->mwrelurl,
-			$this->getNextMemento(
-				$this->dbr, $mementoInfoID, $mementoDatetime ),
-			$title );
+		if ( $this->conf->get('RecommendedRelations') ) {
 
-		$prev = $this->convertRevisionData( $this->mwrelurl,
-			$this->getPrevMemento(
-				$this->dbr, $mementoInfoID, $mementoDatetime ),
-			$title );
+			$first = $this->convertRevisionData( $this->mwrelurl,
+				$this->getFirstMemento( $this->dbr, $mementoInfoID ),
+				$title );
+	
+			$last = $this->convertRevisionData( $this->mwrelurl,
+				$this->getLastMemento( $this->dbr, $mementoInfoID ),
+				$title );
+	
+			$next = $this->convertRevisionData( $this->mwrelurl,
+				$this->getNextMemento(
+					$this->dbr, $mementoInfoID, $mementoDatetime ),
+				$title );
+	
+			$prev = $this->convertRevisionData( $this->mwrelurl,
+				$this->getPrevMemento(
+					$this->dbr, $mementoInfoID, $mementoDatetime ),
+				$title );
 
-		$linkEntries = $this->constructLinkHeader(
-			$first, $last, $memento, $next, $prev );
+
+			$linkEntries = $this->constructLinkHeader(
+				$first, $last, $memento, $next, $prev );
+
+		} else  {
+			$linkEntries = $this->constructMementoLinkHeaderEntry(
+				$this->mwrelurl, $title, $memento['id'], 
+				$memento['dt'], 'memento' );
+		}
 
 		$linkEntries .=
 			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )

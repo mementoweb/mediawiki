@@ -438,9 +438,9 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * constructFirstMementoLinkHeader
+	 * constructMementoLinkHeaderEntry
 	 *
-	 * This creates the entry for the first memento in the Link Header.
+	 * This creates the entry for a memento for the Link Header.
 	 *
 	 * @param $scriptUrl
 	 * @param $title
