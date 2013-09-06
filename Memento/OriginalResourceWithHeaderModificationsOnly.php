@@ -28,10 +28,16 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 	 */
 	public function render() {
 		$response = $this->out->getRequest()->response();
-		$waddress = $this->mwrelurl;
 		$title = $this->title->getDBkey();
-		$timeGateLinkEntry = $this->constructTimeGateLinkHeader( $waddress, $title );
+		$timeGateLinkEntry = $this->constructTimeGateLinkHeader(
+			$this->mwrelurl, $title );
+		$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
+			$this->mwrelurl, $title );
+
+		$linkEntries = implode( ',',
+			array( $timeGateLinkEntry, $timeMapLinkEntry ) );
+
 		$response->header(
-			'Link: ' . $timeGateLinkEntry, true );
+			'Link: ' . $linkEntries, true );
 	}
 }

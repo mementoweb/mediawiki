@@ -71,9 +71,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("$URIG", $relations['timegate']['url']);
         
         # Link: URI-G
-        $URIG = $relations['timegate']['url'];
         $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
         $this->assertEquals("$URIG", $relations['timegate']['url']);
+
+		$this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
+		$this->assertEquals("$URIT", $relations['timemap']['url']);
 
         # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
         # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G

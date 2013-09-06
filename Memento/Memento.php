@@ -46,26 +46,28 @@ $wgExtensionCredits['specialpage'][] = array(
 	'version' => '2.0-SNAPSHOT'
 );
 
-//require_once( ( __DIR__ ) . '/MementoUtilities.php');
-
 // Set up the messages file
 $wgExtensionMessagesFiles['Memento'] = ( __DIR__ ) . '/Memento.i18n.php';
 
-// Load the classes into MediaWiki
+// Set up the core classes used by Memento
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
-$wgAutoloadClasses['MementoFactory'] = __DIR__ . '/MementoFactory.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
+
+// Set up the Memento (URI-M) Classes
 $wgAutoloadClasses['MementoResourceFromTimeNegotiation'] =
 	__DIR__ . '/MementoResourceFromTimeNegotiation.php';
+$wgAutoloadClasses['MementoResourceWithHeaderModificationsOnly'] =
+	__DIR__ . '/MementoResourceWithHeaderModificationsOnly.php';
+
+// Set up the Original page (URI-R) Classes
 $wgAutoloadClasses['OriginalResourceWithTimeNegotiation'] =
 	__DIR__ . '/OriginalResourceWithTimeNegotiation.php';
 $wgAutoloadClasses['OriginalResourceWithHeaderModificationsOnly'] =
 	__DIR__ . '/OriginalResourceWithHeaderModificationsOnly.php';
-$wgAutoloadClasses['MementoResourceWithHeaderModificationsOnly'] =
-	__DIR__ . '/MementoResourceWithHeaderModificationsOnly.php';
-$wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
+
+# set up the Time Map (URI-T) classes
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
 $wgAutoloadClasses['TimeMapFullResource'] =
 	__DIR__ . '/TimeMapFullResource.php';
@@ -73,14 +75,15 @@ $wgAutoloadClasses['TimeMapPivotAscendingResource'] =
 	__DIR__ . '/TimeMapPivotAscendingResource.php';
 $wgAutoloadClasses['TimeMapPivotDescendingResource'] =
 	__DIR__ . '/TimeMapPivotDescendingResource.php';
-$wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
-
-// Set up the special pages
-$wgSpecialPages['TimeGate'] = 'TimeGate';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
-// Set up the hooks
+# set up the Time Gate (URI-G) classes
+$wgSpecialPages['TimeGate'] = 'TimeGate';
+$wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
+$wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
+
+// Set up the hooks for this class
 $wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
 $wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
 $wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';

@@ -29,9 +29,18 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 	public function render() {
 		$response = $this->out->getRequest()->response();
 		$requestURL = $this->out->getRequest()->getFullRequestURL();
+		$title = $this->title->getDBkey();
+
+		$timeGateLinkEntry =
+			'Link: <' . $requestURL . '>; rel="original timegate"';
+		$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
+			$this->mwrelurl, $title );
+
+		$linkEntries = implode( ',',
+			array( $timeGateLinkEntry, $timeMapLinkEntry ) );
 
 		$response->header(
-			'Link: <' . $requestURL . '>; rel="original timegate"', true );
+			'Link: ' . $linkEntries, true );
 
 		$this->out->addVaryHeader( 'Accept-Datetime' );
 	}
