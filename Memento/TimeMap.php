@@ -75,7 +75,7 @@ class TimeMap extends SpecialPage {
 	 *
 	 */
 	public function containsPivot($urlparam) {
-		return(
+		return (
 			preg_match( "/$this->pivotURLPattern/", $urlparam ) == 1 );
 	}
 
@@ -127,7 +127,7 @@ class TimeMap extends SpecialPage {
 				$titleMessage = 'timemap';
 				$textMessage = 'timemap-400-date';
 				$response = $this->getOutput()->getRequest()->response();
-	
+
 				throw new MementoResourceException(
 					$textMessage, $titleMessage,
 					$out, $response, 400, array( '' )
@@ -193,7 +193,7 @@ class TimeMap extends SpecialPage {
 					$titleMessage = 'timemap';
 					$textMessage = 'timemap-404-title';
 					$response = $this->getOutput()->getRequest()->response();
-	
+
 					throw new MementoResourceException(
 						$textMessage, $titleMessage,
 						$out, $response, 400, array( "" )

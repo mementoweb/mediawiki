@@ -471,7 +471,7 @@ abstract class MementoResource {
 	 */
 	public function constructTimeMapLinkHeader( $scriptUrl, $title ) {
 
-        $title = rawurlencode($title);
+		$title = rawurlencode($title);
 
 		$entry = '<' .
 			wfExpandUrl(
@@ -514,7 +514,7 @@ abstract class MementoResource {
 	public function constructOriginalLatestVersionLinkHeader(
 		$scriptUrl, $title ) {
 
-        $title = rawurlencode($title);
+		$title = rawurlencode($title);
 
 		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
 			'>; rel="original latest-version"';
