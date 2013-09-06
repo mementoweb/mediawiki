@@ -73,7 +73,7 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 					$first['dt'], $last['dt'] )
 				. ',';
 
-			$linkEntries = $this->constructLinkHeader(
+			$linkEntries .= $this->constructLinkHeader(
 				$first, $last, $memento, $next, $prev );
 
 		} else  {
