@@ -523,36 +523,6 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * constructAdditionalLinkHeader
-	 *
-	 * This creates the entries for timemap and "original latest-version"
-	 * relations, for use in the Link Header.
-	 *
-	 * @param $scriptUrl
-	 * @param $title
-	 */
-	public function constructAdditionalLinkHeader( $scriptUrl, $title ) {
-
-		$title = rawurlencode($title);
-
-		$originalURI = wfAppendQuery(
-				wfExpandUrl( $scriptUrl . '/' . $title ),
-				array()
-				);
-
-		$entry = '<' . $originalURI .  '>; rel="original latest-version", ';
-
-		$entry .= '<' .
-			wfExpandUrl(
-				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
-				) . '/' .
-			wfExpandUrl( $scriptUrl . '/' . $title ) .
-			'>; rel="timemap"; type="application/link-format"';
-
-		return $entry;
-	}
-
-	/**
 	 * convertRevisionData
 	 *
 	 * @param $revision - associative array consisting of id and timestamp keys
