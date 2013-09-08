@@ -511,11 +511,17 @@ abstract class MementoResource {
 
 		$title = rawurlencode($title);
 
-		$entry = '<' .
-			wfExpandUrl(
-				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
-				) . '/' .  $title .
-			'>; rel="timegate"';
+		if ( $this->conf->get( 'Negotiation' ) ) {
+			$entry = '<' .  wfExpandUrl( $scriptUrl . '/' .  $title ) .
+				'>; rel="timegate"';
+
+		} else {
+			$entry = '<' .
+				wfExpandUrl(
+					$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
+					) . '/' .  $title .
+				'>; rel="timegate"';
+		}
 
 		return $entry;
 	}

@@ -81,7 +81,7 @@ class TimeMapFullResource extends TimeMapResource {
 				$this->title->getFullURL()
 				);
 
-			$response->header("Content-Type: text/plain", true);
+			$response->header("Content-Type: application/link-format", true);
 
 			$this->out->disable();
 		} else {

@@ -91,9 +91,6 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param $data - array with entries containing the keys
 	 *					rev_id and rev_timestamp
 	 *
-	 * TODO:  Seeing as all entries here are link relations, convert to use
-	 * 		those functions rather than duplicating the functionality here.
-	 *
 	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(
@@ -101,31 +98,37 @@ abstract class TimeMapResource extends MementoResource {
 
 		$outputArray = array();
 
-		$timegateURL = $this->generateSpecialURL(
-			$title, "TimeGate", $baseURL);
-
-		$selfURL = $this->generateSpecialURL(
-				$urlparam, "TimeMap", $baseURL);
+		$timegateEntry = $this->constructTimeGateLinkHeader(
+			$this->mwrelurl, $title );
 
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
-		array_push($outputArray, "<$pageURL>;rel=\"original latest-version\"");
+		$timemapEntry = $this->constructTimeMapLinkHeaderWithBounds(
+			$this->mwrelurl, $title, $from, $until );
 
-		array_push($outputArray,
-			"<$selfURL>;rel=\"self\";from=\"$from\";until=\"$until\"");
+		$timemapEntry = str_replace( 'rel="timemap";', 'rel="self";', $timemapEntry );
 
-		array_push($outputArray, "<$timegateURL>;rel=\"timegate\"");
+		$originalLatestVersionEntry =
+			$this->constructOriginalLatestVersionLinkHeader(
+				$this->mwrelurl, $title );
+
+		array_push( $outputArray, $originalLatestVersionEntry );
+
+		array_push( $outputArray, $timemapEntry );
+
+		array_push( $outputArray, $timegateEntry );
 
 		$baseURL = rtrim($baseURL, "/");
 
 		for ($i = count($data) - 1; $i >= 0; $i--) {
 			$output = "";
 			$datum = $data[$i];
-			$output .= '<' . $baseURL . "?title=$title";
-			$output .= '&oldid=' . $datum['rev_id'] . '>;';
-			$output .= 'rel="memento";';
-			$output .= 'datetime="' . $datum['rev_timestamp'] . '"';
+
+			$output = $this->constructMementoLinkHeaderEntry(
+				$this->mwrelurl, $title, $datum['rev_id'],
+				$datum['rev_timestamp'], "memento" );
+
 			array_push($outputArray, $output);
 		}
 
