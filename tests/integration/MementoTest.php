@@ -26,11 +26,147 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	}
 
     /**
-	 * @group all
+	 * @group 302-style
 	 *
      * @dataProvider acquire302IntegrationData
      */
     public function test302StyleTimeNegotiationWholeProcess(
+			$IDENTIFIER,
+            $ACCEPTDATETIME,
+            $URIR,
+			$ORIGINALLATEST,
+            $FIRSTMEMENTO,
+            $LASTMEMENTO,
+			$PREVPREDECESSOR,
+            $NEXTSUCCESSOR,
+            $URIM,
+			$URIG,
+			$URIT,
+			$COMMENT
+		) {
+
+		global $sessionCookieString;
+
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
+        # UA <--- 200; Link: URI-G ---- URI-R
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIR\"";
+		#echo '[' . $curlCmd . "]\n";
+		$response = `$curlCmd 2> $debugfile | tee -a "$outputfile"`;
+		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
+		file_put_contents( $debugfile, "\n#########################################\n", FILE_APPEND );
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+
+        $this->assertEquals("200", $statusline["code"]);
+        $this->assertArrayHasKey('Link', $headers);
+
+        $relations = extractItemsFromLink($headers['Link']);
+        $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
+        $this->assertArrayHasKey('timegate', $relations);
+        $this->assertEquals("$URIG", $relations['timegate']['url']);
+        
+        # Link: URI-G
+        $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
+        $this->assertEquals("$URIG", $relations['timegate']['url']);
+
+		$this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
+		$this->assertEquals("$URIT", $relations['timemap']['url']);
+
+        # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
+        # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIG\"";
+		$response = `$curlCmd 2>> $debugfile | tee -a "$outputfile"`;
+
+		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
+		file_put_contents( $debugfile, "\n#########################################\n", FILE_APPEND );
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        # 302, Location, Vary, Link
+        $this->assertEquals($statusline["code"], "302");
+        $this->assertArrayHasKey('Location', $headers);
+        $this->assertArrayHasKey('Vary', $headers);
+        $this->assertArrayHasKey('Link', $headers);
+
+		if ($entity) {
+			$this->fail("302 response should not contain entity for URI $URIG");
+		}
+
+        $relations = extractItemsFromLink($headers['Link']);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        # Link: URI-R
+        $this->assertEquals($ORIGINALLATEST, 
+            $relations['original latest-version']['url'],
+			"'original latest-version' relation does not have the correct value" . extractHeadersStringFromResponse($response) );
+
+        # Link: URI-T
+        $this->assertArrayHasKey('timemap', $relations);
+        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
+        $this->assertEquals("$URIT", $relations['timemap']['url']);
+
+        # Vary: appropriate entries
+        //$this->assertContains('negotiate', $varyItems);
+        $this->assertContains('Accept-Datetime', $varyItems);
+
+        $this->assertEquals($headers['Location'], $URIM);
+
+        # UA --- GET $URIM; Accept-DateTime: T -----> URI-M
+        # UA <--- 200; Memento-Datetime: T; Link: URI-R, URI-T, URI-G --- URI-M
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIM\"";
+		$response = `$curlCmd 2>> $debugfile | tee -a "$outputfile"`;
+
+		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
+		file_put_contents( $debugfile, "\n#########################################\n", FILE_APPEND );
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        # 200, Memento-Datetime, Link
+        $this->assertEquals("200", $statusline["code"]);
+        $this->assertArrayHasKey('Memento-Datetime', $headers);
+        $this->assertArrayHasKey('Link', $headers);
+
+        $relations = extractItemsFromLink($headers['Link']);
+
+        # Link: URI-R
+        $this->assertEquals($ORIGINALLATEST,
+            $relations['original latest-version']['url'],
+			"'original latest-version' relation does not have the correct value");
+
+        # Link: URI-T
+        $this->assertArrayHasKey('timemap', $relations);
+        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link']);
+        $this->assertEquals("$URIT", $relations['timemap']['url']);
+
+        # Link: URI-G
+        $this->assertContains("<$URIG>; rel=\"timegate\"", $headers['Link']);
+        $this->assertEquals("$URIG", $relations['timegate']['url']);
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+    }
+
+    /**
+	 * @group 302-style-recommended-headers
+	 *
+     * @dataProvider acquire302IntegrationData
+     */
+    public function test302StyleTimeNegotiationWholeProcessWithRecommendedHeaders(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
@@ -266,11 +402,76 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group timeNegotiation
+	 * @group 200-style-recommended-headers
 	 *
 	 * @dataProvider acquire302IntegrationData
      */
     public function test200StyleTimeNegotiation(
+			$IDENTIFIER,
+            $ACCEPTDATETIME,
+            $URIR,
+			$ORIGINALLATEST,
+            $FIRSTMEMENTO,
+            $LASTMEMENTO,
+			$PREVPREDECESSOR,
+            $NEXTSUCCESSOR,
+            $URIM,
+			$URIG,
+			$URIT,
+			$COMMENT
+			) {
+
+		global $sessionCookieString;
+
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
+        # UA <--- 200; Link: URI-G ---- URI-R
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIR\"";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals("200", $statusline["code"], "200");
+
+        $this->assertArrayHasKey('Link', $headers);
+		$this->assertArrayHasKey('Memento-Datetime', $headers);
+        $this->assertArrayHasKey('Vary', $headers);
+		$this->assertArrayHasKey('Content-Location', $headers);
+
+		$this->assertEquals($URIM, $headers['Content-Location']);
+
+        $relations = extractItemsFromLink($headers['Link']);
+
+        $this->assertArrayHasKey('original timegate', $relations);
+
+		$this->assertEquals($URIR, $relations['original timegate']['url']);
+
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        $this->assertContains('Accept-Datetime', $varyItems);
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+	}
+
+	/**
+	 * @group 200-style-recommended-headers
+	 *
+	 * @dataProvider acquire302IntegrationData
+     */
+    public function test200StyleTimeNegotiationWithRecommendedHeaders(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
@@ -338,11 +539,72 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group timeNegotiation
+	 * @group 200-style
 	 *
 	 * @dataProvider acquire302IntegrationData
      */
     public function test200StyleTimeNegotiationWithoutAcceptDatetime(
+			$IDENTIFIER,
+            $ACCEPTDATETIME,
+            $URIR,
+			$ORIGINALLATEST,
+            $FIRSTMEMENTO,
+            $LASTMEMENTO,
+			$PREVPREDECESSOR,
+            $NEXTSUCCESSOR,
+            $URIM,
+			$URIG,
+			$URIT,
+			$COMMENT
+			) {
+
+		global $sessionCookieString;
+
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
+        # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
+        # UA <--- 200; Link: URI-G ---- URI-R
+		$curlCmd = "curl -s -A '$uagent' -b '$sessionCookieString' -H \"X-TestComment: $COMMENT\" -k -i --url \"$URIR\"";
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        $this->assertEquals("200", $statusline["code"]);
+
+        $this->assertArrayHasKey('Link', $headers);
+        $this->assertArrayHasKey('Vary', $headers);
+
+        $relations = extractItemsFromLink($headers['Link']);
+
+        $this->assertArrayHasKey('original timegate', $relations);
+
+		$this->assertEquals($URIR, $relations['original timegate']['url']);
+
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        $this->assertContains('Accept-Datetime', $varyItems);
+
+		# To catch any PHP errors that the test didn't notice
+		$this->assertNotContains("<b>Fatal error</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Notice</b>", $entity);
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertNotContains("<b>Warning</b>", $entity);
+	}
+
+	/**
+	 * @group 200-style-recommended-headers
+	 *
+	 * @dataProvider acquire302IntegrationData
+     */
+    public function test200StyleTimeNegotiationWithoutAcceptDatetimeWithRecommendedHeaders(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,

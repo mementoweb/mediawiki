@@ -147,21 +147,30 @@ alter-installation-friendly-errors:
 	@echo "#########################"
 	@echo ""
 
-alter-installation-time-negotiation:
+alter-installation-302-negotiation:
 	@echo ""
 	@echo "#########################"
-	@echo "Setting Time Negotiation"
+	@echo "Setting 302-style Time Negotiation"
+	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
+	echo '$$wgMementoTimeNegotiation = false;' >> ${MWCONF}
+	@echo "#########################"
+	@echo ""
+
+alter-installation-200-negotiation:
+	@echo ""
+	@echo "#########################"
+	@echo "Setting 200-style Time Negotiation"
 	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
 	echo '$$wgMementoTimeNegotiation = true;' >> ${MWCONF}
 	@echo "#########################"
 	@echo ""
 
-alter-installation-no-time-negotiation:
+alter-installation-recommended-headers:
 	@echo ""
 	@echo "#########################"
-	@echo "Setting Time Negotiation"
+	@echo "Setting Recommended Relations"
 	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
-	echo '$$wgMementoTimeNegotiation = false;' >> ${MWCONF}
+	echo '$$wgRecommendedRelations = true;' >> ${MWCONF}
 	@echo "#########################"
 	@echo ""
 
@@ -194,6 +203,7 @@ endif
 
 integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test alter-installation-time-negotiation time-negotiation-integration-test undeploy
 
+# run tests on all non-configurable items
 standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
@@ -203,6 +213,45 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo ""
 
+# run all of the tests using 200-style time negotiation
+200-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
+	@echo "Running 200-style time negotiation integration tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 200-style ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
+# run all of the tests using 302-style time negotiation
+302-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
+	@echo "Running 302-style time negotiation integration tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
+# run all of the tests using 200-style time negotiation and recommended headers
+200-style-time-negotiation-recommended-headers-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
+	@echo "Running 200-style time negotiation integration with recommended headers tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 200-style-recommended-headers ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
+# run all of the tests using 302-style time negotiation and recommended headers
+302-style-time-negotiation-recommended-headers-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
+	@echo "Running 302-style time negotiation integration with recommended headers tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style-recommended-headers ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
 
 # run all of the friendly error integration tests
 friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
@@ -220,20 +269,10 @@ traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
 	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration
-
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
 
-# run all of the tests using 200-style time negotiation
-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
-	@echo ""
-	@echo "#########################"
-	@echo "Running time negotiation integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timeNegotiation ${STARTINGDIR}/../../tests/integration
-	@echo "Done with integration tests"
-	@echo "#########################"
-	@echo ""
 
 anonymize-test-output: ${TESTOUTPUTDIR}
 	@echo ""

@@ -26,11 +26,84 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group all
+	 * @group 302-style
 	 * 
 	 * @dataProvider acquireTimeGatesWithAcceptDateTime
 	 */
 	public function test302StyleTimeGate(
+			$IDENTIFIER,
+            $ACCEPTDATETIME,
+            $URIR,
+			$ORIGINALLATEST,
+            $FIRSTMEMENTO,
+            $LASTMEMENTO,
+			$PREVPREDECESSOR,
+            $NEXTSUCCESSOR,
+            $URIM,
+			$URIG,
+			$URIT,
+			$COMMENT
+		) {
+
+		global $sessionCookieString;
+
+		$uagent = "Memento-Mediawiki-Plugin/Test";
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
+        # UA --- GET $URIG; Accept-DateTime: T ------> URI-G
+        # UA <--- 302; Location: URI-M; Vary; Link: URI-R, URI-T --- URI-G
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIG\"";
+		#echo "running: $curlCmd\n";
+
+		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
+
+        $headers = extractHeadersFromResponse($response);
+        $statusline = extractStatuslineFromResponse($response);
+		$entity = extractEntityFromResponse($response);
+
+        # 302, Location, Vary, Link
+		if ($entity) {
+			$this->fail("302 response should not contain entity for $URIG\n" . $response );
+		}
+        $this->assertEquals("302", $statusline["code"], "Status is not 302");
+
+        $this->assertArrayHasKey('Location', $headers, "Location field not present in headers");
+        $this->assertArrayHasKey('Vary', $headers, "Vary field not present in headers");
+        $this->assertArrayHasKey('Link', $headers, "Link field not present in headers");
+
+        $relations = extractItemsFromLink($headers['Link']);
+        $varyItems = extractItemsFromVary($headers['Vary']);
+
+        # Link: URI-R
+        $this->assertEquals($ORIGINALLATEST,
+            $relations['original latest-version']['url'],
+			"'original latest-version' relation does not have the correct value\n" .
+			extractHeadersStringFromResponse($response) );
+
+        # Link: URI-T
+        $this->assertArrayHasKey('timemap', $relations);
+        $this->assertContains("<$URIT>; rel=\"timemap\"", $headers['Link'], "'timemap' relation not present in Link header field\n" . extractHeadersStringFromResponse($response) );
+        $this->assertEquals($URIT, $relations['timemap']['url'], "'timemap' relation URL not correct");
+
+        $this->assertArrayHasKey('original latest-version', $relations, "'original latest-version' relation not present in Link field");
+        $this->assertArrayHasKey('timemap', $relations, "'timemap' relation not present in Link field");
+
+        # Vary: appropriate entries
+        //$this->assertContains('negotiate', $varyItems);
+        $this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary header");
+
+        $this->assertEquals($URIM,
+			$headers['Location'], 
+			"Location field contains incorrect URL value");
+	}
+
+	/**
+	 * @group 302-style-recommended-headers
+	 * 
+	 * @dataProvider acquireTimeGatesWithAcceptDateTime
+	 */
+	public function test302StyleTimeGateWithRecommendedHeaders(
 			$IDENTIFIER,
             $ACCEPTDATETIME,
             $URIR,
