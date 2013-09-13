@@ -54,6 +54,7 @@ class MementoConfig {
 		global $wgMementoErrorPageType;
 		global $wgMementoTimeNegotiation;
 		global $wgMementoRecommendedRelations;
+		global $wgMementoExcludeNamespaces;
 
 		$this->settings['ArticlePath'] =
 			$this->setDefault(
@@ -78,12 +79,16 @@ class MementoConfig {
 
 		$this->settings['Negotiation'] =
 			$this->setDefault(
-				$wgMementoTimeNegotiation, false );
+				$wgMementoTimeNegotiation, true );
 
 		$this->settings['RecommendedRelations'] =
 			$this->setDefault(
-				$wgMementoRecommendedRelations, true );
+				$wgMementoRecommendedRelations, false );
 
+		$this->settings['ExcludeNamespaces'] =
+			$this->setDefault(
+				$wgMementoExcludeNamespaces, array()
+				);
 	}
 
 	/**

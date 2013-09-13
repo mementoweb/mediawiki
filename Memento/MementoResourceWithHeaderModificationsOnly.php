@@ -52,16 +52,16 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 			$first = $this->convertRevisionData( $this->mwrelurl,
 				$this->getFirstMemento( $this->dbr, $mementoInfoID ),
 				$title );
-	
+
 			$last = $this->convertRevisionData( $this->mwrelurl,
 				$this->getLastMemento( $this->dbr, $mementoInfoID ),
 				$title );
-	
+
 			$next = $this->convertRevisionData( $this->mwrelurl,
 				$this->getNextMemento(
 					$this->dbr, $mementoInfoID, $mementoDatetime ),
 				$title );
-	
+
 			$prev = $this->convertRevisionData( $this->mwrelurl,
 				$this->getPrevMemento(
 					$this->dbr, $mementoInfoID, $mementoDatetime ),
@@ -82,11 +82,9 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 				. ',';
 
 			$linkEntries = $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $memento['id'], 
+				$this->mwrelurl, $title, $memento['id'],
 				$memento['dt'], 'memento' );
 		}
-
-
 
 		$linkEntries .=
 			$this->constructOriginalLatestVersionLinkHeader(

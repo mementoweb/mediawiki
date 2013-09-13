@@ -95,7 +95,7 @@ class TimeGateResource extends MementoResource {
 				$first, $last, $memento, $next, $prev );
 		} else {
 			$linkEntries = $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $memento['id'], 
+				$this->mwrelurl, $title, $memento['id'],
 				$memento['dt'], 'memento' );
 		}
 

@@ -90,7 +90,6 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 				$this->mwrelurl, $title, $last['id'],
 				$last['timestamp'], 'memento last' ) . ',';
 
-
 		} else {
 			$linkValues .=
 				$this->constructTimeMapLinkHeader( $this->mwrelurl, $title );

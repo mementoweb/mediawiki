@@ -78,11 +78,6 @@ $wgAutoloadClasses['TimeMapPivotDescendingResource'] =
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
-# set up the Time Gate (URI-G) classes
-$wgSpecialPages['TimeGate'] = 'TimeGate';
-$wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
-$wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
-
 // Set up the hooks for this class
 $wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
 $wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
@@ -163,6 +158,9 @@ class Memento {
 	 */
 	public static function mediator(&$out, &$skin) {
 
+		global $wgSpecialPages;
+		global $wgAutoloadClasses;
+
 		$status = true;
 
 		// if we're an article, do memento processing, otherwise don't worry
@@ -173,6 +171,15 @@ class Memento {
 				$dbr = wfGetDB( DB_SLAVE );
 				$oldID = self::$article->getOldID();
 				$title = self::$article->getTitle();
+
+				// if we don't have 302-style negotiation, then there is no
+				// need to have TimeGate Special Pages loaded
+				if ( ! $config->get('Negotiation') ) {
+					# set up the Time Gate (URI-G) classes
+					$wgSpecialPages['TimeGate'] = 'TimeGate';
+					$wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
+					$wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
+				}
 
 				try {
 					$page = MementoResource::MementoPageResourceFactory(
