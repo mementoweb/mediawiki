@@ -2,9 +2,9 @@ The idea of the Memento extension is it to make it as straightforward to access 
 
 The Memento framework allows you to see versions of articles as they existed at some date in the past. All you need to do is enter a URL of an article in your browser and specify the desired date in a browser plug-in. This way you can browse the Web of the past. What the Memento extension will present to you is a version of the article as it existed on or very close to the selected date. Obviously, this will only work if previous (archived) versions are available on the Web. Fortunately, MediaWiki is a Content Management System which implies that it maintains all revisions made to an article. This extension leverages this archiving functionality and provides native Memento support for MediaWiki.
 
-For more information about how to install and use this extension, visit:  http://www.mediawiki.org/wiki/Extension:Memento
-
 This package contains the source code, build scripts, and tests for the Memento Mediawiki Extension.
+
+This file also contains installation information, but more comprehensive information is at:  http://www.mediawiki.org/wiki/Extension:Memento
 
 Note: the released version of this extension does not contain this file, so the target audience for this file is those who wish to build/maintain the source code.
 
@@ -13,10 +13,34 @@ Note: the released version of this extension does not contain this file, so the 
 * Makefile - the build script that does all of the magic
 * README - this file
 * TODO - list of items to address in the codebase
-* memento - the source code
+* Memento - the source code
 * tests/integration - the integration tests
 * tests/lib - libraries needed by the tests
 * coding-standards - directory of coding standards shamelessly stolen from Mediawiki
+
+# Installation
+
+To install this package within Mediawiki perform the following:
+* copy the Memento directory into the extensions directory of your Mediawiki installation
+* add the following to the LocalSettings.php file in your Mediawiki installation:
+        require_once("$IP/extensions/Memento/Memento.php");
+        $wgArticlePath = "$wgScriptPath/index.php/$1";
+        $wgUsePathInfo = true;
+
+# Configuration
+
+This extension has sensible defaults, but also allows the following settings to be added to LocalSettings.php in order to alter its behavior:
+* $wgMementoTimemapNumberOfMementos - allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
+* $wgMementoErrorPageType - has two values for the type of error page sent to the client:
+        * 'friendly' - (default) display Mediawiki-style error pages for error conditions along with a 200 OK status code returned to the client
+        * 'traditional' - display bare text error pages for error conditions along with the appropriate 400, 404, etc. status code returned to the client
+* $wgMementoTimeNegotiation - has two values for the type of Memento Time Negotiation performed:
+        * '200' - (default) Time Negotiation is performed in place, replacing the given wiki page with its Memento if an Accept-Datetime header is sent by the client
+        * '302' - Time Negotiation is performed via redirection, enabling a TimeGate SpecialPage that can then perform TimeNegotiation outside of the normal wiki pages
+* $wgMementoRecomendedRelations - is a boolean true/false toggle for the use of RECOMMENDED (but not REQUIRED) Memento link relations from the Memento RFC in the Link header
+        * false - (default) return none of the RECOMMENDED link relations in the Link header to the client
+        * true - return all of the RECOMMENDED link relations (first memento, last memento, from, until, etc.) in the Link header to the client; note that this is computationally expensive and will affect performance on a heavy usage site
+
 
 # Packaging
 
