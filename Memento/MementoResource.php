@@ -511,7 +511,7 @@ abstract class MementoResource {
 
 		$title = rawurlencode($title);
 
-		if ( $this->conf->get( 'Negotiation' ) ) {
+		if ( $this->conf->get( 'Negotiation' ) == "200" ) {
 			$entry = '<' .  wfExpandUrl( $scriptUrl . '/' .  $title ) .
 				'>; rel="timegate"';
 
@@ -718,7 +718,7 @@ abstract class MementoResource {
 
 		if ( $oldID == 0 ) {
 
-			if ( $conf->get('Negotiation') ) {
+			if ( $conf->get('Negotiation') == "200" ) {
 
 				if ( $request->getHeader('ACCEPT-DATETIME') ) {
 					$page = new MementoResourceFromTimeNegotiation(

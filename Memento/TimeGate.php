@@ -59,12 +59,16 @@ class TimeGate extends SpecialPage {
 	function execute( $urlparam ) {
 
 		$config = new MementoConfig();
+		$out = $this->getOutput();
+		
+		echo "stuff = [<br />";
+		print_r($config);
+		echo "]<br />";
 
-		if ( $config->get('Negotiation') === false ) {
+		if ( $config->get('Negotiation') == "200" ) {
 			$out->showErrorPage( 'nosuchspecialpage', 'nosuchspecialpagetext' );
 		} else {
 	
-			$out = $this->getOutput();
 			$this->setHeaders();
 	
 			if ( !$urlparam ) {

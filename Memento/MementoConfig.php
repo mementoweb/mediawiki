@@ -79,7 +79,7 @@ class MementoConfig {
 
 		$this->settings['Negotiation'] =
 			$this->setDefault(
-				$wgMementoTimeNegotiation, true );
+				$wgMementoTimeNegotiation, "200" );
 
 		$this->settings['RecommendedRelations'] =
 			$this->setDefault(
