@@ -213,6 +213,8 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo ""
 
+defaults-integration-test: standard-integration-test 200-style-time-negotiation-integration-test friendly-error-integration-test
+
 # run all of the tests using 200-style time negotiation
 200-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
@@ -263,12 +265,32 @@ friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo ""
 
+# run all of the friendly error integration tests
+friendly-error-with-302-style-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
+	@echo "Running friendly error integration tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages302StyleTimeNegotiation ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
 # run all of the traditional error integration tests
 traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
 	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
+# run all of the friendly error integration tests
+traditional-error-with-302-style-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo ""
+	@echo "#########################"
+	@echo "Running friendly error integration tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages302StyleTimeNegotiation ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""

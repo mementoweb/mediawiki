@@ -208,7 +208,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group traditionalErrorPages
+	 * @group traditionalErrorPages302StyleTimeNegotiation
      * 
 	 * @dataProvider acquireTimeGate200Urls
 	 */
@@ -268,7 +268,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group friendlyErrorPages
+	 * @group friendlyErrorPages302StyleTimeNegotiation
      * 
 	 * @dataProvider acquireTimeGate200Urls
 	 */
@@ -328,7 +328,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group traditionalErrorPages
+	 * @group traditionalErrorPages302StyleTimeNegotiation
      * 
 	 * @dataProvider acquireTimeGate404Urls
 	 */
@@ -369,7 +369,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @group friendlyErrorPages
+	 * @group friendlyErrorPages302StyleTimeNegotiation
      * 
 	 * @dataProvider acquireTimeGate404Urls
 	 */

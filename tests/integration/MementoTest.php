@@ -90,7 +90,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$entity = extractEntityFromResponse($response);
 
         # 302, Location, Vary, Link
-        $this->assertEquals($statusline["code"], "302");
+        $this->assertEquals("302", $statusline["code"]);
         $this->assertArrayHasKey('Location', $headers);
         $this->assertArrayHasKey('Vary', $headers);
         $this->assertArrayHasKey('Link', $headers);
@@ -226,7 +226,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$entity = extractEntityFromResponse($response);
 
         # 302, Location, Vary, Link
-        $this->assertEquals($statusline["code"], "302");
+        $this->assertEquals("302", $statusline["code"]);
         $this->assertArrayHasKey('Location', $headers);
         $this->assertArrayHasKey('Vary', $headers);
         $this->assertArrayHasKey('Link', $headers);

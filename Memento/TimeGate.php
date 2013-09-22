@@ -58,30 +58,36 @@ class TimeGate extends SpecialPage {
 	 */
 	function execute( $urlparam ) {
 
-		$out = $this->getOutput();
-		$this->setHeaders();
+		$config = new MementoConfig();
 
-		if ( !$urlparam ) {
-			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
-			return;
+		if ( $config->get('Negotiation') === false ) {
+			$out->showErrorPage( 'nosuchspecialpage', 'nosuchspecialpagetext' );
 		} else {
-
-			$config = new MementoConfig();
-			$dbr = wfGetDB( DB_SLAVE );
-
-			$server = $config->get('Server');
-			$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
-			$title = Title::newFromText( $urlparam );
-
-			try {
-				$page = new TimeGateResource(
-					$out, $config, $dbr, $title, $urlparam, null );
-				$page->render();
-			} catch (MementoResourceException $e) {
-				MementoResource::renderError(
-					$out, $e, $config->get('ErrorPageType') );
+	
+			$out = $this->getOutput();
+			$this->setHeaders();
+	
+			if ( !$urlparam ) {
+				$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
+				return;
+			} else {
+	
+				$dbr = wfGetDB( DB_SLAVE );
+	
+				$server = $config->get('Server');
+				$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
+				$title = Title::newFromText( $urlparam );
+	
+				try {
+					$page = new TimeGateResource(
+						$out, $config, $dbr, $title, $urlparam, null );
+					$page->render();
+				} catch (MementoResourceException $e) {
+					MementoResource::renderError(
+						$out, $e, $config->get('ErrorPageType') );
+				}
+	
 			}
-
 		}
 
 	}

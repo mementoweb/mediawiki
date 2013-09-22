@@ -43,7 +43,7 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
-		$linkEntries .=
+		$linkEntries =
 			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )
 			. ',';
 
@@ -81,8 +81,8 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 				$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
 				. ',';
 
-			$linkEntries = $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $memento['id'],
+			$linkEntries .= $this->constructMementoLinkHeaderEntry(
+				$this->mwrelurl, $title, $oldID,
 				$memento['dt'], 'memento' );
 		}
 
