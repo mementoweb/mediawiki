@@ -212,7 +212,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
      * 
 	 * @dataProvider acquireTimeGate200Urls
 	 */
-	public function test400TimeGate($URIG) {
+	public function test400TimeGateWithRecommendedHeaders($URIG) {
 
 		global $sessionCookieString;
 
@@ -272,7 +272,7 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
      * 
 	 * @dataProvider acquireTimeGate200Urls
 	 */
-	public function testFriendly400TimeGate($URIG) {
+	public function testFriendly400TimeGateWithRecommendedHeaders($URIG) {
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";

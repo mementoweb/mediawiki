@@ -201,7 +201,7 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-integration-test: deploy-default alter-installation-traditional-errors standard-integration-test traditional-error-integration-test alter-installation-friendly-errors standard-integration-test friendly-error-integration-test alter-installation-time-negotiation time-negotiation-integration-test undeploy
+defaults-integration-test: standard-integration-test 200-style-time-negotiation-integration-test friendly-error-integration-test
 
 # run tests on all non-configurable items
 standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
@@ -212,8 +212,6 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
-
-defaults-integration-test: standard-integration-test 200-style-time-negotiation-integration-test friendly-error-integration-test
 
 # run all of the tests using 200-style time negotiation
 200-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}

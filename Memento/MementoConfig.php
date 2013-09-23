@@ -66,9 +66,6 @@ class MementoConfig {
 		// WebRequest::detectServer()
 		$this->settings['Server'] = $wgServer;
 
-		// this can be null
-		$this->settings['ExcludedNamespaces'] = $wgMementoExcludeNamespaces;
-
 		$this->settings['NumberOfMementos'] =
 			$this->setDefault(
 				$wgMementoTimemapNumberOfMementos, 500 );
