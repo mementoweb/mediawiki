@@ -55,7 +55,7 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 				$this->constructLinkRelationHeader( $timegateuri,
 					'timegate' ) . ',';
 			$linkEntries .=
-				$this->constructLinkRelationHeader( $timegateuri,
+				$this->constructLinkRelationHeader( $originaluri,
 					'original latest-version' ) . ',';
 		}
 

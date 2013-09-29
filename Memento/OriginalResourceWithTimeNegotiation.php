@@ -31,8 +31,11 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 		$requestURL = $this->out->getRequest()->getFullRequestURL();
 		$title = $this->title->getDBkey();
 
+		$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+
 		$timeGateLinkEntry =
-			'<' . $requestURL . '>; rel="original timegate"';
+			$this->constructLinkRelationHeader( $timegateuri,
+				'original latest-version timegate' );
 
 		$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
 			$this->mwrelurl, $title );
