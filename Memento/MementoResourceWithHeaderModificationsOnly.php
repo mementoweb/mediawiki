@@ -83,7 +83,7 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 
 			$linkEntries .= $this->constructMementoLinkHeaderEntry(
 				$this->mwrelurl, $title, $oldID,
-				$memento['dt'], 'memento' );
+				$memento['dt'], 'memento' ) . ',';
 		}
 
 		$linkEntries .=
