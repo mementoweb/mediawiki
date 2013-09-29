@@ -500,6 +500,60 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * getTimeGateURI
+	 *
+	 * This function returns the TimeGate URI based on the current configuration
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 *
+	 */
+	public function getTimeGateURI( $scriptUrl, $title ) {
+		$title = rawurlencode($title);
+
+		if ( $this->conf->get( 'Negotiation' ) == "200" ) {
+			$timegateurl = wfExpandUrl( $scriptUrl . '/' .  $title );
+
+		} else {
+			$timegateurl =	wfExpandUrl(
+					$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
+					) . '/' .  $title;
+		}
+
+		return $timegateurl;
+	}
+
+	/**
+	 * getOriginalURI
+	 *
+	 * This function returns the original URI
+	 *
+	 * @param $scriptUrl
+	 * @param $title
+	 *
+	 */
+	public function getOriginalURI( $scriptUrl, $title ) {
+		$title = rawurlencode($title);
+
+		$originalurl = wfExpandUrl( $scriptUrl . '/' . $title );
+
+		return $originalurl;
+	}
+
+	/**
+	 * constructLinkRelationHeader
+	 *
+	 * This creates a link header entry for the given URI
+	 *
+	 * @param $url
+	 * @param $relation
+	 *
+	 */
+	public function constructLinkRelationHeader( $url, $relation ) {
+		return '<' . $url . '>; rel="' . $relation . '"';
+	}
+
+	/**
 	 * constructTimeGateLinkHeader
 	 *
 	 * This creates the entry for timegate in the Link Header.

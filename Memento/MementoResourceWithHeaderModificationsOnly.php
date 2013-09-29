@@ -43,9 +43,21 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 				$this->dbr, $mementoInfoID, $mementoDatetime ),
 			$title );
 
-		$linkEntries =
-			$this->constructTimeGateLinkHeader( $this->mwrelurl, $title )
-			. ',';
+		$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+		$originaluri = $this->getOriginalURI( $this->mwrelurl, $title );
+
+		if ( $timegateuri == $originaluri ) {
+			$linkEntries =
+				$this->constructLinkRelationHeader( $timegateuri,
+					'original latest-version timegate' ) . ',';
+		} else {
+			$linkEntries = 
+				$this->constructLinkRelationHeader( $timegateuri,
+					'timegate' ) . ',';
+			$linkEntries .=
+				$this->constructLinkRelationHeader( $timegateuri,
+					'original latest-version' ) . ',';
+		}
 
 		if ( $this->conf->get('RecommendedRelations') ) {
 
@@ -83,12 +95,9 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 
 			$linkEntries .= $this->constructMementoLinkHeaderEntry(
 				$this->mwrelurl, $title, $oldID,
-				$memento['dt'], 'memento' ) . ',';
+				$memento['dt'], 'memento' );
 		}
 
-		$linkEntries .=
-			$this->constructOriginalLatestVersionLinkHeader(
-				$this->mwrelurl, $title );
 
 		// convert for display
 		$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoDatetime );
