@@ -34,6 +34,12 @@ function extractItemsFromLink($linkvalues) {
 		$relations['timemap']['url'] = $matches[1][0];
 	}
 
+	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version timegate"/', $linkvalues, $matches);
+
+	if ( count($matches[0]) > 0 ) {
+		$relations['original latest-version timegate']['url'] = $matches[1][0];
+	}
+
 	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version"/', $linkvalues, $matches);
 
 	if ( count($matches[0]) > 0 ) {

@@ -567,7 +567,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -s -A '$uagent' -b '$sessionCookieString' -H \"X-TestComment: $COMMENT\" -k -i --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -H \"X-TestComment: $COMMENT\" -k -i --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
@@ -581,9 +581,10 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $relations = extractItemsFromLink($headers['Link']);
 
-        $this->assertArrayHasKey('original timegate', $relations);
+        $this->assertArrayHasKey('original latest-version timegate', $relations);
 
-		$this->assertEquals($URIR, $relations['original timegate']['url']);
+		$this->assertEquals($ORIGINALLATEST,
+			$relations['original latest-version timegate']['url']);
 
         $varyItems = extractItemsFromVary($headers['Vary']);
 
@@ -628,7 +629,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         # UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
         # UA <--- 200; Link: URI-G ---- URI-R
-		$curlCmd = "curl -s -A '$uagent' -b '$sessionCookieString' -H \"X-TestComment: $COMMENT\" -k -i --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -H \"X-TestComment: $COMMENT\" -k -i --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
         $headers = extractHeadersFromResponse($response);
