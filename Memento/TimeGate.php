@@ -62,7 +62,7 @@ class TimeGate extends SpecialPage {
 		$out = $this->getOutput();
 
 		if ( $config->get('Negotiation') == "200" ) {
-			$out->showErrorPage( 'nosuchspecialpage', 'nosuchspecialpagetext' );
+			$out->showErrorPage( 'nosuchspecialpage', 'nospecialpagetext' );
 		} else {
 	
 			$this->setHeaders();
