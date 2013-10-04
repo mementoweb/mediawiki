@@ -57,7 +57,12 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 		$this->out->setRevisionId($memento['id']);
 
 		$oldArticle = new Article( $title = $this->title, $oldid = $id );
-		$oldArticleContent = $oldArticle->getRevisionFetched()->getContent();
+		$oldrev = $oldArticle->getRevisionFetched();
+
+		// so we have the "Revision as of" text at the top of the page
+		$this->article->setOldSubtitle($id);
+
+		$oldArticleContent = $oldrev->getContent();
 
 		$mementoArticleText = $oldArticleContent->getWikitextForTransclusion();
 
