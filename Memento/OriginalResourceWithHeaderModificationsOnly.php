@@ -33,22 +33,22 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 		echo "OriginalResourceWithHeaderModificationsOnly<br />";
 
 		// if we exclude this Namespace, don't show folks Memento relations
-		if ( in_array( $this->title->getNamespace(), 
+		if ( in_array( $this->title->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
- 
+
 			$linkEntries =
 				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 		} else {
 
 			$timeGateLinkEntry = $this->constructTimeGateLinkHeader(
 				$this->mwrelurl, $title );
-	
+
 			$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
 				$this->mwrelurl, $title );
-	
+
 			$linkEntries = implode( ',',
 				array( $timeGateLinkEntry, $timeMapLinkEntry ) );
-	
+
 		}
 
 		$response->header( 'Link: ' . $linkEntries, true );

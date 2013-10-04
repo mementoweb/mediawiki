@@ -200,7 +200,7 @@ class TimeMap extends SpecialPage {
 					);
 				}
 
-				if ( in_array( $title->getNamespace(), 
+				if ( in_array( $title->getNamespace(),
 					$config->get('ExcludeNamespaces') ) ) {
 					$titleMessage = 'timemap';
 					$textMessage = 'timemap-403-inaccessible';

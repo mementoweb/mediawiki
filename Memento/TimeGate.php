@@ -64,22 +64,22 @@ class TimeGate extends SpecialPage {
 		if ( $config->get('Negotiation') == "200" ) {
 			$out->showErrorPage( 'nosuchspecialpage', 'nospecialpagetext' );
 		} else {
-	
+
 			$this->setHeaders();
-	
+
 			if ( !$urlparam ) {
 				$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 				return;
 			} else {
-	
+
 				$dbr = wfGetDB( DB_SLAVE );
-	
+
 				$server = $config->get('Server');
 				$waddress = str_replace( '$1', '', $config->get('ArticlePath') );
 				$title = Title::newFromText( $urlparam );
-	
+
 				try {
-					if ( in_array( $title->getNamespace(), 
+					if ( in_array( $title->getNamespace(),
 						$config->get('ExcludeNamespaces') ) ) {
 						$titleMessage = 'timegate';
 						$textMessage = 'timegate-403-inaccessible';
@@ -98,7 +98,7 @@ class TimeGate extends SpecialPage {
 					MementoResource::renderError(
 						$out, $e, $config->get('ErrorPageType') );
 				}
-	
+
 			}
 		}
 

@@ -554,7 +554,7 @@ abstract class MementoResource {
 		if ( $namespace ) {
 			$title = "$namespace:$title";
 		}
-	
+
 		return $title;
 	}
 

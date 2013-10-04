@@ -32,7 +32,7 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 		$title = $this->getFullNamespacePageTitle();
 
 		// if we exclude this Namespace, don't show folks the Memento relations
-		if ( in_array( $this->title->getNamespace(), 
+		if ( in_array( $this->title->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$linkEntries =
@@ -40,18 +40,17 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 		} else {
 
 			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
-	
+
 			$timeGateLinkEntry =
 				$this->constructLinkRelationHeader( $timegateuri,
 					'original latest-version timegate' );
-	
+
 			$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
 				$this->mwrelurl, $title );
-	
+
 			$linkEntries = implode( ',',
 				array( $timeGateLinkEntry, $timeMapLinkEntry ) );
-	
-	
+
 			$this->out->addVaryHeader( 'Accept-Datetime' );
 		}
 
