@@ -34,81 +34,93 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 	 */
 	public function render() {
 
-		$requestDatetime = $this->out->getRequest()->getHeader(
-			'ACCEPT-DATETIME');
+		// if we exclude this Namespace, don't show folks the Memento relations
+		// or conduct Time Negotiation
+		if ( in_array( $this->title->getNamespace(), 
+			$this->conf->get('ExcludeNamespaces') ) ) {
 
-		$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
-
-		$pageID = $this->title->getArticleID();
-
-		$first = $this->getFirstMemento( $this->dbr, $pageID );
-
-		$last = $this->getLastMemento( $this->dbr, $pageID );
-
-		$mwMementoTimestamp = $this->chooseBestTimestamp(
-			$first['timestamp'], $last['timestamp'], $mwMementoTimestamp );
-
-		$memento = $this->getCurrentMemento(
-				$this->dbr, $pageID, $mwMementoTimestamp );
-
-		$id = $memento['id'];
-
-		// so that they get a warning if they try to edit the page
-		$this->out->setRevisionId($memento['id']);
-
-		$oldArticle = new Article( $title = $this->title, $oldid = $id );
-		$oldrev = $oldArticle->getRevisionFetched();
-
-		// so we have the "Revision as of" text at the top of the page
-		$this->article->setOldSubtitle($id);
-
-		$oldArticleContent = $oldrev->getContent();
-
-		$mementoArticleText = $oldArticleContent->getWikitextForTransclusion();
-
-		$title = $this->title->getDBkey();
-
-		$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
-
-		$this->out->clearHTML();
-		$this->out->addWikiText($mementoArticleText);
-
-		# the following headers comply with Pattern 1.2 of the Memento RFC
-		$this->out->getRequest()->response()->header(
-			"Content-Location: $url", true );
-
-		$linkValues = '<' . $this->out->getRequest()->getFullRequestURL() .
-			'>; rel="original timegate",';
-
-		if ( $this->conf->get('RecommendedRelations') ) {
-			$linkValues .=
-				$this->constructTimeMapLinkHeaderWithBounds(
-					$this->mwrelurl, $title,
-					$first['timestamp'], $last['timestamp'] )
-				. ',';
-
-			$linkValues .= $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $first['id'],
-				$first['timestamp'], 'memento first' ) . ',';
-
-			$linkValues .= $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $last['id'],
-				$last['timestamp'], 'memento last' ) . ',';
-
+			$linkEntries =
+				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 		} else {
-			$linkValues .=
-				$this->constructTimeMapLinkHeader( $this->mwrelurl, $title );
+			$requestDatetime = $this->out->getRequest()->getHeader(
+				'ACCEPT-DATETIME');
+	
+			$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
+	
+			$pageID = $this->title->getArticleID();
+	
+			$first = $this->getFirstMemento( $this->dbr, $pageID );
+	
+			$last = $this->getLastMemento( $this->dbr, $pageID );
+	
+			$mwMementoTimestamp = $this->chooseBestTimestamp(
+				$first['timestamp'], $last['timestamp'], $mwMementoTimestamp );
+	
+			$memento = $this->getCurrentMemento(
+					$this->dbr, $pageID, $mwMementoTimestamp );
+	
+			$id = $memento['id'];
+	
+			// so that they get a warning if they try to edit the page
+			$this->out->setRevisionId($memento['id']);
+	
+			$oldArticle = new Article( $title = $this->title, $oldid = $id );
+			$oldrev = $oldArticle->getRevisionFetched();
+	
+			// so we have the "Revision as of" text at the top of the page
+			$this->article->setOldSubtitle($id);
+	
+			$oldArticleContent = $oldrev->getContent();
+	
+			$mementoArticleText = $oldArticleContent->getWikitextForTransclusion();
+	
+			$title = $this->getFullNamespacePageTitle();
+	
+			$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
+	
+			$this->out->clearHTML();
+			$this->out->addWikiText($mementoArticleText);
+	
+			# the following headers comply with Pattern 1.2 of the Memento RFC
+			$this->out->getRequest()->response()->header(
+				"Content-Location: $url", true );
+	
+			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+	
+			$linkEntries =
+				$this->constructLinkRelationHeader( $timegateuri,
+					'original latest-version timegate' ) . ',';
+	
+			if ( $this->conf->get('RecommendedRelations') ) {
+				$linkEntries .=
+					$this->constructTimeMapLinkHeaderWithBounds(
+						$this->mwrelurl, $title,
+						$first['timestamp'], $last['timestamp'] )
+					. ',';
+	
+				$linkEntries .= $this->constructMementoLinkHeaderEntry(
+					$this->mwrelurl, $title, $first['id'],
+					$first['timestamp'], 'memento first' ) . ',';
+	
+				$linkEntries .= $this->constructMementoLinkHeaderEntry(
+					$this->mwrelurl, $title, $last['id'],
+					$last['timestamp'], 'memento last' ) . ',';
+	
+			} else {
+				$linkEntries .=
+					$this->constructTimeMapLinkHeader( $this->mwrelurl, $title );
+			}
+	
+	
+			$mwMementoTimestamp = wfTimestamp( TS_RFC2822, $mwMementoTimestamp );
+	
+			$this->out->getRequest()->response()->header(
+				"Memento-Datetime: $mwMementoTimestamp", true );
+	
+			$this->out->addVaryHeader( 'Accept-Datetime' );
 		}
 
 		$this->out->getRequest()->response()->header(
-			"Link: $linkValues", true );
-
-		$mwMementoTimestamp = wfTimestamp( TS_RFC2822, $mwMementoTimestamp );
-
-		$this->out->getRequest()->response()->header(
-			"Memento-Datetime: $mwMementoTimestamp", true );
-
-		$this->out->addVaryHeader( 'Accept-Datetime' );
-
+				"Link: $linkEntries", true );
 	}
 }

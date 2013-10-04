@@ -29,80 +29,90 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 	 */
 	public function render() {
 
-		$title = $this->title->getDBkey();
-		$pageID = $this->title->getArticleID();
 		$response = $this->out->getRequest()->response();
-		$oldID = $this->article->getOldID();
 
-		$mementoInfo = $this->getInfoForThisMemento( $this->dbr, $oldID );
-		$mementoInfoID = $mementoInfo['id'];
-		$mementoDatetime = $mementoInfo['timestamp'];
+		// if we exclude this Namespace, don't show folks Memento relations
+		if ( in_array( $this->title->getNamespace(), 
+			$this->conf->get('ExcludeNamespaces') ) ) {
 
-		$memento = $this->convertRevisionData( $this->mwrelurl,
-			$this->getCurrentMemento(
-				$this->dbr, $mementoInfoID, $mementoDatetime ),
-			$title );
-
-		$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
-		$originaluri = $this->getOriginalURI( $this->mwrelurl, $title );
-
-		if ( $timegateuri == $originaluri ) {
 			$linkEntries =
-				$this->constructLinkRelationHeader( $timegateuri,
-					'original latest-version timegate' ) . ',';
+				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 		} else {
-			$linkEntries = 
-				$this->constructLinkRelationHeader( $timegateuri,
-					'timegate' ) . ',';
-			$linkEntries .=
-				$this->constructLinkRelationHeader( $originaluri,
-					'original latest-version' ) . ',';
-		}
-
-		if ( $this->conf->get('RecommendedRelations') ) {
-
-			$first = $this->convertRevisionData( $this->mwrelurl,
-				$this->getFirstMemento( $this->dbr, $mementoInfoID ),
-				$title );
-
-			$last = $this->convertRevisionData( $this->mwrelurl,
-				$this->getLastMemento( $this->dbr, $mementoInfoID ),
-				$title );
-
-			$next = $this->convertRevisionData( $this->mwrelurl,
-				$this->getNextMemento(
+			$title = $this->getFullNamespacePageTitle();
+			$pageID = $this->title->getArticleID();
+			$oldID = $this->article->getOldID();
+	
+			$mementoInfo = $this->getInfoForThisMemento( $this->dbr, $oldID );
+			$mementoInfoID = $mementoInfo['id'];
+			$mementoDatetime = $mementoInfo['timestamp'];
+	
+			$memento = $this->convertRevisionData( $this->mwrelurl,
+				$this->getCurrentMemento(
 					$this->dbr, $mementoInfoID, $mementoDatetime ),
 				$title );
-
-			$prev = $this->convertRevisionData( $this->mwrelurl,
-				$this->getPrevMemento(
-					$this->dbr, $mementoInfoID, $mementoDatetime ),
-				$title );
-
-			$linkEntries .=
-				$this->constructTimeMapLinkHeaderWithBounds(
-					$this->mwrelurl, $title,
-					$first['dt'], $last['dt'] )
-				. ',';
-
-			$linkEntries .= $this->constructLinkHeader(
-				$first, $last, $memento, $next, $prev );
-
-		} else  {
-			$linkEntries .=
-				$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
-				. ',';
-
-			$linkEntries .= $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $oldID,
-				$memento['dt'], 'memento' );
+	
+			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+			$originaluri = $this->getOriginalURI( $this->mwrelurl, $title );
+	
+			if ( $timegateuri == $originaluri ) {
+				$linkEntries =
+					$this->constructLinkRelationHeader( $timegateuri,
+						'original latest-version timegate' ) . ',';
+			} else {
+				$linkEntries = 
+					$this->constructLinkRelationHeader( $timegateuri,
+						'timegate' ) . ',';
+				$linkEntries .=
+					$this->constructLinkRelationHeader( $originaluri,
+						'original latest-version' ) . ',';
+			}
+	
+			if ( $this->conf->get('RecommendedRelations') ) {
+	
+				$first = $this->convertRevisionData( $this->mwrelurl,
+					$this->getFirstMemento( $this->dbr, $mementoInfoID ),
+					$title );
+	
+				$last = $this->convertRevisionData( $this->mwrelurl,
+					$this->getLastMemento( $this->dbr, $mementoInfoID ),
+					$title );
+	
+				$next = $this->convertRevisionData( $this->mwrelurl,
+					$this->getNextMemento(
+						$this->dbr, $mementoInfoID, $mementoDatetime ),
+					$title );
+	
+				$prev = $this->convertRevisionData( $this->mwrelurl,
+					$this->getPrevMemento(
+						$this->dbr, $mementoInfoID, $mementoDatetime ),
+					$title );
+	
+				$linkEntries .=
+					$this->constructTimeMapLinkHeaderWithBounds(
+						$this->mwrelurl, $title,
+						$first['dt'], $last['dt'] )
+					. ',';
+	
+				$linkEntries .= $this->constructLinkHeader(
+					$first, $last, $memento, $next, $prev );
+	
+			} else  {
+				$linkEntries .=
+					$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
+					. ',';
+	
+				$linkEntries .= $this->constructMementoLinkHeaderEntry(
+					$this->mwrelurl, $title, $oldID,
+					$memento['dt'], 'memento' );
+			}
+	
+	
+			// convert for display
+			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoDatetime );
+	
+			$response->header( "Memento-Datetime:  $mementoDatetime", true );
 		}
-
-
-		// convert for display
-		$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoDatetime );
 
 		$response->header( "Link: $linkEntries", true );
-		$response->header( "Memento-Datetime:  $mementoDatetime", true );
 	}
 }

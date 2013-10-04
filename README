@@ -45,6 +45,7 @@ This extension has sensible defaults, but also allows the following settings to 
         * false - (default) return none of the RECOMMENDED link relations in the Link header to the client
         * true - return all of the RECOMMENDED link relations (first memento, last memento, from, until, etc.) in the Link header to the client; note that this is computationally expensive and will affect performance on a heavy usage site
 
+* $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs to excluded from Mementofication (default is an empty array); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
 # Packaging
 

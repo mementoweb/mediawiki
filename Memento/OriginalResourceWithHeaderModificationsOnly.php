@@ -28,18 +28,29 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 	 */
 	public function render() {
 		$response = $this->out->getRequest()->response();
-		$title = $this->title->getDBkey();
+		$title = $this->getFullNamespacePageTitle();
 
-		$timeGateLinkEntry = $this->constructTimeGateLinkHeader(
-			$this->mwrelurl, $title );
+		echo "OriginalResourceWithHeaderModificationsOnly<br />";
 
-		$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
-			$this->mwrelurl, $title );
+		// if we exclude this Namespace, don't show folks Memento relations
+		if ( in_array( $this->title->getNamespace(), 
+			$this->conf->get('ExcludeNamespaces') ) ) {
+ 
+			$linkEntries =
+				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+		} else {
 
-		$linkEntries = implode( ',',
-			array( $timeGateLinkEntry, $timeMapLinkEntry ) );
+			$timeGateLinkEntry = $this->constructTimeGateLinkHeader(
+				$this->mwrelurl, $title );
+	
+			$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
+				$this->mwrelurl, $title );
+	
+			$linkEntries = implode( ',',
+				array( $timeGateLinkEntry, $timeMapLinkEntry ) );
+	
+		}
 
-		$response->header(
-			'Link: ' . $linkEntries, true );
+		$response->header( 'Link: ' . $linkEntries, true );
 	}
 }

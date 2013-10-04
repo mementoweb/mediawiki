@@ -201,7 +201,7 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * getInforForThisMemento
+	 * getInfoForThisMemento
 	 *
 	 * Get information for the given oldID.
 	 *
@@ -541,6 +541,24 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * getFullNamespacePageTitle
+	 * 
+	 * This function returns the namespace:title string from the URI
+	 * corresponding to this resource.
+	 *
+	 */
+	public function getFullNamespacePageTitle( ) {
+		$title = $this->title->getDBkey();
+		$namespace = $this->title->getNsText();
+
+		if ( $namespace ) {
+			$title = "$namespace:$title";
+		}
+	
+		return $title;
+	}
+
+	/**
 	 * constructLinkRelationHeader
 	 *
 	 * This creates a link header entry for the given URI
@@ -775,18 +793,32 @@ abstract class MementoResource {
 			if ( $conf->get('Negotiation') == "200" ) {
 
 				if ( $request->getHeader('ACCEPT-DATETIME') ) {
+					/* we are requesting a Memento, but via 200-style
+						Time Negotiation */
 					$page = new MementoResourceFromTimeNegotiation(
 						$out, $conf, $dbr, $title, null, $article );
 				} else {
+					/* we are requesting the original resource, but
+						want to supply 200-style Time Negotiation Link
+						header relations */
 					$page = new OriginalResourceWithTimeNegotiation(
 						$out, $conf, $dbr, $title, null, $article );
 				}
 
 			} else {
+				/* we are requesting the original resource, but
+					want to supply 302-style Time Negotiation Link
+					header relations */
 				$page = new OriginalResourceWithHeaderModificationsOnly(
 					$out, $conf, $dbr, $title, null, $article );
 			}
 		} else {
+			/* we are requesting a Memento directly (an oldID URI)
+				this class makes calls to other functions that
+				operate differently based on 200 vs. 302-style */
+			/* TODO: decide if we should redo this strategy pattern
+				because the strategy breaks down if this guy (or a callee)
+				makes his own decisions based on 200 vs. 302 */
 			$page = new MementoResourceWithHeaderModificationsOnly(
 				$out, $conf, $dbr, $title, null, $article );
 		}

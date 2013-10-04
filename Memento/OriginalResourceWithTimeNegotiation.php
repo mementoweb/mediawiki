@@ -29,23 +29,32 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 	public function render() {
 		$response = $this->out->getRequest()->response();
 		$requestURL = $this->out->getRequest()->getFullRequestURL();
-		$title = $this->title->getDBkey();
+		$title = $this->getFullNamespacePageTitle();
 
-		$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+		// if we exclude this Namespace, don't show folks the Memento relations
+		if ( in_array( $this->title->getNamespace(), 
+			$this->conf->get('ExcludeNamespaces') ) ) {
 
-		$timeGateLinkEntry =
-			$this->constructLinkRelationHeader( $timegateuri,
-				'original latest-version timegate' );
+			$linkEntries =
+				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+		} else {
 
-		$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
-			$this->mwrelurl, $title );
+			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+	
+			$timeGateLinkEntry =
+				$this->constructLinkRelationHeader( $timegateuri,
+					'original latest-version timegate' );
+	
+			$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
+				$this->mwrelurl, $title );
+	
+			$linkEntries = implode( ',',
+				array( $timeGateLinkEntry, $timeMapLinkEntry ) );
+	
+	
+			$this->out->addVaryHeader( 'Accept-Datetime' );
+		}
 
-		$linkEntries = implode( ',',
-			array( $timeGateLinkEntry, $timeMapLinkEntry ) );
-
-		$response->header(
-			'Link: ' . $linkEntries, true );
-
-		$this->out->addVaryHeader( 'Accept-Datetime' );
+		$response->header( 'Link: ' . $linkEntries, true );
 	}
 }
