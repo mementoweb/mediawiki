@@ -200,6 +200,18 @@ class TimeMap extends SpecialPage {
 					);
 				}
 
+				if ( in_array( $title->getNamespace(), 
+					$config->get('ExcludeNamespaces') ) ) {
+					$titleMessage = 'timemap';
+					$textMessage = 'timemap-403-inaccessible';
+					$response = $this->getOutput()->getRequest()->response();
+
+					throw new MementoResourceException(
+						$textMessage, $titleMessage,
+						$out, $response, 403, array( $urlparam )
+					);
+				}
+
 				$page = $this->timeMapFactory(
 					$out, $config, $dbr, $urlparam, $title );
 				$page->render();

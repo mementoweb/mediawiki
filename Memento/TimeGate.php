@@ -79,6 +79,18 @@ class TimeGate extends SpecialPage {
 				$title = Title::newFromText( $urlparam );
 	
 				try {
+					if ( in_array( $title->getNamespace(), 
+						$config->get('ExcludeNamespaces') ) ) {
+						$titleMessage = 'timegate';
+						$textMessage = 'timegate-403-inaccessible';
+						$response = $this->getOutput()->getRequest()->response();
+
+						throw new MementoResourceException(
+							$textMessage, $titleMessage,
+							$out, $response, 403, array( $urlparam )
+						);
+					}
+
 					$page = new TimeGateResource(
 						$out, $config, $dbr, $title, $urlparam, null );
 					$page->render();
