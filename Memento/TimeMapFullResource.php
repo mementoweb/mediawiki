@@ -72,13 +72,60 @@ class TimeMapFullResource extends TimeMapResource {
 
 		if ( $pg_id > 0 ) {
 
+			# get the first revision ID
+			$firstId = $this->title->getFirstRevision()->getId();
+			
+			# get the last revision ID
+			$lastId = $this->title->getLatestRevID();
+
+			# calculate the difference
+			# this counts the revisions BETWEEN, non-inclusive
+			$revCount = $this->title->countRevisionsBetween($firstId, $lastId);
+			$revCount = $revCount + 2; # for first and last
+
+			# if it is greater than limit then get the revision ID prior to the
+			#	lowest one returned by getFullTimeMapData
 			$results = $this->getFullTimeMapData(
 				$pg_id, $this->conf->get('NumberOfMementos')
 				);
 
+			# paginate if we have more than NumberOfMementos Mementos
+			$timeMapPages = array();
+
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+				$earliestItem = end($results);
+				reset($results);
+
+				$pivotTimestamp =
+					$this->formatTimestampForDatabase(
+						$earliestItem['rev_timestamp'] );
+
+				$paginatedResults = $this->getDescendingTimeMapData(
+					$pg_id, $this->conf->get('NumberOfMementos'),
+					$pivotTimestamp
+					);
+
+				$timeMapPage = array();
+
+				$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
+				$earliestItem = end($paginatedResults);
+				reset($paginatedResults);
+				$timeMapPage['from'] = $earliestItem['rev_timestamp'];	
+
+				$timeMapPage['uri'] = $this->mwbaseurl . '/' 
+					. SpecialPage::getTitleFor('TimeMap') . '/'
+					. $pivotTimestamp . '/-1/' . $title;
+
+				array_push( $timeMapPages, $timeMapPage );
+
+			}
+
+			# use that revision ID + limit revisions to calculate the from and
+			# 	until for the next timemap
+
 			echo $this->generateTimeMapText(
 				$results, $this->urlparam, $this->mwbaseurl, $title,
-				$this->title->getFullURL()
+				$this->title->getFullURL(), $timeMapPages
 				);
 
 			$response->header("Content-Type: application/link-format", true);

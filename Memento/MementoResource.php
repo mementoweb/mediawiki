@@ -371,24 +371,6 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * generateSpecialURL
-	 *
-	 * @param $urlparam - url from the SpecialPage call
-	 * @param $middletext - Special:SpecialPage part of URL
-	 * @param $baseURL - the base URL for the Mediawiki installation
-	 */
-	public function generateSpecialURL($urlparam, $middletext, $baseURL) {
-
-		if ( $baseURL[strlen($baseURL) - 1] == '/' ) {
-			$baseURL = substr($baseURL, 0, strlen($baseURL) - 1);
-		}
-
-		$specialPageText = SpecialPage::getTitleFor($middletext);
-
-		return implode('/', array($baseURL, $specialPageText, $urlparam));
-	}
-
-	/**
 	 * parseRequestDateTime
 	 *
 	 * @param $requestDateTime

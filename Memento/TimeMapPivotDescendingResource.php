@@ -25,45 +25,6 @@
 class TimeMapPivotDescendingResource extends TimeMapResource {
 
 	/**
-	 * getFullTimeMapData
-	 *
-	 * Extract the full time map data from the database.
-	 *
-	 * @param $pg_id - identifier of the requested page
-	 * @param $limit - the greatest number of results
-	 *
-	 */
-	public function getDescendingTimeMapData($pg_id, $limit, $timestamp) {
-
-		$data = array();
-
-		$results = $this->dbr->select(
-			'revision',
-			array( 'rev_id', 'rev_timestamp'),
-			array(
-				'rev_page' => $pg_id,
-				'rev_timestamp<' . $this->dbr->addQuotes( $timestamp )
-				),
-			__METHOD__,
-			array(
-				'ORDER BY' => 'rev_timestamp DESC',
-				'LIMIT' => $limit
-				)
-			);
-
-		while($result = $results->fetchRow()) {
-			$datum = array();
-			$datum['rev_id'] = $result['rev_id'];
-			$datum['rev_timestamp'] = wfTimestamp(
-				TS_RFC2822, $result['rev_timestamp']
-				);
-			$data[] = $datum;
-		}
-
-		return $data;
-	}
-
-	/**
 	 * Render the page
 	 * 
 	 * TODO: There is too much duplication here with 
