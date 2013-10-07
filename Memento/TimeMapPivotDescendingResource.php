@@ -72,11 +72,41 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 				);
 			}
 
+			$earliestItem = end($results);
+			reset($results);
+
+			$firstId = $this->title->getFirstRevision()->getId();
+
+			echo "earliest is $earliestItem[rev_id]\n";
+			echo "firstId is $firstId\n";
+
+			# this counts revisions BETWEEN, non-inclusive
+			$revCount = $this->title->countRevisionsBetween(
+				$firstId, $earliestItem['rev_id'] );
+
+			echo "revCount = $revCount\n";
+
+			$revCount = $revCount + 2; # for first and last
+
+			$timeMapPages = array();
+
+			echo "revCount is $revCount\n";
+
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+
+				$pivotTimestamp = $this->formatTimestampForDatabase(
+					$earliestItem['rev_timestamp'] );
+	
+				$this->generateDescendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
+
 			$pageURL = $this->title->getFullURL();
 
 			echo $this->generateTimeMapText(
-				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL
-				);
+				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL,
+				$timeMapPages );
 
 			$response->header("Content-Type: text/plain", true);
 

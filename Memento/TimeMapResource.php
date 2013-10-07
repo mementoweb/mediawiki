@@ -110,6 +110,43 @@ abstract class TimeMapResource extends MementoResource {
 		return $data;
 	}
 
+	/**
+	 * generateDescendingTimeMapPaginationData
+	 *
+	 * @param $pg_id - the ID of the page, not the oldid
+	 * @param $pivotTimestamp - the pivotTimestamp in TS_MW format
+	 * @param $timeMapPages - array passed by reference to hold TimeMap pages
+	 * @param $title - the title of the page
+	 *
+	 * @return $timeMapPages - same array that was passed by reference
+	 *			and altered, but now contains an entry that is an array with
+	 *			keys of uri, from, and until representing the next Time Map,
+	 *			its starting time and ending time
+	 *
+	 */
+	 public function generateDescendingTimeMapPaginationData(
+	 	$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
+
+		$paginatedResults = $this->getDescendingTimeMapData(
+			$pg_id, $this->conf->get('NumberOfMementos'),
+			$pivotTimestamp
+			);
+		
+		$timeMapPage = array();
+		
+		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
+		$earliestItem = end($paginatedResults);
+		reset($paginatedResults);
+		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );	
+		
+		$timeMapPage['uri'] = $this->mwbaseurl . '/' 
+			. SpecialPage::getTitleFor('TimeMap') . '/'
+			. $pivotTimestamp . '/-1/' . $title;
+		
+		array_push( $timeMapPages, $timeMapPage );
+
+		return $timeMapPages;
+	}
 
 	/**
 	 * extractTimestampPivot
@@ -210,9 +247,12 @@ abstract class TimeMapResource extends MementoResource {
 		array_push( $outputArray, $timemapEntry );
 
 		foreach ( $pagedTimeMapEntries as &$pagedTimeMap ) {
+
+			# TODO: make this a function
 			$pagedTimemapEntry = '<' . $pagedTimeMap['uri'] .
-				'>; rel="timemap"; from="' . $pagedTimeMap['from'] . '"; ' .
-				'until="' . $pagedTimeMap['until'] . '",';
+				'>; rel="timemap"; type="application/link-format";' .
+				'from="' . $pagedTimeMap['from'] . '"; ' .
+				'until="' . $pagedTimeMap['until'] . '"';
 				
 			array_push( $outputArray, $pagedTimemapEntry );	
 		}

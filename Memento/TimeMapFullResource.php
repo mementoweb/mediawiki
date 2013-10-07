@@ -72,6 +72,10 @@ class TimeMapFullResource extends TimeMapResource {
 
 		if ( $pg_id > 0 ) {
 
+			$results = $this->getFullTimeMapData(
+				$pg_id, $this->conf->get('NumberOfMementos')
+				);
+
 			# get the first revision ID
 			$firstId = $this->title->getFirstRevision()->getId();
 			
@@ -85,9 +89,6 @@ class TimeMapFullResource extends TimeMapResource {
 
 			# if it is greater than limit then get the revision ID prior to the
 			#	lowest one returned by getFullTimeMapData
-			$results = $this->getFullTimeMapData(
-				$pg_id, $this->conf->get('NumberOfMementos')
-				);
 
 			# paginate if we have more than NumberOfMementos Mementos
 			$timeMapPages = array();
@@ -100,23 +101,9 @@ class TimeMapFullResource extends TimeMapResource {
 					$this->formatTimestampForDatabase(
 						$earliestItem['rev_timestamp'] );
 
-				$paginatedResults = $this->getDescendingTimeMapData(
-					$pg_id, $this->conf->get('NumberOfMementos'),
-					$pivotTimestamp
-					);
-
-				$timeMapPage = array();
-
-				$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
-				$earliestItem = end($paginatedResults);
-				reset($paginatedResults);
-				$timeMapPage['from'] = $earliestItem['rev_timestamp'];	
-
-				$timeMapPage['uri'] = $this->mwbaseurl . '/' 
-					. SpecialPage::getTitleFor('TimeMap') . '/'
-					. $pivotTimestamp . '/-1/' . $title;
-
-				array_push( $timeMapPages, $timeMapPage );
+				# this function operates on $timeMapPages in place
+				$this->generateDescendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
 
 			}
 
