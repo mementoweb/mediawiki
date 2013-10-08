@@ -111,6 +111,44 @@ abstract class TimeMapResource extends MementoResource {
 	}
 
 	/**
+	 * generateAscendingTimeMapPaginationData
+	 *
+	 * @param $pg_id - the ID of the page, not the oldid
+	 * @param $pivotTimestamp - the pivotTimestamp in TS_MW format
+	 * @param $timeMapPages - array passed by reference to hold TimeMap pages
+	 * @param $title - the title of the page
+	 *
+	 * @return $timeMapPages - same array that was passed by reference
+	 *			and altered, but now contains an entry that is an array with
+	 *			keys of uri, from, and until representing the next Time Map,
+	 *			its starting time and ending time
+	 *
+	 */
+	 public function generateAscendingTimeMapPaginationData(
+	 	$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
+
+		$paginatedResults = $this->getAscendingTimeMapData(
+			$pg_id, $this->conf->get('NumberOfMementos'),
+			$pivotTimestamp
+			);
+		
+		$timeMapPage = array();
+		
+		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
+		$earliestItem = end($paginatedResults);
+		reset($paginatedResults);
+		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );	
+		
+		$timeMapPage['uri'] = $this->mwbaseurl . '/' 
+			. SpecialPage::getTitleFor('TimeMap') . '/'
+			. $pivotTimestamp . '/1/' . $title;
+		
+		array_push( $timeMapPages, $timeMapPage );
+
+		return $timeMapPages;
+	}
+
+	/**
 	 * generateDescendingTimeMapPaginationData
 	 *
 	 * @param $pg_id - the ID of the page, not the oldid
@@ -211,10 +249,9 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param $data - array with entries containing the keys
 	 *					rev_id and rev_timestamp
-	 * @param $urlparam - unused (delete)
-	 * @param $baseURL - the base URI for the site
+	 * @param $urlparam - used to construct self TimeMap URI
+	 * @param $baseURL - used to construct self TimeMap URI
 	 * @param $title - the page name that the TimeMap is for
-	 * @param $pageURL - unused (delete)
 	 * @param $pagedTimeMapEntries - array of arrays, each entry containing
 	 *			the keys 'uri', 'from', and 'until' referring to the URI of
 	 *			the TimeMap and its from and until dates
@@ -222,8 +259,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(
-		$data, $urlparam, $baseURL, $title, $pageURL,
-		$pagedTimeMapEntries = array() ) {
+		$data, $urlparam, $baseURL, $title, $pagedTimeMapEntries = array() ) {
 
 		$outputArray = array();
 
@@ -233,10 +269,10 @@ abstract class TimeMapResource extends MementoResource {
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
-		$timemapEntry = $this->constructTimeMapLinkHeaderWithBounds(
-			$this->mwrelurl, $title, $from, $until );
-
-		$timemapEntry = str_replace( 'rel="timemap";', 'rel="self";', $timemapEntry );
+		$timemapEntry = '<' . $baseURL . '/' . 
+			SpecialPage::getTitleFor( 'TimeMap' ) . '/' .  $urlparam . 
+			'>; rel="self"; type="application/link-format"; ' .
+			'from="' . $from . '; until="' . $until . '"';
 
 		$originalLatestVersionEntry =
 			$this->constructOriginalLatestVersionLinkHeader(

@@ -28,11 +28,6 @@ class TimeMapPivotAscendingResource extends TimeMapResource {
 	/**
 	 * Render the page
 	 *
-	 * TODO: There is too much duplication here with 
-	 * TimeMapPivotDescendingResource; centralize this functionality into
-	 * a method inside TimeMapResource and pass in an argument for which
-	 * results method to use.
-	 *
 	 */
 	public function render() {
 
@@ -73,13 +68,52 @@ class TimeMapPivotAscendingResource extends TimeMapResource {
 				);
 			}
 
-			$pageURL = $this->title->getFullURL();
+			$latestItem = $results[0];
+			$earliestItem = end($results);
+			reset($results);
+
+			$firstId = $this->title->getFirstRevision()->getId();
+			$lastId = $this->title->getLatestRevId();
+
+			# this counts revisions BETWEEN, non-inclusive
+			$revCount = $this->title->countRevisionsBetween(
+				$firstId, $earliestItem['rev_id'] );
+			$revCount = $revCount + 2; # for first and last
+
+			$timeMapPages = array();
+
+			# if $revCount is higher, then we've gone over the limit
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+
+				$pivotTimestamp = $this->formatTimestampForDatabase(
+					$earliestItem['rev_timestamp'] );
+	
+				$this->generateDescendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
+
+			# this counts revisions BETWEEN, non-inclusive
+			$revCount = $this->title->countRevisionsBetween(
+				$latestItem['rev_id'], $lastId );
+			$revCount = $revCount + 2; # for first and last
+
+			# if $revCount is higher, then we've gone over the limit
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+
+				$pivotTimestamp = $this->formatTimestampForDatabase(
+					$latestItem['rev_timestamp'] );
+
+				$this->generateAscendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
 
 			echo $this->generateTimeMapText(
-				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL
-				);
+				$results, $this->urlparam, $this->mwbaseurl, $title,
+				$timeMapPages );
 
-			$response->header("Content-Type: text/plain", true);
+			$response->header("Content-Type: application/link-format", true);
 
 			$this->out->disable();
 		} else {

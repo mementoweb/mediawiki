@@ -27,11 +27,6 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 	/**
 	 * Render the page
 	 * 
-	 * TODO: There is too much duplication here with 
-	 * TimeMapPivotAscendingResource; centralize this functionality into
-	 * a method inside TimeMapResource and pass in an argument for which
-	 * results method to use.
-	 *
 	 */
 	public function render() {
 
@@ -72,26 +67,21 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 				);
 			}
 
+			$latestItem = $results[0];
 			$earliestItem = end($results);
 			reset($results);
 
 			$firstId = $this->title->getFirstRevision()->getId();
-
-			echo "earliest is $earliestItem[rev_id]\n";
-			echo "firstId is $firstId\n";
+			$lastId = $this->title->getLatestRevId();
 
 			# this counts revisions BETWEEN, non-inclusive
 			$revCount = $this->title->countRevisionsBetween(
 				$firstId, $earliestItem['rev_id'] );
-
-			echo "revCount = $revCount\n";
-
 			$revCount = $revCount + 2; # for first and last
 
 			$timeMapPages = array();
 
-			echo "revCount is $revCount\n";
-
+			# if $revCount is higher, then we've gone over the limit
 			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
 
 				$pivotTimestamp = $this->formatTimestampForDatabase(
@@ -102,13 +92,27 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 
 			}
 
-			$pageURL = $this->title->getFullURL();
+			# this counts revisions BETWEEN, non-inclusive
+			$revCount = $this->title->countRevisionsBetween(
+				$latestItem['rev_id'], $lastId );
+			$revCount = $revCount + 2; # for first and last
+
+			# if $revCount is higher, then we've gone over the limit
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+
+				$pivotTimestamp = $this->formatTimestampForDatabase(
+					$latestItem['rev_timestamp'] );
+
+				$this->generateAscendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
 
 			echo $this->generateTimeMapText(
-				$results, $this->urlparam, $this->mwbaseurl, $title, $pageURL,
+				$results, $this->urlparam, $this->mwbaseurl, $title,
 				$timeMapPages );
 
-			$response->header("Content-Type: text/plain", true);
+			$response->header("Content-Type: application/link-format", true);
 
 			$this->out->disable();
 		} else {

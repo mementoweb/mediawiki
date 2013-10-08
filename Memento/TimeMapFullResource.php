@@ -112,7 +112,7 @@ class TimeMapFullResource extends TimeMapResource {
 
 			echo $this->generateTimeMapText(
 				$results, $this->urlparam, $this->mwbaseurl, $title,
-				$this->title->getFullURL(), $timeMapPages
+				$timeMapPages
 				);
 
 			$response->header("Content-Type: application/link-format", true);
