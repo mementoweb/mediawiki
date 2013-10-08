@@ -76,6 +76,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param $pg_id - identifier of the requested page
 	 * @param $limit - the greatest number of results
+	 * @param $timestamp - the timestamp to query for
 	 *
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
@@ -93,18 +94,36 @@ abstract class TimeMapResource extends MementoResource {
 				),
 			__METHOD__,
 			array(
-				'ORDER BY' => 'rev_timestamp DESC',
+				'ORDER BY' => 'rev_timestamp ASC',
 				'LIMIT' => $limit
 				)
 			);
 
-		while($result = $results->fetchRow()) {
-			$datum = array();
-			$datum['rev_id'] = $result['rev_id'];
-			$datum['rev_timestamp'] = wfTimestamp(
-				TS_RFC2822, $result['rev_timestamp']
-				);
-			$data[] = $datum;
+		# I couldn't figure out how to make the select function do 
+		# the following:
+		# SELECT rev_id, rev_timestamp FROM (SELECT  rev_id,rev_timestamp
+		# FROM `revision`  WHERE rev_page = '2' AND
+		# (rev_timestamp>'20120101010100')  ORDER BY rev_timestamp
+		# ASC LIMIT 3 ) as tempsorter ORDER BY rev_timestamp DESC;
+		# so the following code performs the sort in PHP
+
+		$interim = array();
+
+		while ($result = $results->fetchRow()) {
+			$interim[$result['rev_timestamp']] = $result['rev_id'];	
+		}
+
+		if ( krsort($interim) )  {
+
+			foreach ($interim as $timestamp => $id ) {
+				$datum = array();
+				$datum['rev_id'] = $id; 
+				$datum['rev_timestamp'] = wfTimestamp(
+					TS_RFC2822, $timestamp
+					);
+				$data[] = $datum;
+			}
+
 		}
 
 		return $data;
