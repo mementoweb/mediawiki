@@ -808,6 +808,128 @@ abstract class MementoResource {
 		return $page;
 	}
 
+	/*
+	 * statelessFetchTemplate
+	 *
+	 * This code ensures that the version of the Template that was in existence
+	 * at the same time as the Memento gets loaded and displayed with the
+	 * Memento.
+	 *
+	 * Note to future developers:
+	 * This function steals code from version 1.21.1 of Mediawiki and adds
+	 * functionality to it, largely because the Memento code must be inserted
+	 * INSIDE the existing code.
+	 *
+	 * @param $title - Title object of the page
+	 * @param $parser - Parser object of the page
+	 * 
+	 * @return array containing the text, finalTitle, and deps
+	 */
+	static function statelessFetchTemplate( $title, $parser = false ) {
+		$text = $skip = false;
+		$finalTitle = $title;
+		$deps = array();
+
+		# Loop to fetch the article, with up to 1 redirect
+		for ( $i = 0; $i < 2 && is_object( $title ); $i++ ) {
+			# Give extensions a chance to select the revision instead
+			$id = false; # Assume current
+
+			# querying the db to get the rev_id for the template. 
+			foreach($_SERVER as $key => $value) {
+				//checking for the occurance of the accept datetime header.
+				if( strcasecmp($key, 'HTTP_ACCEPT_DATETIME') == 0 ) {
+					$req_dt = $_SERVER["$key"]; 
+					$dt = strtotime($_SERVER["$key"]);
+					$dt = date( 'YmdHis', $dt );
+					$pg_id = $title->getArticleID();
+					
+					$dbr = wfGetDB( DB_SLAVE );
+					$dbr->begin();
+					
+					$tbl_rev = $dbr->tableName( 'revision' );
+					$res = $dbr->query( "SELECT DISTINCTROW rev_id FROM $tbl_rev 
+								WHERE rev_page = $pg_id 
+								AND rev_timestamp <= $dt 
+								ORDER BY rev_id DESC 
+								LIMIT 0,1" 
+								);
+					if( $res ) {
+					    $row = $dbr->fetchObject( $res );
+					    $id = $row->rev_id;
+					}
+				}
+			}
+
+			wfRunHooks( 'BeforeParserFetchTemplateAndtitle',
+				array( $parser, $title, &$skip, &$id ) );
+
+			if ( $skip ) {
+				$text = false;
+				$deps[] = array(
+					'title' 	=> $title,
+					'page_id' 	=> $title->getArticleID(),
+					'rev_id' 	=> null
+				);
+				break;
+			}
+			# Get the revision
+			$rev = $id
+				? Revision::newFromId( $id )
+				: Revision::newFromTitle( $title, false, Revision::READ_NORMAL );
+			$rev_id = $rev ? $rev->getId() : 0;
+			# If there is no current revision, there is no page
+			if ( $id === false && !$rev ) {
+				$linkCache = LinkCache::singleton();
+				$linkCache->addBadLinkObj( $title );
+			}
+
+			$deps[] = array(
+				'title' 	=> $title,
+				'page_id' 	=> $title->getArticleID(),
+				'rev_id' 	=> $rev_id );
+			if ( $rev && !$title->equals( $rev->getTitle() ) ) {
+				# We fetched a rev from a different title; register it too...
+				$deps[] = array(
+					'title' 	=> $rev->getTitle(),
+					'page_id' 	=> $rev->getPage(),
+					'rev_id' 	=> $rev_id );
+			}
+
+			if ( $rev ) {
+				$content = $rev->getContent();
+				$text = $content ? $content->getWikitextForTransclusion() : null;
+
+				if ( $text === false || $text === null ) {
+					$text = false;
+					break;
+				}
+			} elseif ( $title->getNamespace() == NS_MEDIAWIKI ) {
+				global $wgContLang;
+				$message = wfMessage( $wgContLang->lcfirst( $title->getText() ) )->inContentLanguage();
+				if ( !$message->exists() ) {
+					$text = false;
+					break;
+				}
+				$content = $message->content();
+				$text = $message->plain();
+			} else {
+				break;
+			}
+			if ( !$content ) {
+				break;
+			}
+			# Redirect?
+			$finalTitle = $title;
+			$title = $content->getRedirectTarget();
+		}
+		return array(
+			'text' => $text,
+			'finalTitle' => $finalTitle,
+			'deps' => $deps );
+	}
+	
+
 	/**
 	 * Constructor
 	 * 

@@ -111,6 +111,13 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 					$this->constructTimeMapLinkHeader( $this->mwrelurl, $title );
 			}
 
+			# ensure that Templates in the article correspond to the same
+			# date as MementoDatetime
+			#$po = $this->article->getParserOptions();
+			#$po->setTemplateCallback(
+			#	array('Parser', 'MementoResource::statelessFetchTemplate'));
+			#$this->article->setParserOptions($po);
+
 			$mwMementoTimestamp = wfTimestamp( TS_RFC2822, $mwMementoTimestamp );
 
 			$this->out->getRequest()->response()->header(
