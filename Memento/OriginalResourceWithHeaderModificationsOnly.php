@@ -30,8 +30,6 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 		$response = $this->out->getRequest()->response();
 		$title = $this->getFullNamespacePageTitle();
 
-		echo "OriginalResourceWithHeaderModificationsOnly<br />";
-
 		// if we exclude this Namespace, don't show folks Memento relations
 		if ( in_array( $this->title->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {

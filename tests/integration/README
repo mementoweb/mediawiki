@@ -1,0 +1,7 @@
+Welcome to the README for integration tests
+
+Inside this directory are two useful files:
+* integration-test-description.html - explains each of the integration tests and their associated dataset files
+* how-to-read-output.txt - explains how to read the debugging and standard output containing the resulting header and entity information from each test run
+
+Bon appetite!
