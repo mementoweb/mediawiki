@@ -122,7 +122,6 @@ deploy-default: check-deploy-env ${BUILDDIR}/${BINFILE}
 	echo 'require_once "$$IP/extensions/Memento/Memento.php";' >> ${MWCONF}
 	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
 	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
-	echo '$$wgMementoTimemapNumberOfMementos = 3;' >> ${MWCONF}
 	find ${DEPLOYDIR}/Memento -type d -exec chmod 0755 {} \; 
 	find ${DEPLOYDIR}/Memento -type f -exec chmod 0644 {} \; 
 	@echo "Deployment complete"
