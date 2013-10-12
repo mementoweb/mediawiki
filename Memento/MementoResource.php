@@ -854,31 +854,35 @@ abstract class MementoResource {
 	 * 
 	 * @return array containing the text, finalTitle, and deps
 	 */
-	static function fixTemplate( $title, $parser, &$id ) {
+	public function fixTemplate( $title, $parser, &$id ) {
 
 		$request = $parser->getUser()->getRequest();
 
 		if ( $request->getHeader('ACCEPT-DATETIME') ) {
-			$dt = strtotime($request->getHeader('ACCEPT-DATETIME'));
 
-			$dt = date( 'YmdHis', $dt );
+			$requestDatetime = $request->getHeader('ACCEPT-DATETIME');
+
+			$mwMementoTimestamp = $this->parseRequestDateTime(
+				$requestDatetime );
+
 			$pg_id = $title->getArticleID();
 
-			$dbr = wfGetDB( DB_SLAVE );
-			$dbr->begin();
-			
-			$tbl_rev = $dbr->tableName( 'revision' );
-			$res = $dbr->query( "SELECT DISTINCTROW rev_id FROM $tbl_rev 
-						WHERE rev_page = $pg_id 
-						AND rev_timestamp <= $dt 
-						ORDER BY rev_id DESC 
-						LIMIT 0,1" 
-						);
-
-			print_r($res);
+			$this->dbr->begin();
+	
+			$res = $this->dbr->select(
+				'revision',
+				array( 'rev_id' ),
+				array(
+					'rev_page' => $pg_id,
+					'rev_timestamp <=' .
+						$this->dbr->addQuotes( $mwMementoTimestamp )
+					),
+				__METHOD__,
+				array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
+			);
 
 			if( $res ) {
-			    $row = $dbr->fetchObject( $res );
+			    $row = $this->dbr->fetchObject( $res );
 			    $id = $row->rev_id;
 			}
 		}

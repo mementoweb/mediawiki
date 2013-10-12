@@ -130,7 +130,9 @@ class Memento {
 	public static function onBeforeParserFetchTemplateAndtitle(
 		$parser, $title, &$skip, &$id ) {
 
-#		MementoResource::fixTemplate($title, $parser, $id);
+		if ( self::$mementoResource ) {
+			self::$mementoResource->fixTemplate($title, $parser, $id);
+		}
 
 		return true;
 			
