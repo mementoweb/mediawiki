@@ -87,6 +87,8 @@ $wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
+$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = 
+	__DIR__ . '/TimeGateResourceFrom302TimeNegotiation.php';
 
 /**
  * Main Memento class, used by hooks.
@@ -113,7 +115,7 @@ class Memento {
 	static private $diffPage;
 
 	/**
-	 * The ArticleViewHeader hook, used to feed values into lodal memeber
+	 * The ArticleViewHeader hook, used to feed values into local member
 	 * variables, to minimize the use of globals.
 	 *
 	 * Note: this is not called when the Edit or History pages are loaded.
@@ -127,6 +129,8 @@ class Memento {
 	public static function articleViewHeader(
 		&$article, &$outputDone, &$pcache
 		) {
+
+		echo "ArticleViewHeader()<br />\n";
 
 		$status = true;
 
@@ -165,6 +169,9 @@ class Memento {
 
 		global $wgSpecialPages;
 		global $wgAutoloadClasses;
+
+		echo "Disabling output from mediator<br />\n";
+		$out->disable();
 
 		$status = true;
 

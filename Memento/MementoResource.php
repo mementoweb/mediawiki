@@ -788,11 +788,19 @@ abstract class MementoResource {
 				}
 
 			} else {
-				/* we are requesting the original resource, but
-					want to supply 302-style Time Negotiation Link
-					header relations */
-				$page = new OriginalResourceWithHeaderModificationsOnly(
-					$out, $conf, $dbr, $title, null, $article );
+
+				if ( $request->getHeader('ACCEPT-DATETIME') ) {
+					$page = new TimeGateResourceFrom302TimeNegotiation(
+						$out, $conf, $dbr, $title, null, $article );
+				} else {
+					$page = new OriginalResourceWithTimeNegotiation(
+						$out, $conf, $dbr, $title, null, $article );
+				}
+#				/* we are requesting the original resource, but
+#					want to supply 302-style Time Negotiation Link
+#					header relations */
+#				$page = new OriginalResourceWithHeaderModificationsOnly(
+#					$out, $conf, $dbr, $title, null, $article );
 			}
 		} else {
 			/* we are requesting a Memento directly (an oldID URI)
