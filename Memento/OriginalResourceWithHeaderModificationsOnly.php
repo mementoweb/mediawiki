@@ -26,12 +26,17 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 	/**
 	 * Render the page
 	 */
-	public function render() {
-		$response = $this->out->getRequest()->response();
-		$title = $this->getFullNamespacePageTitle();
+	public function alterHeaders() {
+
+		$out = $this->article->getContext()->getOutput();
+		$request = $out->getRequest();
+		$response = $request->response();
+		$titleObj = $this->article->getTitle();
+
+		$title = $this->getFullNamespacePageTitle( $titleObj );
 
 		// if we exclude this Namespace, don't show folks Memento relations
-		if ( in_array( $this->title->getNamespace(),
+		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$linkEntries =
@@ -50,5 +55,9 @@ class OriginalResourceWithHeaderModificationsOnly extends MementoResource {
 		}
 
 		$response->header( 'Link: ' . $linkEntries, true );
+	}
+
+	public function alterEntity( &$out, &$skin ) {
+		// do nothing to the body
 	}
 }

@@ -32,22 +32,27 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 	 * 3.  ensure that the Content-Location header contains the memento URI
 	 *
 	 */
-	public function render() {
+	public function alterHeaders() {
+
+		$out = $this->article->getContext()->getOutput();
+		$request = $out->getRequest();
+		$response = $request->response();
+		$titleObj = $this->article->getTitle();
 
 		// if we exclude this Namespace, don't show folks the Memento relations
 		// or conduct Time Negotiation
-		if ( in_array( $this->title->getNamespace(),
+		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$linkEntries =
 				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 		} else {
-			$requestDatetime = $this->out->getRequest()->getHeader(
-				'ACCEPT-DATETIME');
+			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
-			$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
+			$mwMementoTimestamp = $this->parseRequestDateTime(
+				$requestDatetime );
 
-			$pageID = $this->title->getArticleID();
+			$pageID = $titleObj->getArticleID();
 
 			$first = $this->getFirstMemento( $this->dbr, $pageID );
 
@@ -61,29 +66,12 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 
 			$id = $memento['id'];
 
-			// so that they get a warning if they try to edit the page
-			$this->out->setRevisionId($memento['id']);
-
-			$oldArticle = new Article( $title = $this->title, $oldid = $id );
-			$oldrev = $oldArticle->getRevisionFetched();
-
-			// so we have the "Revision as of" text at the top of the page
-			$this->article->setOldSubtitle($id);
-
-			$oldArticleContent = $oldrev->getContent();
-
-			$mementoArticleText = $oldArticleContent->getWikitextForTransclusion();
-
-			$title = $this->getFullNamespacePageTitle();
+			$title = $this->getFullNamespacePageTitle( $titleObj );
 
 			$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
 
-			$this->out->clearHTML();
-			$this->out->addWikiText($mementoArticleText);
-
 			# the following headers comply with Pattern 1.2 of the Memento RFC
-			$this->out->getRequest()->response()->header(
-				"Content-Location: $url", true );
+			$response->header( "Content-Location: $url", true );
 
 			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
 
@@ -108,25 +96,49 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 
 			} else {
 				$linkEntries .=
-					$this->constructTimeMapLinkHeader( $this->mwrelurl, $title );
+					$this->constructTimeMapLinkHeader(
+						$this->mwrelurl, $title );
 			}
 
-			# ensure that Templates in the article correspond to the same
-			# date as MementoDatetime
-			#$po = $this->article->getParserOptions();
-			#$po->setTemplateCallback(
-			#	array('Parser', 'MementoResource::statelessFetchTemplate'));
-			#$this->article->setParserOptions($po);
+			$mwMementoTimestamp = wfTimestamp(
+				TS_RFC2822, $mwMementoTimestamp );
 
-			$mwMementoTimestamp = wfTimestamp( TS_RFC2822, $mwMementoTimestamp );
+			$response->header( "Memento-Datetime: $mwMementoTimestamp", true );
 
-			$this->out->getRequest()->response()->header(
-				"Memento-Datetime: $mwMementoTimestamp", true );
+			$out->addVaryHeader( 'Accept-Datetime' );
 
-			$this->out->addVaryHeader( 'Accept-Datetime' );
+			$this->setMementoOldID( $id );
+
 		}
 
-		$this->out->getRequest()->response()->header(
-				"Link: $linkEntries", true );
+		$response->header( "Link: $linkEntries", true );
+	}
+
+	public function alterEntity() {
+
+			$out = $this->article->getContext()->getOutput();
+			$titleObj = $this->article->getTitle();
+
+			$pageID = $titleObj->getArticleID();
+
+			$id = $this->getMementoOldID();
+
+			// so that they get a warning if they try to edit the page
+			$out->setRevisionId($id);
+
+			$oldArticle = new Article( $title = $titleObj, $oldid = $id );
+			$oldrev = $oldArticle->getRevisionFetched();
+
+			// so we have the "Revision as of" text at the top of the page
+			$this->article->setOldSubtitle($id);
+
+			$oldArticleContent = $oldrev->getContent();
+
+			$mementoArticleText =
+				$oldArticleContent->getWikitextForTransclusion();
+
+			$out->clearHTML();
+			$out->addWikiText( $mementoArticleText );
+
 	}
 }

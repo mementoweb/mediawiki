@@ -27,19 +27,22 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 	/**
 	 * Render the page
 	 */
-	public function render() {
+	public function alterHeaders() {
 
-		$response = $this->out->getRequest()->response();
+		$out = $this->article->getContext()->getOutput();
+		$request = $out->getRequest();
+		$response = $request->response();
+		$titleObj = $this->article->getTitle();
 
 		// if we exclude this Namespace, don't show folks Memento relations
-		if ( in_array( $this->title->getNamespace(),
+		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$linkEntries =
 				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 		} else {
-			$title = $this->getFullNamespacePageTitle();
-			$pageID = $this->title->getArticleID();
+			$title = $this->getFullNamespacePageTitle( $titleObj );
+			$pageID = $titleObj->getArticleID();
 			$oldID = $this->article->getOldID();
 
 			$mementoInfo = $this->getInfoForThisMemento( $this->dbr, $oldID );
@@ -113,5 +116,9 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 		}
 
 		$response->header( "Link: $linkEntries", true );
+	}
+
+	public function alterEntity() {
+		// do nothing to the body
 	}
 }

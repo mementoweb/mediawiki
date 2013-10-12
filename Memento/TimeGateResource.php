@@ -125,4 +125,7 @@ class TimeGateResource extends MementoResource {
 
 	}
 
+	public function alterEntity( &$out, &$skin ) {
+		// do nothing to the body
+	}
 }

@@ -24,26 +24,29 @@
 
 class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
-	public function render() {
+	public function alterHeaders() {
+
+		$out = $this->article->getContext()->getOutput();
+		$request = $out->getRequest();
+		$response = $request->response();
+		$titleObj = $this->article->getTitle();
 
 		// if we exclude this Namespace, don't show folks the Memento relations
 		// or conduct Time Negotiation
-		if ( in_array( $this->title->getNamespace(),
+		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$linkEntries =
 				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
-			$this->out->getRequest()->response()->header(
-				"Link: $linkEntries", true );
+			$response->header( "Link: $linkEntries", true );
 		} else {
-			$this->out->disable();
 
-			$requestDatetime = $this->out->getRequest()->getHeader(
-				'ACCEPT-DATETIME');
+			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
-			$mwMementoTimestamp = $this->parseRequestDateTime( $requestDatetime );
+			$mwMementoTimestamp = $this->parseRequestDateTime(
+				$requestDatetime );
 
-			$pageID = $this->title->getArticleID();
+			$pageID = $titleObj->getArticleID();
 
 			$first = $this->getFirstMemento( $this->dbr, $pageID );
 
@@ -57,16 +60,12 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 			$id = $memento['id'];
 
-			// so that they get a warning if they try to edit the page
-			$this->out->setRevisionId($memento['id']);
-
-			$title = $this->getFullNamespacePageTitle();
+			$title = $this->getFullNamespacePageTitle( $titleObj );
 
 			$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
 
 			# the following headers comply with Pattern 1.2 of the Memento RFC
-			$this->out->getRequest()->response()->header(
-				"Location: $url", true );
+			$response->header( "Location: $url", true );
 
 			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
 
@@ -91,21 +90,32 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 			} else {
 				$linkEntries .=
-					$this->constructTimeMapLinkHeader( $this->mwrelurl, $title );
+					$this->constructTimeMapLinkHeader(
+						$this->mwrelurl, $title );
 			}
 
-			$mwMementoTimestamp = wfTimestamp( TS_RFC2822, $mwMementoTimestamp );
+			$mwMementoTimestamp = wfTimestamp(
+				TS_RFC2822, $mwMementoTimestamp );
 
-			$this->out->addVaryHeader( 'Accept-Datetime' );
+			// this does not work for some reason, possibly because 
+			// of the disable() below?
+			//$out->addVaryHeader( 'Accept-Datetime' );
 
-			$this->out->getRequest()->response()->header(
-				"Link: $linkEntries", true );
+			// workaround for addVaryHeader
+			$varyEntries = explode( ':', $out->getVaryHeader() );
+			$varyEntries = $varyEntries[1];
+			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 
-			$this->out->getRequest()->response()->header("HTTP", true, 302);
+			$response->header( "Link: $linkEntries", true );
 
-			$this->out->clearHTML();
+			$out->setStatusCode( 302 );
 
+			$out->disable();
 		}
 
+	}
+
+	public function alterEntity() {
+		// do nothing to the body
 	}
 }

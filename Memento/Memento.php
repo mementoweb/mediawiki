@@ -79,9 +79,10 @@ $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
 // Set up the hooks for this class
-$wgHooks['BeforePageDisplay'][] = 'Memento::mediator';
-$wgHooks['ArticleViewHeader'][] = 'Memento::articleViewHeader';
+$wgHooks['BeforePageDisplay'][] = 'Memento::onBeforePageDisplay';
+$wgHooks['ArticleViewHeader'][] = 'Memento::onArticleViewHeader';
 $wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
+$wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
 
 // set up the Time Gate (URI-G) classes
 $wgSpecialPages['TimeGate'] = 'TimeGate';
@@ -98,45 +99,82 @@ $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
  * the Mediawiki setup code from the Memento code as much as possible
  * for clarity, testing, maintainability, etc.
  *
- * Author's note:  the only reason I'm using this static class is to allow
- * for the passing of $oldID to the main hook.
- *
  */
 class Memento {
-
-	/**
-	 * @var string $article: access to the Article Object for this page 
-	 */
-	static private $article;
 
 	/**
 	 * @var bool $diffPage: flag indicating that this is a diff page
 	 */
 	static private $diffPage;
 
+
 	/**
-	 * The ArticleViewHeader hook, used to feed values into local member
-	 * variables, to minimize the use of globals.
+	 * @var MementoResource $mementoResource: object that implements memento
+	 */
+	static private $mementoResource;
+
+
+	/**
+	 * The BeforeParserFetchTemplateAndtitle hook, used here to change any
+	 * Template pages loaded so that their revision is closer in date/time to
+	 * that of the rest of the page.
+	 *
+	 * @param $parser: Parser object for this page
+	 * @param $title: Title object for this page
+	 * @param $skip: boolean flag allowing the caller to skip the rest of
+	 *					statelessFetchTemplate
+	 * @param $id: revision id of this page
+	 *
+	 * @return boolean indicating success to the caller
+	 */
+	public static function onBeforeParserFetchTemplateAndtitle(
+		$parser, $title, &$skip, &$id ) {
+
+#		MementoResource::fixTemplate($title, $parser, $id);
+
+		return true;
+			
+	}
+
+	/**
+	 * The ArticleViewHeader hook, used to alter the headers before the rest
+	 * of the data is loaded.
 	 *
 	 * Note: this is not called when the Edit or History pages are loaded.
+	 *
+	 * TODO: determine if this is called when DiffPages are called
 	 *
 	 * @param: $article: pointer to the Article Object from the hook
 	 * @param: $outputDone: pointer to variable that indicates that 
 	 *			the output should be terminated
 	 * @param: $pcache: pointer to variable that indicates whether the parser
 	 * 			cache should try retrieving the cached results
+	 *
+	 * @return boolean indicating success to the caller
 	 */
-	public static function articleViewHeader(
+	public static function onArticleViewHeader(
 		&$article, &$outputDone, &$pcache
 		) {
 
-		echo "ArticleViewHeader()<br />\n";
+		$config = new MementoConfig();
+		$dbr = wfGetDB( DB_SLAVE );
+		$oldID = $article->getOldID();
+		$request = $article->getContext()->getRequest();
 
-		$status = true;
+		self::$mementoResource = MementoResource::MementoPageResourceFactory(
+			$config, $dbr, $article, $oldID, $request );
 
-		self::$article = $article;
+		try {
+			self::$mementoResource->alterHeaders();
+		} catch (MementoResourceException $e) {
 
-		return $status;
+			$out = $article->getContext()->getOutput();
+
+			MementoResource::renderError(
+				$out, $e, $config->get('ErrorPageType') );
+		}
+
+		return true; // TODO: return false if exception thrown?
 	}
 
 	/**
@@ -146,15 +184,13 @@ class Memento {
 	 * 		not used and also to ensure backward compatibility between
 	 *		different versions of Mediawiki.
 	 *
-	 * @return boolean
+	 * @return boolean indicating success to the caller
 	 */
 	public static function onDiffViewHeader() {
 
-		$status = true;
-
 		self::$diffPage = true;
 
-		return $status;
+		return true;
 	}
 
 	/**
@@ -165,30 +201,19 @@ class Memento {
 	 *
 	 * @returns boolean indicating success to the caller
 	 */
-	public static function mediator(&$out, &$skin) {
-
-		global $wgSpecialPages;
-		global $wgAutoloadClasses;
-
-		echo "Disabling output from mediator<br />\n";
-		$out->disable();
+	public static function onBeforePageDisplay(&$out, &$skin) {
 
 		$status = true;
 
 		// if we're an article, do memento processing, otherwise don't worry
-		if ( $out->isArticle() ) {
+		if ( $out->isArticle() ) { 
 			// if we're a diff page, Memento doesn't make sense
 			if ( ! self::$diffPage ) {
-				$config = new MementoConfig();
-				$dbr = wfGetDB( DB_SLAVE );
-				$oldID = self::$article->getOldID();
-				$title = self::$article->getTitle();
 
 				try {
-					$page = MementoResource::MementoPageResourceFactory(
-						$out, $config, $dbr, $oldID, $title, self::$article );
-					$page->render();
+					self::$mementoResource->alterEntity();
 				} catch (MementoResourceException $e) {
+					$config = new MementoConfig();
 					MementoResource::renderError(
 						$out, $e, $config->get('ErrorPageType') );
 				}

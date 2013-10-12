@@ -167,6 +167,11 @@ abstract class MementoResource {
 	protected $title;
 
 	/**
+	 * @var $mementoOldID - timestamp of the Memento
+	 */
+	protected $mementoOldID;
+
+	/**
 	 * fetchMementoFromDatabase
 	 *
 	 * Make the actual database call.
@@ -528,10 +533,12 @@ abstract class MementoResource {
 	 * This function returns the namespace:title string from the URI
 	 * corresponding to this resource.
 	 *
+	 * @param $titleObj - title object corresponding to this resource
+	 *
 	 */
-	public function getFullNamespacePageTitle( ) {
-		$title = $this->title->getDBkey();
-		$namespace = $this->title->getNsText();
+	public function getFullNamespacePageTitle( $titleObj ) {
+		$title = $titleObj->getDBkey();
+		$namespace = $titleObj->getNsText();
 
 		if ( $namespace ) {
 			$title = "$namespace:$title";
@@ -721,6 +728,26 @@ abstract class MementoResource {
 	}
 
 
+	/**
+	 * setMementoTimestamp
+	 *
+	 * Set the Memento Timestamp for future calls.
+	 *
+	 * @param $timestamp - the timestamp to set
+	 */
+	public function setMementoOldID( $id ) {
+		$this->mementoOldID = $id;
+	}
+
+	/**
+	 * getMementoTimestamp
+	 *
+	 * Get the Memento Timestamp
+	 *
+	 */
+	public function getMementoOldID() {
+		return $this->mementoOldID;
+	}
 
 	/**
 	 * renderError
@@ -757,7 +784,6 @@ abstract class MementoResource {
 	 *
 	 * A factory for creating the correct MementoPageResource type.
 	 *
-	 * @param $out - OutputPage object, passed to constructor
 	 * @param $conf - MementoConfig object, passed to constructor
 	 * @param $dbr - DatabaseBase object, passed to constructor
 	 * @param $oldID - string indicating revision ID
@@ -765,10 +791,9 @@ abstract class MementoResource {
 	 *
 	 */
 	public static function mementoPageResourceFactory(
-		$out, $conf, $dbr, $oldID, $title, $article ) {
+		$conf, $dbr, $article, $oldID, $request ) {
 
 		$page = null;
-		$request = $out->getRequest();
 
 		if ( $oldID == 0 ) {
 
@@ -778,23 +803,23 @@ abstract class MementoResource {
 					/* we are requesting a Memento, but via 200-style
 						Time Negotiation */
 					$page = new MementoResourceFromTimeNegotiation(
-						$out, $conf, $dbr, $title, null, $article );
+						$conf, $dbr, $article );
 				} else {
 					/* we are requesting the original resource, but
 						want to supply 200-style Time Negotiation Link
 						header relations */
 					$page = new OriginalResourceWithTimeNegotiation(
-						$out, $conf, $dbr, $title, null, $article );
+						$conf, $dbr, $article );
 				}
 
 			} else {
 
 				if ( $request->getHeader('ACCEPT-DATETIME') ) {
 					$page = new TimeGateResourceFrom302TimeNegotiation(
-						$out, $conf, $dbr, $title, null, $article );
+						$conf, $dbr, $article );
 				} else {
 					$page = new OriginalResourceWithTimeNegotiation(
-						$out, $conf, $dbr, $title, null, $article );
+						$conf, $dbr, $article );
 				}
 #				/* we are requesting the original resource, but
 #					want to supply 302-style Time Negotiation Link
@@ -810,151 +835,68 @@ abstract class MementoResource {
 				because the strategy breaks down if this guy (or a callee)
 				makes his own decisions based on 200 vs. 302 */
 			$page = new MementoResourceWithHeaderModificationsOnly(
-				$out, $conf, $dbr, $title, null, $article );
+				$conf, $dbr, $article );
 		}
 
 		return $page;
 	}
 
 	/*
-	 * statelessFetchTemplate
+	 * fixTemplate
 	 *
 	 * This code ensures that the version of the Template that was in existence
 	 * at the same time as the Memento gets loaded and displayed with the
 	 * Memento.
 	 *
-	 * Note to future developers:
-	 * This function steals code from version 1.21.1 of Mediawiki and adds
-	 * functionality to it, largely because the Memento code must be inserted
-	 * INSIDE the existing code.
-	 *
 	 * @param $title - Title object of the page
-	 * @param $parser - Parser object of the page
+	 * @param $parser - Parsger object of the page
+	 * @param $id - the revision id of the page
 	 * 
 	 * @return array containing the text, finalTitle, and deps
 	 */
-	static function statelessFetchTemplate( $title, $parser = false ) {
-		$text = $skip = false;
-		$finalTitle = $title;
-		$deps = array();
+	static function fixTemplate( $title, $parser, &$id ) {
 
-		# Loop to fetch the article, with up to 1 redirect
-		for ( $i = 0; $i < 2 && is_object( $title ); $i++ ) {
-			# Give extensions a chance to select the revision instead
-			$id = false; # Assume current
+		$request = $parser->getUser()->getRequest();
 
-			# querying the db to get the rev_id for the template. 
-			foreach($_SERVER as $key => $value) {
-				//checking for the occurance of the accept datetime header.
-				if( strcasecmp($key, 'HTTP_ACCEPT_DATETIME') == 0 ) {
-					$req_dt = $_SERVER["$key"]; 
-					$dt = strtotime($_SERVER["$key"]);
-					$dt = date( 'YmdHis', $dt );
-					$pg_id = $title->getArticleID();
-					
-					$dbr = wfGetDB( DB_SLAVE );
-					$dbr->begin();
-					
-					$tbl_rev = $dbr->tableName( 'revision' );
-					$res = $dbr->query( "SELECT DISTINCTROW rev_id FROM $tbl_rev 
-								WHERE rev_page = $pg_id 
-								AND rev_timestamp <= $dt 
-								ORDER BY rev_id DESC 
-								LIMIT 0,1" 
-								);
-					if( $res ) {
-					    $row = $dbr->fetchObject( $res );
-					    $id = $row->rev_id;
-					}
-				}
+		if ( $request->getHeader('ACCEPT-DATETIME') ) {
+			$dt = strtotime($request->getHeader('ACCEPT-DATETIME'));
+
+			$dt = date( 'YmdHis', $dt );
+			$pg_id = $title->getArticleID();
+
+			$dbr = wfGetDB( DB_SLAVE );
+			$dbr->begin();
+			
+			$tbl_rev = $dbr->tableName( 'revision' );
+			$res = $dbr->query( "SELECT DISTINCTROW rev_id FROM $tbl_rev 
+						WHERE rev_page = $pg_id 
+						AND rev_timestamp <= $dt 
+						ORDER BY rev_id DESC 
+						LIMIT 0,1" 
+						);
+
+			print_r($res);
+
+			if( $res ) {
+			    $row = $dbr->fetchObject( $res );
+			    $id = $row->rev_id;
 			}
-
-			wfRunHooks( 'BeforeParserFetchTemplateAndtitle',
-				array( $parser, $title, &$skip, &$id ) );
-
-			if ( $skip ) {
-				$text = false;
-				$deps[] = array(
-					'title' 	=> $title,
-					'page_id' 	=> $title->getArticleID(),
-					'rev_id' 	=> null
-				);
-				break;
-			}
-			# Get the revision
-			$rev = $id
-				? Revision::newFromId( $id )
-				: Revision::newFromTitle( $title, false, Revision::READ_NORMAL );
-			$rev_id = $rev ? $rev->getId() : 0;
-			# If there is no current revision, there is no page
-			if ( $id === false && !$rev ) {
-				$linkCache = LinkCache::singleton();
-				$linkCache->addBadLinkObj( $title );
-			}
-
-			$deps[] = array(
-				'title' 	=> $title,
-				'page_id' 	=> $title->getArticleID(),
-				'rev_id' 	=> $rev_id );
-			if ( $rev && !$title->equals( $rev->getTitle() ) ) {
-				# We fetched a rev from a different title; register it too...
-				$deps[] = array(
-					'title' 	=> $rev->getTitle(),
-					'page_id' 	=> $rev->getPage(),
-					'rev_id' 	=> $rev_id );
-			}
-
-			if ( $rev ) {
-				$content = $rev->getContent();
-				$text = $content ? $content->getWikitextForTransclusion() : null;
-
-				if ( $text === false || $text === null ) {
-					$text = false;
-					break;
-				}
-			} elseif ( $title->getNamespace() == NS_MEDIAWIKI ) {
-				global $wgContLang;
-				$message = wfMessage( $wgContLang->lcfirst( $title->getText() ) )->inContentLanguage();
-				if ( !$message->exists() ) {
-					$text = false;
-					break;
-				}
-				$content = $message->content();
-				$text = $message->plain();
-			} else {
-				break;
-			}
-			if ( !$content ) {
-				break;
-			}
-			# Redirect?
-			$finalTitle = $title;
-			$title = $content->getRedirectTarget();
 		}
-		return array(
-			'text' => $text,
-			'finalTitle' => $finalTitle,
-			'deps' => $deps );
+
 	}
 	
 
 	/**
 	 * Constructor
 	 * 
-	 * @param $out
 	 * @param $conf
 	 * @param $dbr
-	 * @param $title
-	 * @param $urlparam
+	 *
 	 */
-	public function __construct(
-		$out, $conf, $dbr, $title, $urlparam, $article ) {
+	public function __construct( $conf, $dbr, $article ) {
 
-		$this->out = $out;
 		$this->conf = $conf;
 		$this->dbr = $dbr;
-		$this->title = $title;
-		$this->urlparam = $urlparam;
 		$this->article = $article;
 
 		$waddress = str_replace( '/$1', '', $conf->get('ArticlePath') );
@@ -964,6 +906,8 @@ abstract class MementoResource {
 	}
 
 
-	abstract public function render();
+	abstract public function alterHeaders();
+
+	abstract public function alterEntity();
 
 }

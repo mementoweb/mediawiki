@@ -26,13 +26,18 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 	/**
 	 * Render the page
 	 */
-	public function render() {
-		$response = $this->out->getRequest()->response();
-		$requestURL = $this->out->getRequest()->getFullRequestURL();
-		$title = $this->getFullNamespacePageTitle();
+	public function alterHeaders() {
+
+		$out = $this->article->getContext()->getOutput();
+		$request = $out->getRequest();
+		$response = $request->response();
+		$titleObj = $this->article->getTitle();
+
+		$requestURL = $request->getFullRequestURL();
+		$title = $this->getFullNamespacePageTitle( $titleObj );
 
 		// if we exclude this Namespace, don't show folks the Memento relations
-		if ( in_array( $this->title->getNamespace(),
+		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$linkEntries =
@@ -51,9 +56,13 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 			$linkEntries = implode( ',',
 				array( $timeGateLinkEntry, $timeMapLinkEntry ) );
 
-			$this->out->addVaryHeader( 'Accept-Datetime' );
+			$out->addVaryHeader( 'Accept-Datetime' );
 		}
 
 		$response->header( 'Link: ' . $linkEntries, true );
+	}
+
+	public function alterEntity() {
+		// do nothing to the body
 	}
 }
