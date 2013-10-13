@@ -47,26 +47,53 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 		$requestURL = $request->getFullRequestURL();
 		$title = $this->getFullNamespacePageTitle( $titleObj );
 
+		$linkEntries = array();
+
 		// if we exclude this Namespace, don't show folks the Memento relations
 		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
-			$linkEntries =
-				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+			array_push( $linkEntries, $entry );
 		} else {
 
-			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+			$timegateuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
 
-			$timeGateLinkEntry =
-				$this->constructLinkRelationHeader( $timegateuri,
+			$entry = $this->constructLinkRelationHeader( $timegateuri,
 					'original latest-version timegate' );
 
-			# TODO: add from and until for the RecommendedRelations option
-			$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
-				$this->mwrelurl, $title );
+			array_push( $linkEntries, $entry );
 
-			$linkEntries = implode( ',',
-				array( $timeGateLinkEntry, $timeMapLinkEntry ) );
+			if ( $this->conf->get('RecommendedRelations') ) {
+				$pageID = $titleObj->getArticleID();
+
+				$first = $this->getFirstMemento( $this->dbr, $pageID );
+
+				$last = $this->getLastMemento( $this->dbr, $pageID );
+
+				$entry = $this->constructTimeMapLinkHeaderWithBounds(
+						$this->mwrelurl, $title,
+						$first['timestamp'], $last['timestamp'] );
+				array_push( $linkEntries, $entry );
+
+				$entry = $this->constructMementoLinkHeaderEntry(
+					$this->mwrelurl, $title, $first['id'],
+					$first['timestamp'], 'memento first' );
+				array_push( $linkEntries, $entry );
+
+				$entry = $this->constructMementoLinkHeaderEntry(
+					$this->mwrelurl, $title, $last['id'],
+					$last['timestamp'], 'memento last' );
+				array_push( $linkEntries, $entry );
+
+			} else {
+				$entry =
+					$this->constructTimeMapLinkHeader(
+						$this->mwrelurl, $title );
+				array_push( $linkEntries, $entry );
+			}
+
+			$linkEntries = implode( ',', $linkEntries );
 
 			$out->addVaryHeader( 'Accept-Datetime' );
 		}

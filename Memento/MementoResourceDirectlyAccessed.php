@@ -42,12 +42,14 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 		$response = $request->response();
 		$titleObj = $this->article->getTitle();
 
+		$linkEntries = array();
+
 		// if we exclude this Namespace, don't show folks Memento relations
 		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
-			$linkEntries =
-				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+			array_push( $linkEntries, $entry );
 		} else {
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 			$pageID = $titleObj->getArticleID();
@@ -62,60 +64,58 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 					$this->dbr, $mementoInfoID, $mementoDatetime ),
 				$title );
 
-			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
-			$originaluri = $this->getOriginalURI( $this->mwrelurl, $title );
+			$myuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
 
-			if ( $timegateuri == $originaluri ) {
-				$linkEntries =
-					$this->constructLinkRelationHeader( $timegateuri,
-						'original latest-version timegate' ) . ',';
-			} else {
-				$linkEntries =
-					$this->constructLinkRelationHeader( $timegateuri,
-						'timegate' ) . ',';
-				$linkEntries .=
-					$this->constructLinkRelationHeader( $originaluri,
-						'original latest-version' ) . ',';
-			}
+			$entry = $this->constructLinkRelationHeader( $myuri,
+					'original latest-version timegate' );
+			array_push( $linkEntries, $entry );
 
 			if ( $this->conf->get('RecommendedRelations') ) {
 
 				$first = $this->convertRevisionData( $this->mwrelurl,
-					$this->getFirstMemento( $this->dbr, $mementoInfoID ),
+					$this->getFirstMemento( $this->dbr, $pageID ),
 					$title );
 
 				$last = $this->convertRevisionData( $this->mwrelurl,
-					$this->getLastMemento( $this->dbr, $mementoInfoID ),
+					$this->getLastMemento( $this->dbr, $pageID ),
 					$title );
 
 				$next = $this->convertRevisionData( $this->mwrelurl,
 					$this->getNextMemento(
-						$this->dbr, $mementoInfoID, $mementoDatetime ),
+						$this->dbr, $pageID, $mementoDatetime ),
 					$title );
 
 				$prev = $this->convertRevisionData( $this->mwrelurl,
 					$this->getPrevMemento(
-						$this->dbr, $mementoInfoID, $mementoDatetime ),
+						$this->dbr, $pageID, $mementoDatetime ),
 					$title );
 
-				$linkEntries .=
-					$this->constructTimeMapLinkHeaderWithBounds(
+				$entry = $this->constructTimeMapLinkHeaderWithBounds(
 						$this->mwrelurl, $title,
-						$first['dt'], $last['dt'] )
-					. ',';
+						$first['dt'], $last['dt'] );
 
-				$linkEntries .= $this->constructLinkHeader(
+				array_push( $linkEntries, $entry );
+
+				$linkEntries = implode( ',', $linkEntries );
+
+				// TODO: rewrite this function... somehow
+				// so we can move the implode to the end of this function
+				$linkEntries .= ',' . $this->constructLinkHeader(
 					$first, $last, $memento, $next, $prev );
+				$linkEntries = rtrim( $linkEntries, ', ' );
 
 			} else  {
-				$linkEntries .=
-					$this->constructTimeMapLinkHeader( $this->mwrelurl, $title )
-					. ',';
+				$entry = $this->constructTimeMapLinkHeader(
+					$this->mwrelurl, $title );
+				array_push( $linkEntries, $entry );
 
-				$linkEntries .= $this->constructMementoLinkHeaderEntry(
+				$entry = $this->constructMementoLinkHeaderEntry(
 					$this->mwrelurl, $title, $oldID,
 					$memento['dt'], 'memento' );
+				array_push( $linkEntries, $entry );
+				$linkEntries = implode( ',', $linkEntries );
 			}
+
 
 			// convert for display
 			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoDatetime );

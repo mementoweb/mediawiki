@@ -521,42 +521,23 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * getTimeGateURI
+	 * getSafelyFormedURI
 	 *
-	 * This function returns the TimeGate URI based on the current configuration
-	 *
-	 * @param $scriptUrl - the base URL used for Mediawiki
-	 * @param $title - the title string of the given page
-	 *
-	 * @return $timegateurl - the TimeGate URI
-	 */
-	public function getTimeGateURI( $scriptUrl, $title ) {
-		$title = rawurlencode($title);
-
-		$timegateurl = wfExpandUrl( $scriptUrl . '/' .  $title );
-
-		return $timegateurl;
-	}
-
-	/**
-	 * getOriginalURI
-	 *
-	 * This function returns the original URI
-	 *
-	 * TODO: This function and getTimeGateURI have evolved to the same function
-	 *			consolidate them into one function
+	 * This function uses wfExpandUrl to safely form the URI for the given
+	 * page title string.
 	 *
 	 * @param $scriptUrl - the base URL used for Mediawiki
 	 * @param $title - the title string of the given page
 	 *
-	 * @return $originalurl - the Original URI
+	 * @return $safeURI - the safely formed URI
 	 */
-	public function getOriginalURI( $scriptUrl, $title ) {
+	public function getSafelyFormedURI( $scriptUrl, $title ) {
+
 		$title = rawurlencode($title);
 
-		$originalurl = wfExpandUrl( $scriptUrl . '/' . $title );
+		$safeURI = wfExpandUrl( $scriptUrl . '/' . $title );
 
-		return $originalurl;
+		return $safeURI;
 	}
 
 	/**
@@ -586,9 +567,6 @@ abstract class MementoResource {
 	 * This creates a link header entry for the given URI, with no
 	 * extra information, just URL and relation.
 	 *
-	 * TODO: Review use of this function, it doesn't use wfExpandUrl,
-	 * 		which means it may not be "safe" like the others.
-	 *
 	 * @param $url
 	 * @param $relation
 	 *
@@ -596,57 +574,6 @@ abstract class MementoResource {
 	 */
 	public function constructLinkRelationHeader( $url, $relation ) {
 		return '<' . $url . '>; rel="' . $relation . '"';
-	}
-
-	/**
-	 * constructTimeGateLinkHeader
-	 *
-	 * This creates the entry for timegate in the Link Header.
-	 *
-	 * TODO: look at using the consolidated function from the battle between
-	 * 		getOriginalURI and getTimeGateURI, rather than repeating
-	 *		the work here; even better, replace with
-	 *		constructLinkRelationHeader
-	 *
-	 * @param $scriptUrl - the base URL used for Mediawiki
-	 * @param $title - the title string of the given page
-	 *
-	 * @return $entry - the Time Gate relation
-	 */
-	public function constructTimeGateLinkHeader( $scriptUrl, $title ) {
-
-		$title = rawurlencode($title);
-
-		$entry = '<' .  wfExpandUrl( $scriptUrl . '/' .  $title ) .
-				'>; rel="timegate"';
-
-		return $entry;
-	}
-
-	/**
-	 * constructOriginalLatestVersionHeader
-	 *
-	 * This creates the entry for timegate in the Link Header.
-
-	 * TODO: look at using the consolidated function from the battle between
-	 * 		getOriginalURI and getTimeGateURI, rather than repeating
-	 *		the work here; even better, replace with
-	 *		constructLinkRelationHeader
-	 *
-	 * @param $scriptUrl - the base URL used for Mediawiki
-	 * @param $title - the title string of the given page
-	 *
-	 * @return $entry - the Original Latest Version relation
-	 */
-	public function constructOriginalLatestVersionLinkHeader(
-		$scriptUrl, $title ) {
-
-		$title = rawurlencode($title);
-
-		$entry = '<' . wfExpandUrl( $scriptUrl . '/' . $title ) .
-			'>; rel="original latest-version"';
-
-		return $entry;
 	}
 
 	/**

@@ -48,13 +48,15 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 		$response = $request->response();
 		$titleObj = $this->article->getTitle();
 
+		$linkEntries = array();
+
 		// if we exclude this Namespace, don't show folks the Memento relations
 		// or conduct Time Negotiation
 		if ( in_array( $titleObj->getNamespace(),
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
-			$linkEntries =
-				'<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
+			array_push( $linkEntries, $entry );
 		} else {
 			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
@@ -82,31 +84,32 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 			# the following headers comply with Pattern 1.2 of the Memento RFC
 			$response->header( "Content-Location: $url", true );
 
-			$timegateuri = $this->getTimeGateURI( $this->mwrelurl, $title );
+			$timegateuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
 
-			$linkEntries =
-				$this->constructLinkRelationHeader( $timegateuri,
-					'original latest-version timegate' ) . ',';
+			$entry = $this->constructLinkRelationHeader( $timegateuri,
+					'original latest-version timegate' );
+			array_push( $linkEntries, $entry );
 
 			if ( $this->conf->get('RecommendedRelations') ) {
-				$linkEntries .=
-					$this->constructTimeMapLinkHeaderWithBounds(
+				$entry = $this->constructTimeMapLinkHeaderWithBounds(
 						$this->mwrelurl, $title,
-						$first['timestamp'], $last['timestamp'] )
-					. ',';
+						$first['timestamp'], $last['timestamp'] );
+				array_push( $linkEntries, $entry );
 
-				$linkEntries .= $this->constructMementoLinkHeaderEntry(
+				$entry = $this->constructMementoLinkHeaderEntry(
 					$this->mwrelurl, $title, $first['id'],
-					$first['timestamp'], 'memento first' ) . ',';
+					$first['timestamp'], 'memento first' );
+				array_push( $linkEntries, $entry );
 
-				$linkEntries .= $this->constructMementoLinkHeaderEntry(
+				$entry = $this->constructMementoLinkHeaderEntry(
 					$this->mwrelurl, $title, $last['id'],
-					$last['timestamp'], 'memento last' ) . ',';
+					$last['timestamp'], 'memento last' );
+				array_push( $linkEntries, $entry );
 
 			} else {
-				$linkEntries .=
-					$this->constructTimeMapLinkHeader(
+				$entry = $this->constructTimeMapLinkHeader(
 						$this->mwrelurl, $title );
+				array_push( $linkEntries, $entry );
 			}
 
 			$mwMementoTimestamp = wfTimestamp(
@@ -115,6 +118,8 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 			$response->header( "Memento-Datetime: $mwMementoTimestamp", true );
 
 			$out->addVaryHeader( 'Accept-Datetime' );
+
+			$linkEntries = implode( ',', $linkEntries );
 
 			$this->setMementoOldID( $id );
 

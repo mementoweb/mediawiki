@@ -282,8 +282,9 @@ abstract class TimeMapResource extends MementoResource {
 
 		$outputArray = array();
 
-		$timegateEntry = $this->constructTimeGateLinkHeader(
-			$this->mwrelurl, $title );
+		$timegateuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
+		$timegateEntry = $this->constructLinkRelationHeader(
+			$timegateuri, 'original latest-version timegate' );
 
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
@@ -292,10 +293,6 @@ abstract class TimeMapResource extends MementoResource {
 			SpecialPage::getTitleFor( 'TimeMap' ) . '/' .  $urlparam . 
 			'>; rel="self"; type="application/link-format"; ' .
 			'from="' . $from . '; until="' . $until . '"';
-
-		$originalLatestVersionEntry =
-			$this->constructOriginalLatestVersionLinkHeader(
-				$this->mwrelurl, $title );
 
 		array_push( $outputArray, $originalLatestVersionEntry );
 
