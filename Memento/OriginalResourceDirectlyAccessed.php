@@ -21,10 +21,21 @@
  * 
  * @file
  */
-class OriginalResourceWithTimeNegotiation extends MementoResource {
+
+/**
+ * This class implements the header alteration and entity alteration functions
+ * used for any style of Time Negotiation when an Accept-Datetime header is NOT
+ * given in the request.
+ *
+ * This class is for the direclty accessed URI-R mentioned in the Memento RFC.
+ */
+class OriginalResourceDirectlyAccessed extends MementoResource {
 
 	/**
-	 * Render the page
+	 * alterHeaders
+	 *
+	 * Alter the headers for 200-style Time Negotiation when an Accept-Datetime
+	 * header is NOT given in the request.
 	 */
 	public function alterHeaders() {
 
@@ -63,6 +74,12 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 		$response->header( 'Link: ' . $linkEntries, true );
 	}
 
+	/**
+	 * alterEntity
+	 *
+	 * No entity alterations are necessary for directly accessed Original pages.
+	 *
+	 */
 	public function alterEntity() {
 		// do nothing to the body
 	}

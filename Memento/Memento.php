@@ -56,14 +56,12 @@ $wgAutoloadClasses['MementoResourceException'] =
 	__DIR__ . '/MementoResource.php';
 
 // Set up the Memento (URI-M) Classes
-$wgAutoloadClasses['MementoResourceFromTimeNegotiation'] =
-	__DIR__ . '/MementoResourceFromTimeNegotiation.php';
-$wgAutoloadClasses['MementoResourceWithHeaderModificationsOnly'] =
-	__DIR__ . '/MementoResourceWithHeaderModificationsOnly.php';
+$wgAutoloadClasses['MementoResourceDirectlyAccessed'] =
+	__DIR__ . '/MementoResourceDirectlyAccessed.php';
 
 // Set up the Original page (URI-R) Classes
-$wgAutoloadClasses['OriginalResourceWithTimeNegotiation'] =
-	__DIR__ . '/OriginalResourceWithTimeNegotiation.php';
+$wgAutoloadClasses['OriginalResourceDirectlyAccessed'] =
+	__DIR__ . '/OriginalResourceDirectlyAccessed.php';
 
 // set up the Time Map (URI-T) classes
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
@@ -83,6 +81,8 @@ $wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
 
 // set up the Time Gate (URI-G) classes
+$wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
+	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
 $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = 
 	__DIR__ . '/TimeGateResourceFrom302TimeNegotiation.php';
 
@@ -125,6 +125,8 @@ class Memento {
 	public static function onBeforeParserFetchTemplateAndtitle(
 		$parser, $title, &$skip, &$id ) {
 
+		// $mementoResource is only set if we are on an actual page
+		// as opposed to diff pages, edit pages, etc.
 		if ( self::$mementoResource ) {
 			self::$mementoResource->fixTemplate($title, $parser, $id);
 		}
@@ -217,6 +219,6 @@ class Memento {
 			}
 		}
 
-		return $status;
+		return $status; // TODO: return false if exception thrown?
 	}
 }

@@ -22,15 +22,24 @@
  * @file
  */
 
-class MementoResourceFromTimeNegotiation extends MementoResource {
+/**
+ * This class implements the header alteration and entity alteration functions
+ * used for 200-style Time Negotiation when an Accept-Datetime header is given
+ * in the request.
+ *
+ * This class is named "MementoResource" rather than TimeGate because, even
+ * though it performs TimeGate functions, the eventual object returned and
+ * rendered is a Memento.
+ *
+ * This class is for when the URI-G=URI-R for 200-style in the Memento RFC.
+ */
+class MementoResourceFrom200TimeNegotiation extends MementoResource {
 
 	/**
-	 * Render the page
+	 * alterHeaders
 	 *
-	 * 1.  get the ID for the page you want, based on Accept-Datetime
-	 * 2.  replace the existing page with the contents of that page
-	 * 3.  ensure that the Content-Location header contains the memento URI
-	 *
+	 * Alter the headers for 200-style Time Negotiation when an Accept-Datetime
+	 * header is given in the request.
 	 */
 	public function alterHeaders() {
 
@@ -114,6 +123,14 @@ class MementoResourceFromTimeNegotiation extends MementoResource {
 		$response->header( "Link: $linkEntries", true );
 	}
 
+	/**
+	 * alterEntity
+	 *
+	 * This function alters the entity returned back for 200-style time
+	 * negotiation when an Accept-Datetime header is present in the request.
+	 * The existing entity is replaced with its Memento counterpart.
+	 *
+	 */
 	public function alterEntity() {
 
 			$out = $this->article->getContext()->getOutput();

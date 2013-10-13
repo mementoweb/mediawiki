@@ -22,8 +22,26 @@
  * @file
  */
 
+/**
+ * This class implements the header alteration and entity alteration functions
+ * used for 302-style Time Negotiation when an Accept-Datetime header is
+ * given in the request.  The response is heavily altered, replacing the
+ * standard Mediawiki page load with a 302 redirect.
+ *
+ * This class is named "TimeGateResource" because the response is a TimeGate.
+ *
+ * This class is for when the URI-G=URI-R for 302-style in the Memento RFC.
+ */
 class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
+	/**
+	 * alterHeaders
+	 *
+	 * Create the 302 redirect response for this Mediawiki Page.  All output
+	 * is disabled once the headers are constructed so that there is no entity
+	 * in the 302 response.
+	 *
+	 */
 	public function alterHeaders() {
 
 		$out = $this->article->getContext()->getOutput();
@@ -115,6 +133,13 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 	}
 
+	/**
+	 * alterEntity
+	 *
+	 * There is no entity body for this 302 response, so no alterations are
+	 * necessary.
+	 *
+	 */
 	public function alterEntity() {
 		// do nothing to the body
 	}

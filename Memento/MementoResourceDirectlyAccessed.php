@@ -22,10 +22,18 @@
  * @file
  */
 
-class MementoResourceWithHeaderModificationsOnly extends MementoResource {
+/**
+ * This class implements the header alteration and entity alteration functions
+ * directly accessed Mementos, regardless of Time Negotiation style.
+ *
+ * This class is for the directly accessed URI-M mentioned in the Memento RFC.
+ */
+class MementoResourceDirectlyAccessed extends MementoResource {
 
 	/**
-	 * Render the page
+	 * alterHeaders
+	 *
+	 * Put the Memento headers in place for this directly accessed Memento.
 	 */
 	public function alterHeaders() {
 
@@ -118,6 +126,12 @@ class MementoResourceWithHeaderModificationsOnly extends MementoResource {
 		$response->header( "Link: $linkEntries", true );
 	}
 
+	/**
+	 * alterEntity
+	 *
+	 * No entity alterations are necessary for directly accessed Mementos.
+	 *
+	 */
 	public function alterEntity() {
 		// do nothing to the body
 	}
