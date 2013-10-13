@@ -50,6 +50,7 @@ class OriginalResourceWithTimeNegotiation extends MementoResource {
 				$this->constructLinkRelationHeader( $timegateuri,
 					'original latest-version timegate' );
 
+			# TODO: add from and until for the RecommendedRelations option
 			$timeMapLinkEntry = $this->constructTimeMapLinkHeader(
 				$this->mwrelurl, $title );
 

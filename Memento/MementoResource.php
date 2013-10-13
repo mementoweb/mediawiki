@@ -58,6 +58,14 @@ class MementoResourceException extends Exception {
 
 	/**
 	 * redefined constructor for our purposes
+	 *
+	 * @param $textMessage - message key (string) for page text
+	 * @param $titleMessage - message key (string) for page title
+	 * @param $outputPage - OutputPage object from this session
+	 * @param $response	- response object from this session
+	 * @param $statusCode - the HTTP status code to use in the response
+	 * @param $params - parameters for the $textMessage
+	 *
 	 */
 	public function __construct(
 		$textMessage, $titleMessage, $outputPage, $response, $statusCode,
@@ -82,13 +90,17 @@ class MementoResourceException extends Exception {
 
 	/**
 	 * getter for StatusCode
+	 *
+	 * @return $statusCode
 	 */
 	public function getStatusCode() {
 		return $this->statusCode;
 	}
 
 	/**
-	 * getter for response
+	 * getter for response object
+	 *
+	 * @return Response Object for this session
 	 */
 	public function getResponse() {
 		return $this->response;
@@ -96,6 +108,8 @@ class MementoResourceException extends Exception {
 
 	/**
 	 * getter for outputPage
+	 *
+	 * @return OutputPage Object for this session
 	 */
 	public function getOutputPage() {
 		return $this->outputPage;
@@ -103,6 +117,8 @@ class MementoResourceException extends Exception {
 
 	/**
 	 * getter for textMessage
+	 *
+	 * @return message key (string) for page text
 	 */
 	public function getTextMessage() {
 		return $this->textMessage;
@@ -110,6 +126,8 @@ class MementoResourceException extends Exception {
 
 	/**
 	 * getter for titleMessage
+	 *
+	 * @return message key (string) for page title
 	 */
 	public function getTitleMessage() {
 		return $this->titleMessage;
@@ -117,6 +135,8 @@ class MementoResourceException extends Exception {
 
 	/**
 	 * getter for params
+	 *
+	 * @return message parameters for page text message
 	 */
 	public function getParams() {
 		return $this->params;
@@ -126,8 +146,8 @@ class MementoResourceException extends Exception {
 
 /**
  * This abstract class is the parent of all MementoResource types.
- *
  * As such, it contains the methods used by all of the Memento Pages.
+ * 
  */
 abstract class MementoResource {
 
@@ -179,7 +199,7 @@ abstract class MementoResource {
 	 * @param $sqlCondition - the conditional statement
 	 * @param $sqlOrder - order of the data returned (e.g. ASC, DESC)
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function fetchMementoFromDatabase($dbr, $sqlCondition, $sqlOrder ) {
 
@@ -213,7 +233,7 @@ abstract class MementoResource {
 	 * @param $dbr - DatabaseBase object
 	 * @param $oldid - the oldid for this page
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function getInfoForThisMemento( $dbr, $oldid ) {
 
@@ -247,7 +267,7 @@ abstract class MementoResource {
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the first memento
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function getFirstMemento( $dbr, $pageID ) {
 
@@ -270,7 +290,7 @@ abstract class MementoResource {
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function getLastMemento( $dbr, $pageID ) {
 
@@ -293,7 +313,7 @@ abstract class MementoResource {
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function getCurrentMemento( $dbr, $pageID, $pageTimestamp ) {
 
@@ -317,7 +337,7 @@ abstract class MementoResource {
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function getNextMemento( $dbr, $pageID, $pageTimestamp ) {
 
@@ -341,7 +361,7 @@ abstract class MementoResource {
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
-	 * returns $revision - associative array with id and timestamp keys
+	 * @return $revision - associative array with id and timestamp keys
 	 */
 	public function getPrevMemento( $dbr, $pageID, $pageTimestamp ) {
 
@@ -364,7 +384,7 @@ abstract class MementoResource {
 	 * @param $id - ID of page
 	 * @param $title - article title
 	 *
-	 * return $fullURI - full URI referring to article and revision
+	 * @return $fullURI - full URI referring to article and revision
 	 */
 	public function getFullURIForID( $scriptPath, $id, $title ) {
 
@@ -378,10 +398,12 @@ abstract class MementoResource {
 	/**
 	 * parseRequestDateTime
 	 *
+	 * Take in the RFC2822 datetime and convert it to the format used by
+	 * Mediawiki.
+	 *
 	 * @param $requestDateTime
 	 *
-	 *
-	 * returns $dt - datetime in mediawiki database format
+	 * @return $dt - datetime in mediawiki database format
 	 */
 	public function parseRequestDateTime( $requestDateTime ) {
 
@@ -399,11 +421,15 @@ abstract class MementoResource {
 	 * the first memento will be returned.
 	 * If the requested time is past the last memento, or in the future,
 	 * the last memento will be returned.
+	 * Otherwise, go with the one we've got because the future database call
+	 * will get the nearest memento.
 	 *
 	 * @param $firstTimestamp - the first timestamp for which we have a memento
 	 *				formatted in the TS_MW format
 	 * @param $lastTimestamp - the last timestamp for which we have a memento
 	 * @param $givenTimestamp - the timestamp given by the request header
+	 *
+	 * @return $chosenTimestamp - the timestamp to use
 	 */
 	public function chooseBestTimestamp(
 		$firstTimestamp, $lastTimestamp, $givenTimestamp ) {
@@ -429,11 +455,13 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for a memento for the Link Header.
 	 *
-	 * @param $scriptUrl
-	 * @param $title
-	 * @param $oldid
-	 * @param $timestamp
-	 * @param $relation
+	 * @param $scriptUrl - the base URI used for Mediawiki
+	 * @param $title - the title string of the given page
+	 * @param $oldid - the oldid of the given page
+	 * @param $timestamp - the timestamp of this Memento
+	 * @param $relation - the relation type of this Memento
+	 *
+	 * @return $entry - full Memento Link header entry
 	 */
 	public function constructMementoLinkHeaderEntry(
 		$scriptUrl, $title, $id, $timestamp, $relation ) {
@@ -452,8 +480,12 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for timemap in the Link Header.
 	 *
-	 * @param $scriptUrl
-	 * @param $title
+	 * @param $scriptUrl - the base URL used for Mediawiki
+	 * @param $title - the title string of the given page
+	 * @param $from - the from timestamp for the TimeMap
+	 * @param $until - the until timestamp for the TimeMap
+	 *
+	 * @return $entry - full Memento TimeMap relation with from and until
 	 */
 	public function constructTimeMapLinkHeaderWithBounds(
 		$scriptUrl, $title, $from, $until ) {
@@ -470,8 +502,10 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for timemap in the Link Header.
 	 *
-	 * @param $scriptUrl
-	 * @param $title
+	 * @param $scriptUrl - the base URL used for Mediawiki
+	 * @param $title - the title string of the given page
+	 *
+	 * @return $entry - Memento TimeMap relation
 	 */
 	public function constructTimeMapLinkHeader( $scriptUrl, $title ) {
 
@@ -491,21 +525,15 @@ abstract class MementoResource {
 	 *
 	 * This function returns the TimeGate URI based on the current configuration
 	 *
-	 * @param $scriptUrl
-	 * @param $title
+	 * @param $scriptUrl - the base URL used for Mediawiki
+	 * @param $title - the title string of the given page
 	 *
+	 * @return $timegateurl - the TimeGate URI
 	 */
 	public function getTimeGateURI( $scriptUrl, $title ) {
 		$title = rawurlencode($title);
 
-		if ( $this->conf->get( 'Negotiation' ) == "200" ) {
-			$timegateurl = wfExpandUrl( $scriptUrl . '/' .  $title );
-
-		} else {
-			$timegateurl =	wfExpandUrl(
-					$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
-					) . '/' .  $title;
-		}
+		$timegateurl = wfExpandUrl( $scriptUrl . '/' .  $title );
 
 		return $timegateurl;
 	}
@@ -515,9 +543,13 @@ abstract class MementoResource {
 	 *
 	 * This function returns the original URI
 	 *
-	 * @param $scriptUrl
-	 * @param $title
+	 * TODO: This function and getTimeGateURI have evolved to the same function
+	 *			consolidate them into one function
 	 *
+	 * @param $scriptUrl - the base URL used for Mediawiki
+	 * @param $title - the title string of the given page
+	 *
+	 * @return $originalurl - the Original URI
 	 */
 	public function getOriginalURI( $scriptUrl, $title ) {
 		$title = rawurlencode($title);
@@ -535,6 +567,7 @@ abstract class MementoResource {
 	 *
 	 * @param $titleObj - title object corresponding to this resource
 	 *
+	 * @return $title - the namespace:title string for the given page
 	 */
 	public function getFullNamespacePageTitle( $titleObj ) {
 		$title = $titleObj->getDBkey();
@@ -550,11 +583,16 @@ abstract class MementoResource {
 	/**
 	 * constructLinkRelationHeader
 	 *
-	 * This creates a link header entry for the given URI
+	 * This creates a link header entry for the given URI, with no
+	 * extra information, just URL and relation.
+	 *
+	 * TODO: Review use of this function, it doesn't use wfExpandUrl,
+	 * 		which means it may not be "safe" like the others.
 	 *
 	 * @param $url
 	 * @param $relation
 	 *
+	 * @return relation string
 	 */
 	public function constructLinkRelationHeader( $url, $relation ) {
 		return '<' . $url . '>; rel="' . $relation . '"';
@@ -565,24 +603,22 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for timegate in the Link Header.
 	 *
-	 * @param $scriptUrl
-	 * @param $title
+	 * TODO: look at using the consolidated function from the battle between
+	 * 		getOriginalURI and getTimeGateURI, rather than repeating
+	 *		the work here; even better, replace with
+	 *		constructLinkRelationHeader
+	 *
+	 * @param $scriptUrl - the base URL used for Mediawiki
+	 * @param $title - the title string of the given page
+	 *
+	 * @return $entry - the Time Gate relation
 	 */
 	public function constructTimeGateLinkHeader( $scriptUrl, $title ) {
 
 		$title = rawurlencode($title);
 
-		if ( $this->conf->get( 'Negotiation' ) == "200" ) {
-			$entry = '<' .  wfExpandUrl( $scriptUrl . '/' .  $title ) .
+		$entry = '<' .  wfExpandUrl( $scriptUrl . '/' .  $title ) .
 				'>; rel="timegate"';
-
-		} else {
-			$entry = '<' .
-				wfExpandUrl(
-					$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeGate' )
-					) . '/' .  $title .
-				'>; rel="timegate"';
-		}
 
 		return $entry;
 	}
@@ -591,9 +627,16 @@ abstract class MementoResource {
 	 * constructOriginalLatestVersionHeader
 	 *
 	 * This creates the entry for timegate in the Link Header.
+
+	 * TODO: look at using the consolidated function from the battle between
+	 * 		getOriginalURI and getTimeGateURI, rather than repeating
+	 *		the work here; even better, replace with
+	 *		constructLinkRelationHeader
 	 *
-	 * @param $scriptUrl
-	 * @param $title
+	 * @param $scriptUrl - the base URL used for Mediawiki
+	 * @param $title - the title string of the given page
+	 *
+	 * @return $entry - the Original Latest Version relation
 	 */
 	public function constructOriginalLatestVersionLinkHeader(
 		$scriptUrl, $title ) {
@@ -609,10 +652,13 @@ abstract class MementoResource {
 	/**
 	 * convertRevisionData
 	 *
+	 * The database functions return ID and Timestamp, but so many of the
+	 * functions need URI and Timestamp, so this function converts them.
+	 *
 	 * @param $revision - associative array consisting of id and timestamp keys
 	 * @param $title - the title of the article
 	 *
-	 * returns $convertedRev - associative array consisting of uri and dt keys
+	 * @return $convertedRev - associative array consisting of uri and dt keys
 	 */
 	public function convertRevisionData( $scriptPath, $revision, $title ) {
 
@@ -744,6 +790,7 @@ abstract class MementoResource {
 	 *
 	 * Get the Memento Timestamp
 	 *
+	 * @return $this->mementoOldID - the OldID stored previously
 	 */
 	public function getMementoOldID() {
 		return $this->mementoOldID;
@@ -752,9 +799,14 @@ abstract class MementoResource {
 	/**
 	 * renderError
 	 *
-	 * Render error page.  This is only used for 40* and 50* errors.
+	 * Render error page.  This is only used for 40* and 50* HTTP statuses.
+	 * This function is static so it can be called in cases where we have
+	 * no MementoResource object.
 	 *
+	 * @param $out - OutputPage object
 	 * @param $error - MementoResourceException object
+	 * @param $errorPageType - the error page type 'traditional' or 'friendly'
+	 *
 	 */
 	public static function renderError($out, $error, $errorPageType) {
 		if ( $errorPageType == 'traditional' ) {
@@ -789,11 +841,13 @@ abstract class MementoResource {
 	 * @param $oldID - string indicating revision ID
 	 *		used in decision
 	 *
+	 * @return $resource - the correct instance of MementoResource based
+	 *						on current conditions
 	 */
 	public static function mementoPageResourceFactory(
 		$conf, $dbr, $article, $oldID, $request ) {
 
-		$page = null;
+		$resource = null;
 
 		if ( $oldID == 0 ) {
 
@@ -802,43 +856,34 @@ abstract class MementoResource {
 				if ( $request->getHeader('ACCEPT-DATETIME') ) {
 					/* we are requesting a Memento, but via 200-style
 						Time Negotiation */
-					$page = new MementoResourceFromTimeNegotiation(
+					$resource = new MementoResourceFromTimeNegotiation(
 						$conf, $dbr, $article );
 				} else {
 					/* we are requesting the original resource, but
 						want to supply 200-style Time Negotiation Link
 						header relations */
-					$page = new OriginalResourceWithTimeNegotiation(
+					$resource = new OriginalResourceWithTimeNegotiation(
 						$conf, $dbr, $article );
 				}
 
 			} else {
 
 				if ( $request->getHeader('ACCEPT-DATETIME') ) {
-					$page = new TimeGateResourceFrom302TimeNegotiation(
+					$resource = new TimeGateResourceFrom302TimeNegotiation(
 						$conf, $dbr, $article );
 				} else {
-					$page = new OriginalResourceWithTimeNegotiation(
+					$resource = new OriginalResourceWithTimeNegotiation(
 						$conf, $dbr, $article );
 				}
-#				/* we are requesting the original resource, but
-#					want to supply 302-style Time Negotiation Link
-#					header relations */
-#				$page = new OriginalResourceWithHeaderModificationsOnly(
-#					$out, $conf, $dbr, $title, null, $article );
+
 			}
 		} else {
-			/* we are requesting a Memento directly (an oldID URI)
-				this class makes calls to other functions that
-				operate differently based on 200 vs. 302-style */
-			/* TODO: decide if we should redo this strategy pattern
-				because the strategy breaks down if this guy (or a callee)
-				makes his own decisions based on 200 vs. 302 */
-			$page = new MementoResourceWithHeaderModificationsOnly(
+			// we are requesting a Memento directly (an oldID URI)
+			$resource = new MementoResourceWithHeaderModificationsOnly(
 				$conf, $dbr, $article );
 		}
 
-		return $page;
+		return $resource;
 	}
 
 	/*
@@ -847,6 +892,9 @@ abstract class MementoResource {
 	 * This code ensures that the version of the Template that was in existence
 	 * at the same time as the Memento gets loaded and displayed with the
 	 * Memento.
+	 *
+	 * TODO: this function doesn't handle mementos that exist prior to the 
+	 *			first memento
 	 *
 	 * @param $title - Title object of the page
 	 * @param $parser - Parsger object of the page
@@ -891,10 +939,11 @@ abstract class MementoResource {
 	
 
 	/**
-	 * Constructor
+	 * Constructor for MementoResource and its children
 	 * 
-	 * @param $conf
-	 * @param $dbr
+	 * @param $conf - configuration object
+	 * @param $dbr - database object
+	 * @param $article - article object
 	 *
 	 */
 	public function __construct( $conf, $dbr, $article ) {
@@ -910,8 +959,24 @@ abstract class MementoResource {
 	}
 
 
+	/**
+	 * alterHeaders
+	 *
+	 * This function is used to alter the headers of the outgoing response,
+	 * and must be implemented by the MementoResource implementation.
+	 * It is expected to be called from the ArticleViewHeader hook.
+	 *
+	 */
 	abstract public function alterHeaders();
 
+	/**
+	 * alterEntity
+	 *
+	 * This function is used to alter the entity of the outgoing response,
+	 * and must be implemented by the MementoResource implementation.
+	 * It is expected to be callsed from the BeforePageDisplay hook.
+	 *
+	 */
 	abstract public function alterEntity();
 
 }

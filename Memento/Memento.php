@@ -85,9 +85,6 @@ $wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
 
 // set up the Time Gate (URI-G) classes
-$wgSpecialPages['TimeGate'] = 'TimeGate';
-$wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
-$wgAutoloadClasses['TimeGateResource'] = __DIR__ . '/TimeGateResource.php';
 $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = 
 	__DIR__ . '/TimeGateResourceFrom302TimeNegotiation.php';
 
