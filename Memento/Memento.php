@@ -64,8 +64,6 @@ $wgAutoloadClasses['MementoResourceWithHeaderModificationsOnly'] =
 // Set up the Original page (URI-R) Classes
 $wgAutoloadClasses['OriginalResourceWithTimeNegotiation'] =
 	__DIR__ . '/OriginalResourceWithTimeNegotiation.php';
-$wgAutoloadClasses['OriginalResourceWithHeaderModificationsOnly'] =
-	__DIR__ . '/OriginalResourceWithHeaderModificationsOnly.php';
 
 // set up the Time Map (URI-T) classes
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
