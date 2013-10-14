@@ -128,9 +128,7 @@ class TimeMapFullResource extends TimeMapResource {
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-404-title';
-			$waddress = str_replace(
-				'$1', '', $this->conf->get('ArticlePath') );
-			$title = str_replace( $server . $waddress, "", $urlparam );
+			$title = $this->getFullNamespacePageTitle( $titleObj );
 
 			throw new MementoResourceException(
 				$textMessage, $titleMessage,
