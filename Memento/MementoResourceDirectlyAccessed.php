@@ -55,14 +55,11 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			$pageID = $titleObj->getArticleID();
 			$oldID = $this->article->getOldID();
 
-			$mementoInfo = $this->getInfoForThisMemento( $this->dbr, $oldID );
-			$mementoInfoID = $mementoInfo['id'];
-			$mementoDatetime = $mementoInfo['timestamp'];
+			$mementoTimestamp = 
+				$this->article->getRevisionFetched()->getTimestamp();
 
-			$memento = $this->convertRevisionData( $this->mwrelurl,
-				$this->getCurrentMemento(
-					$this->dbr, $mementoInfoID, $mementoDatetime ),
-				$title );
+			// convert for display
+			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoTimestamp );
 
 			$myuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
 
@@ -80,22 +77,14 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$this->mwrelurl, $title, $first, $last );
 
-				$linkEntires = array_merge( $linkEntries, $entries);
+				$linkEntries = array_merge( $linkEntries, $entries);
 
 			} else  {
 				$entry = $this->constructTimeMapLinkHeader(
 					$this->mwrelurl, $title );
 				array_push( $linkEntries, $entry );
 
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $oldID,
-					$memento['dt'], 'memento' );
-				array_push( $linkEntries, $entry );
 			}
-
-
-			// convert for display
-			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoDatetime );
 
 			$response->header( "Memento-Datetime:  $mementoDatetime", true );
 		}

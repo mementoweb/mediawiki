@@ -95,7 +95,7 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$this->mwrelurl, $title, $first, $last );
 
-				$linkEntires = array_merge( $linkEntries, $entries);
+				$linkEntries = array_merge( $linkEntries, $entries);
 
 			} else {
 				$entry = $this->constructTimeMapLinkHeader(

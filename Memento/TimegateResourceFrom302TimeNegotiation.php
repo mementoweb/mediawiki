@@ -97,13 +97,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$this->mwrelurl, $title, $first, $last );
 
-				print_r($linkEntries);
-
-				print_r($entries);
-
 				$linkEntries = array_merge( $linkEntries, $entries);
-
-				print_r($linkEntries);
 
 			} else {
 				$entry = $this->constructTimeMapLinkHeader(
