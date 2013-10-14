@@ -65,8 +65,8 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 
 			$pageID = $titleObj->getArticleID();
 
+			// these database calls are required for time negotiation
 			$first = $this->getFirstMemento( $this->dbr, $pageID );
-
 			$last = $this->getLastMemento( $this->dbr, $pageID );
 
 			$mwMementoTimestamp = $this->chooseBestTimestamp(
@@ -91,20 +91,11 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 			array_push( $linkEntries, $entry );
 
 			if ( $this->conf->get('RecommendedRelations') ) {
-				$entry = $this->constructTimeMapLinkHeaderWithBounds(
-						$this->mwrelurl, $title,
-						$first['timestamp'], $last['timestamp'] );
-				array_push( $linkEntries, $entry );
 
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $first['id'],
-					$first['timestamp'], 'memento first' );
-				array_push( $linkEntries, $entry );
+				$entries = $this->generateRecommendedLinkHeaderRelations(
+					$this->mwrelurl, $title, $first, $last );
 
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $last['id'],
-					$last['timestamp'], 'memento last' );
-				array_push( $linkEntries, $entry );
+				$linkEntires = array_merge( $linkEntries, $entries);
 
 			} else {
 				$entry = $this->constructTimeMapLinkHeader(
@@ -119,11 +110,10 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 
 			$out->addVaryHeader( 'Accept-Datetime' );
 
-			$linkEntries = implode( ',', $linkEntries );
-
 			$this->setMementoOldID( $id );
-
 		}
+
+		$linkEntries = implode( ',', $linkEntries );
 
 		$response->header( "Link: $linkEntries", true );
 	}

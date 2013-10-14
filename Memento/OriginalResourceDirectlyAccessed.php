@@ -67,24 +67,15 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 			if ( $this->conf->get('RecommendedRelations') ) {
 				$pageID = $titleObj->getArticleID();
 
+				// for performance, these database calls only occur
+				// when $wgMementoRecommendedRelations is true
 				$first = $this->getFirstMemento( $this->dbr, $pageID );
-
 				$last = $this->getLastMemento( $this->dbr, $pageID );
 
-				$entry = $this->constructTimeMapLinkHeaderWithBounds(
-						$this->mwrelurl, $title,
-						$first['timestamp'], $last['timestamp'] );
-				array_push( $linkEntries, $entry );
+				$entries = $this->generateRecommendedLinkHeaderRelations(
+					$this->mwrelurl, $title, $first, $last );
 
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $first['id'],
-					$first['timestamp'], 'memento first' );
-				array_push( $linkEntries, $entry );
-
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $last['id'],
-					$last['timestamp'], 'memento last' );
-				array_push( $linkEntries, $entry );
+				$linkEntires = array_merge( $linkEntries, $entries);
 
 			} else {
 				$entry =

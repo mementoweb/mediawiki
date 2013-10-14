@@ -72,37 +72,15 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			if ( $this->conf->get('RecommendedRelations') ) {
 
-				$first = $this->convertRevisionData( $this->mwrelurl,
-					$this->getFirstMemento( $this->dbr, $pageID ),
-					$title );
+				// for performance, these database calls only occur
+				// when $wgMementoRecommendedRelations is true
+				$first = $this->getFirstMemento( $this->dbr, $pageID );
+				$last = $this->getLastMemento( $this->dbr, $pageID );
 
-				$last = $this->convertRevisionData( $this->mwrelurl,
-					$this->getLastMemento( $this->dbr, $pageID ),
-					$title );
+				$entries = $this->generateRecommendedLinkHeaderRelations(
+					$this->mwrelurl, $title, $first, $last );
 
-				$next = $this->convertRevisionData( $this->mwrelurl,
-					$this->getNextMemento(
-						$this->dbr, $pageID, $mementoDatetime ),
-					$title );
-
-				$prev = $this->convertRevisionData( $this->mwrelurl,
-					$this->getPrevMemento(
-						$this->dbr, $pageID, $mementoDatetime ),
-					$title );
-
-				$entry = $this->constructTimeMapLinkHeaderWithBounds(
-						$this->mwrelurl, $title,
-						$first['dt'], $last['dt'] );
-
-				array_push( $linkEntries, $entry );
-
-				$linkEntries = implode( ',', $linkEntries );
-
-				// TODO: rewrite this function... somehow
-				// so we can move the implode to the end of this function
-				$linkEntries .= ',' . $this->constructLinkHeader(
-					$first, $last, $memento, $next, $prev );
-				$linkEntries = rtrim( $linkEntries, ', ' );
+				$linkEntires = array_merge( $linkEntries, $entries);
 
 			} else  {
 				$entry = $this->constructTimeMapLinkHeader(
@@ -113,7 +91,6 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 					$this->mwrelurl, $title, $oldID,
 					$memento['dt'], 'memento' );
 				array_push( $linkEntries, $entry );
-				$linkEntries = implode( ',', $linkEntries );
 			}
 
 
@@ -122,6 +99,8 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			$response->header( "Memento-Datetime:  $mementoDatetime", true );
 		}
+
+		$linkEntries = implode( ',', $linkEntries );
 
 		$response->header( "Link: $linkEntries", true );
 	}

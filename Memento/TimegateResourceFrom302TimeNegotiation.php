@@ -58,7 +58,6 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			array_push( $linkEntries, $entry );
-
 		} else {
 
 			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
@@ -68,8 +67,8 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 			$pageID = $titleObj->getArticleID();
 
+			// these database calls are required for time negotiation
 			$first = $this->getFirstMemento( $this->dbr, $pageID );
-
 			$last = $this->getLastMemento( $this->dbr, $pageID );
 
 			$mwMementoTimestamp = $this->chooseBestTimestamp(
@@ -84,7 +83,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 			$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
 
-			# the following headers comply with Pattern 1.2 of the Memento RFC
+			# the following headers comply with Pattern 1.1 of the Memento RFC
 			$response->header( "Location: $url", true );
 
 			$timegateuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
@@ -94,29 +93,23 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			array_push( $linkEntries, $entry );
 
 			if ( $this->conf->get('RecommendedRelations') ) {
-				$entry = $this->constructTimeMapLinkHeaderWithBounds(
-						$this->mwrelurl, $title,
-						$first['timestamp'], $last['timestamp'] );
-				array_push( $linkEntries, $entry );
 
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $first['id'],
-					$first['timestamp'], 'memento first' );
-				array_push( $linkEntries, $entry );
+				$entries = $this->generateRecommendedLinkHeaderRelations(
+					$this->mwrelurl, $title, $first, $last );
 
-				$entry = $this->constructMementoLinkHeaderEntry(
-					$this->mwrelurl, $title, $last['id'],
-					$last['timestamp'], 'memento last' );
-				array_push( $linkEntries, $entry );
+				print_r($linkEntries);
+
+				print_r($entries);
+
+				$linkEntries = array_merge( $linkEntries, $entries);
+
+				print_r($linkEntries);
 
 			} else {
 				$entry = $this->constructTimeMapLinkHeader(
 						$this->mwrelurl, $title );
 				array_push( $linkEntries, $entry );
 			}
-
-			$mwMementoTimestamp = wfTimestamp(
-				TS_RFC2822, $mwMementoTimestamp );
 
 			// this does not work for some reason, possibly because 
 			// of the disable() below?

@@ -582,6 +582,7 @@ abstract class MementoResource {
 	 * The database functions return ID and Timestamp, but so many of the
 	 * functions need URI and Timestamp, so this function converts them.
 	 *
+	 * @param $scriptPath - the $wgScriptPath part of the URI
 	 * @param $revision - associative array consisting of id and timestamp keys
 	 * @param $title - the title of the article
 	 *
@@ -600,6 +601,50 @@ abstract class MementoResource {
 		}
 
 		return $convertedRev;
+	}
+
+	/**
+	 * generateRecommendedLinkHeaderRelations
+	 *
+	 * This function generates the recommended link header relations,
+	 * handling cases such as 'first memento' and 'last memento' vs.
+	 * 'first last memento', etc.
+	 *
+	 * @param $scriptPath - the $wgScriptPath part of the URI
+	 * @param $title - the article title text part of the URI
+	 * @param $first - associative array containing info on the first memento
+	 * 					with the keys 'timestamp' and 'id'
+	 * @param $last	- associative array containing info on the last memento
+	 * 					with the keys 'timestamp' and 'id'
+	 *
+	 * @return $linkRelations - array of link relations
+	 */
+	public function generateRecommendedLinkHeaderRelations(
+		$scriptPath, $title, $first, $last ) {
+
+		$linkRelations = array();
+
+		$entry = $this->constructTimeMapLinkHeaderWithBounds(
+			$scriptPath, $title, $first['timestamp'], $last['timestamp'] );
+		array_push( $linkRelations, $entry );
+
+		if ( $first['id'] == $last['id'] ) {
+			$entry = $this->constructMementoLinkHeaderEntry(
+				$scriptPath, $title, $first['id'], $first['timestamp'],
+				'first last memento' );
+			array_push( $linkRelations, $entry );
+		} else {
+			$entry = $this->constructMementoLinkHeaderEntry(
+				$scriptPath, $title, $first['id'], $first['timestamp'],
+				'first memento' );
+			array_push( $linkRelations, $entry );
+			$entry = $this->constructMementoLinkHeaderEntry(
+				$scriptPath, $title, $last['id'], $last['timestamp'],
+				'last memento' );
+			array_push( $linkRelations, $entry );
+		}
+
+		return $linkRelations;
 	}
 
 	// TODO: This function is not useful unless the get*Memento functions
