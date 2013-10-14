@@ -254,13 +254,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		}
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Notice</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Warning</b>"));
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-400-date');
@@ -313,13 +313,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
 		}
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Notice</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Warning</b>"));
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-400-date');
@@ -355,13 +355,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Notice</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Warning</b>"));
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-404-title');
@@ -396,13 +396,13 @@ class TimeGateTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Notice</b>"));
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
+		$this->assertFalse(strpos($entity, "<b>Warning</b>"));
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-404-title');
