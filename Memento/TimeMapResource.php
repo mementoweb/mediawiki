@@ -215,6 +215,11 @@ abstract class TimeMapResource extends MementoResource {
 	public function extractTimestampPivot( $urlparam ) {
 		$pivot = null;
 
+		$prefix = $this->mwrelurl . '/' .
+			SpecialPage::getTitleFor('TimeMap') . '/';
+
+		$urlparam = str_replace($prefix, '', $urlparam);
+
 		$pattern = "/^([0-9]{14})\/.*/";
 
 		preg_match($pattern, $urlparam, $matches);
@@ -268,8 +273,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param $data - array with entries containing the keys
 	 *					rev_id and rev_timestamp
-	 * @param $urlparam - used to construct self TimeMap URI
-	 * @param $baseURL - used to construct self TimeMap URI
+	 * @param $timeMapURI - used to construct self TimeMap URI relation
 	 * @param $title - the page name that the TimeMap is for
 	 * @param $pagedTimeMapEntries - array of arrays, each entry containing
 	 *			the keys 'uri', 'from', and 'until' referring to the URI of
@@ -278,7 +282,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(
-		$data, $urlparam, $baseURL, $title, $pagedTimeMapEntries = array() ) {
+		$data, $timeMapURI, $title, $pagedTimeMapEntries = array() ) {
 
 		$outputArray = array();
 
@@ -289,12 +293,9 @@ abstract class TimeMapResource extends MementoResource {
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
-		$timemapEntry = '<' . $baseURL . '/' . 
-			SpecialPage::getTitleFor( 'TimeMap' ) . '/' .  $urlparam . 
+		$timemapEntry = '<' . $timeMapURI . 
 			'>; rel="self"; type="application/link-format"; ' .
 			'from="' . $from . '; until="' . $until . '"';
-
-		array_push( $outputArray, $originalLatestVersionEntry );
 
 		array_push( $outputArray, $timemapEntry );
 
@@ -310,8 +311,6 @@ abstract class TimeMapResource extends MementoResource {
 		}
 
 		array_push( $outputArray, $timegateEntry );
-
-		$baseURL = rtrim($baseURL, "/");
 
 		for ($i = count($data) - 1; $i >= 0; $i--) {
 			$output = "";

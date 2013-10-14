@@ -114,15 +114,15 @@ class TimeMap extends SpecialPage {
 	 * TODO: move this function into TimeMapResource as a static function.
 	 *
 	 */
-	public function timeMapFactory( $out, $config, $dbr, $urlparam, $title ) {
+	public function timeMapFactory( $config, $dbr, $article, $urlparam ) {
 
 		if ( $this->containsPivot( $urlparam ) ) {
 			if ( $this->isPivotAscending( $urlparam ) ) {
 				$tm = new TimeMapPivotAscendingResource(
-					$out, $config, $dbr, $title, $urlparam, null );
+					$config, $dbr, $article );
 			} elseif ( $this->isPivotDescending( $urlparam ) ) {
 				$tm = new TimeMapPivotDescendingResource(
-					$out, $config, $dbr, $title, $urlparam, null );
+					$config, $dbr, $article );
 			} else {
 				$titleMessage = 'timemap';
 				$textMessage = 'timemap-400-date';
@@ -134,8 +134,7 @@ class TimeMap extends SpecialPage {
 				);
 			}
 		} else {
-			$tm = new TimeMapFullResource(
-				$out, $config, $dbr, $title, $urlparam, null );
+			$tm = new TimeMapFullResource( $config, $dbr, $article );
 		}
 
 		return $tm;
@@ -187,7 +186,11 @@ class TimeMap extends SpecialPage {
 			$dbr = wfGetDB( DB_SLAVE );
 
 			try {
+				// so we can use the same framework as the rest of the
+				// MementoResource classes, we need an Article class
 				$title = $this->getTitleObject( $urlparam );
+				$article = new Article($title);
+				$article->setContext($this->getContext());
 
 				if (!$title) {
 					$titleMessage = 'timemap';
@@ -213,7 +216,8 @@ class TimeMap extends SpecialPage {
 				}
 
 				$page = $this->timeMapFactory(
-					$out, $config, $dbr, $urlparam, $title );
+					$config, $dbr, $article, $urlparam );
+
 				$page->render();
 			} catch (MementoResourceException $e) {
 				MementoResource::renderError(

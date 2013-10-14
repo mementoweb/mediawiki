@@ -65,10 +65,16 @@ class TimeMapFullResource extends TimeMapResource {
 	 */
 	public function render() {
 
+		$article = $this->article;
+		$out = $article->getContext()->getOutput();
+		$titleObj = $article->getTitle();
+
 		$server = $this->conf->get('Server');
-		$pg_id = $this->title->getArticleID();
-		$title = $this->title->getPrefixedURL();
-		$response = $this->out->getRequest()->response();
+		$pg_id = $article->getTitle()->getArticleID();
+		$request = $out->getRequest();
+		$response = $request->response();
+
+		$timeMapURI = $request->getFullRequestURL();
 
 		if ( $pg_id > 0 ) {
 
@@ -77,14 +83,14 @@ class TimeMapFullResource extends TimeMapResource {
 				);
 
 			# get the first revision ID
-			$firstId = $this->title->getFirstRevision()->getId();
+			$firstId = $titleObj->getFirstRevision()->getId();
 			
 			# get the last revision ID
-			$lastId = $this->title->getLatestRevID();
+			$lastId = $titleObj->getLatestRevID();
 
 			# calculate the difference
 			# this counts the revisions BETWEEN, non-inclusive
-			$revCount = $this->title->countRevisionsBetween($firstId, $lastId);
+			$revCount = $titleObj->countRevisionsBetween($firstId, $lastId);
 			$revCount = $revCount + 2; # for first and last
 
 			# if it is greater than limit then get the revision ID prior to the
@@ -92,6 +98,8 @@ class TimeMapFullResource extends TimeMapResource {
 
 			# paginate if we have more than NumberOfMementos Mementos
 			$timeMapPages = array();
+
+			$title = $titleObj->getPrefixedURL();
 
 			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
 				$earliestItem = end($results);
@@ -111,23 +119,22 @@ class TimeMapFullResource extends TimeMapResource {
 			# 	until for the next timemap
 
 			echo $this->generateTimeMapText(
-				$results, $this->urlparam, $this->mwbaseurl, $title,
-				$timeMapPages
+				$results, $timeMapURI, $title, $timeMapPages
 				);
 
 			$response->header("Content-Type: application/link-format", true);
 
-			$this->out->disable();
+			$out->disable();
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-404-title';
 			$waddress = str_replace(
 				'$1', '', $this->conf->get('ArticlePath') );
-			$title = str_replace( $server . $waddress, "", $this->urlparam );
+			$title = str_replace( $server . $waddress, "", $urlparam );
 
 			throw new MementoResourceException(
 				$textMessage, $titleMessage,
-				$this->out, $response, 404, array( $title )
+				$out, $response, 404, array( $title )
 			);
 		}
 	}
