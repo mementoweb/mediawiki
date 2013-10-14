@@ -50,13 +50,13 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($statusline["code"], "404");
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
@@ -88,13 +88,13 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("200", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
@@ -134,7 +134,13 @@ class TimeMapTest extends PHPUnit_Framework_TestCase {
 		#$this->assertEquals($expectedOutput, $entity);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("Fatal error", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
+
+		# To catch any PHP notices that the test didn't notice
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 

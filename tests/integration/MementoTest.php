@@ -152,13 +152,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("$URIG", $relations['timegate']['url']);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
     }
 
     /**
@@ -360,13 +360,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("$URIG", $relations['timegate']['url']);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
     }
 
 	/**
@@ -392,13 +392,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("200", $statusline["code"]);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 	/**
@@ -457,13 +457,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 	/**
@@ -529,13 +529,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 	/**
@@ -591,13 +591,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 	/**
@@ -652,13 +652,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertContains('Accept-Datetime', $varyItems);
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 	/**
@@ -686,13 +686,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($statusline["code"], "200");
 
 		# To catch any PHP errors that the test didn't notice
-		$this->assertNotContains("<b>Fatal error</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Fatal error</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Notice</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Notice</b>") == 0 );
 
 		# To catch any PHP notices that the test didn't notice
-		$this->assertNotContains("<b>Warning</b>", $entity);
+		$this->assertFalse(strpos($entity, "<b>Warning</b>") == 0 );
 	}
 
 
