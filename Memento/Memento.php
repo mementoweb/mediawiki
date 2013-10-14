@@ -83,8 +83,8 @@ $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchT
 // set up the Time Gate (URI-G) classes
 $wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
 	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
-$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = 
-	__DIR__ . '/TimeGateResourceFrom302TimeNegotiation.php';
+$wgAutoloadClasses['TimegateResourceFrom302TimeNegotiation'] = 
+	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
 
 /**
  * Main Memento class, used by hooks.
