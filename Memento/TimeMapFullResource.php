@@ -25,6 +25,22 @@
 class TimeMapFullResource extends TimeMapResource {
 
 	/**
+	 * getPivotTimeMapData
+	 *
+	 * Concrete implementation of a method that acquires no pivoted
+	 * TimeMap data, because Full Time Maps aren't generated based on
+	 * a pivot date.
+	 *
+	 * @param $page_id
+	 * @param $formattedTimestamp
+	 *
+	 * @return null
+	 */
+	public function getPivotTimeMapData( $page_id, $formattedTimestamp ) {
+		return null;
+	}
+
+	/**
 	 * getFullTimeMapData
 	 *
 	 * Extract the full time map data from the database.

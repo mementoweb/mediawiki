@@ -154,13 +154,14 @@ abstract class TimeMapResource extends MementoResource {
 	 * Extract the full time map data from the database.
 	 *
 	 * @param $pg_id - identifier of the requested page
-	 * @param $limit - the greatest number of results
 	 * @param $timestamp - the timestamp to query for
 	 *
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getDescendingTimeMapData($pg_id, $limit, $timestamp) {
+	public function getDescendingTimeMapData($pg_id, $timestamp) {
+
+		$limit = $this->conf->get('NumberOfMementos');
 
 		$data = array();
 
@@ -196,13 +197,14 @@ abstract class TimeMapResource extends MementoResource {
 	 * Extract the full time map data from the database.
 	 *
 	 * @param $pg_id - identifier of the requested page
-	 * @param $limit - the greatest number of results
 	 * @param $timestamp - the timestamp to query for
 	 *
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getAscendingTimeMapData($pg_id, $limit, $timestamp) {
+	public function getAscendingTimeMapData($pg_id, $timestamp) {
+
+		$limit = $this->conf->get('NumberOfMementos');
 
 		$data = array();
 
@@ -220,13 +222,15 @@ abstract class TimeMapResource extends MementoResource {
 				)
 			);
 
-		# I couldn't figure out how to make the select function do 
-		# the following:
-		# SELECT rev_id, rev_timestamp FROM (SELECT  rev_id,rev_timestamp
-		# FROM `revision`  WHERE rev_page = '2' AND
-		# (rev_timestamp>'20120101010100')  ORDER BY rev_timestamp
-		# ASC LIMIT 3 ) as tempsorter ORDER BY rev_timestamp DESC;
-		# so the following code performs the sort in PHP
+		/*
+		 I couldn't figure out how to make the select function do 
+		 the following:
+		 SELECT rev_id, rev_timestamp FROM (SELECT  rev_id,rev_timestamp
+		 FROM `revision`  WHERE rev_page = '2' AND
+		 (rev_timestamp>'20120101010100')  ORDER BY rev_timestamp
+		 ASC LIMIT 3 ) as tempsorter ORDER BY rev_timestamp DESC;
+		 so the following code performs the sort in PHP
+		*/
 
 		$interim = array();
 
@@ -268,12 +272,11 @@ abstract class TimeMapResource extends MementoResource {
 	 	$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getAscendingTimeMapData(
-			$pg_id, $this->conf->get('NumberOfMementos'),
-			$pivotTimestamp
+			$pg_id, $pivotTimestamp
 			);
 		
 		$timeMapPage = array();
-		
+
 		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
 		$earliestItem = end($paginatedResults);
 		reset($paginatedResults);
@@ -306,8 +309,7 @@ abstract class TimeMapResource extends MementoResource {
 	 	$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getDescendingTimeMapData(
-			$pg_id, $this->conf->get('NumberOfMementos'),
-			$pivotTimestamp
+			$pg_id, $pivotTimestamp
 			);
 		
 		$timeMapPage = array();
@@ -450,4 +452,132 @@ abstract class TimeMapResource extends MementoResource {
 		return $timemap;
 	}
 
+	/**
+	 * renderPivotTimeMap
+	 *
+	 * This template method handles all of the operations of rendering a
+	 * PivotAscending or PivotDescending TimeMap.  It requires the
+	 * implementation of the abstract class getPivotTimeMapData.  It is
+	 * meant to be called form alterEntity.
+	 *
+	 */
+	public function renderPivotTimeMap() {
+		$article = $this->article;
+		$out = $article->getContext()->getOutput();
+		$titleObj = $article->getTitle();
+
+		$server = $this->conf->get('Server');
+		$pg_id = $titleObj->getArticleID();
+		$request = $out->getRequest();
+		$response = $request->response();
+
+		$requestURL = $request->getRequestURL();
+		$timeMapURI = $request->getFullRequestURL();
+
+		if ( $pg_id > 0 ) {
+
+			$timestamp = $this->extractTimestampPivot( $requestURL );
+
+			if (!$timestamp) {
+				// we can't trust what came back, and we don't know the pivot
+				// so the parameter array is empty below
+				throw new MementoResourceException(
+					'timemap-400-date', 'timemap',
+					$out, $response, 400,
+					array( '' ) );
+			}
+
+			$formattedTimestamp =
+				$this->formatTimestampForDatabase( $timestamp );
+
+			$results = $this->getPivotTimeMapData(
+				$pg_id, $formattedTimestamp
+				);
+
+			// this section is rather redundant when we throw 400 for
+			// the timestamp above, but exists in case some how an invalid
+			// timestamp is extracted
+			if (!$results) {
+				throw new MementoResourceException(
+					'timemap-400-date', 'timemap',
+					$out, $response, 400,
+					array( $timestamp )
+				);
+			}
+
+			$latestItem = $results[0];
+			$earliestItem = end($results);
+			reset($results);
+
+			$firstId = $titleObj->getFirstRevision()->getId();
+			$lastId = $titleObj->getLatestRevId();
+
+			# this counts revisions BETWEEN, non-inclusive
+			$revCount = $titleObj->countRevisionsBetween(
+				$firstId, $earliestItem['rev_id'] );
+			$revCount = $revCount + 2; # for first and last
+
+			$timeMapPages = array();
+
+			$title = $titleObj->getPrefixedURL();
+
+			# if $revCount is higher, then we've gone over the limit
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+
+				$pivotTimestamp = $this->formatTimestampForDatabase(
+					$earliestItem['rev_timestamp'] );
+
+				$this->generateDescendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
+
+			# this counts revisions BETWEEN, non-inclusive
+			$revCount = $titleObj->countRevisionsBetween(
+				$latestItem['rev_id'], $lastId );
+			$revCount = $revCount + 2; # for first and last
+
+			# if $revCount is higher, then we've gone over the limit
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+
+				$pivotTimestamp = $this->formatTimestampForDatabase(
+					$latestItem['rev_timestamp'] );
+
+				$this->generateAscendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
+
+			echo $this->generateTimeMapText(
+				$results, $timeMapURI, $title, $timeMapPages
+				);
+
+			$response->header("Content-Type: application/link-format", true);
+
+			$out->disable();
+		} else {
+			$titleMessage = 'timemap';
+			$textMessage = 'timemap-404-title';
+			$title = $this->getFullNamespacePageTitle( $titleObj );
+
+			throw new MementoResourceException(
+				$textMessage, $titleMessage,
+				$out, $response, 404, array( $title )
+			);
+		}
+	}
+
+	/**
+	 * getPivotTimeMapData
+	 *
+	 * Method that acquires TimeMap data, based on a given formatted timestamp.
+	 *
+	 * @param $page_id
+	 * @param $formattedTimestamp
+	 *
+	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
+	 *		the revision ID and the revision timestamp respectively
+	 */
+	abstract public function getPivotTimeMapData(
+		$page_id, $formattedTimestamp );
 }
