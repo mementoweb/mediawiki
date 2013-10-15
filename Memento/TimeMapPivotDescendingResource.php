@@ -28,7 +28,7 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 	 * Render the page
 	 * 
 	 */
-	public function render() {
+	public function alterEntity() {
 
 		$article = $this->article;
 		$out = $article->getContext()->getOutput();

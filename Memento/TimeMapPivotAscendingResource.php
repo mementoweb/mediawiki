@@ -24,7 +24,6 @@
 
 class TimeMapPivotAscendingResource extends TimeMapResource {
 
-
 	/**
 	 * Render the page
 	 *
