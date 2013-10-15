@@ -716,9 +716,6 @@ abstract class MementoResource {
 	 * at the same time as the Memento gets loaded and displayed with the
 	 * Memento.
 	 *
-	 * TODO: this function doesn't handle mementos that exist prior to the
-	 *			first memento
-	 *
 	 * @param $title - Title object of the page
 	 * @param $parser - Parsger object of the page
 	 * @param $id - the revision id of the page
@@ -736,28 +733,36 @@ abstract class MementoResource {
 			$mwMementoTimestamp = $this->parseRequestDateTime(
 				$requestDatetime );
 
-			$pg_id = $title->getArticleID();
+			$firstRev = $title->getFirstRevision();
 
-			$this->dbr->begin();
+			if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
 
-			$res = $this->dbr->select(
-				'revision',
-				array( 'rev_id' ),
-				array(
-					'rev_page' => $pg_id,
-					'rev_timestamp <=' .
-						$this->dbr->addQuotes( $mwMementoTimestamp )
-					),
-				__METHOD__,
-				array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
-			);
-
-			if( $res ) {
-				$row = $this->dbr->fetchObject( $res );
-				$id = $row->rev_id;
+				$pg_id = $title->getArticleID();
+	
+				$this->dbr->begin();
+	
+				$res = $this->dbr->select(
+					'revision',
+					array( 'rev_id' ),
+					array(
+						'rev_page' => $pg_id,
+						'rev_timestamp <=' .
+							$this->dbr->addQuotes( $mwMementoTimestamp )
+						),
+					__METHOD__,
+					array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
+				);
+	
+				if( $res ) {
+					$row = $this->dbr->fetchObject( $res );
+					$id = $row->rev_id;
+				}
+			} else {
+				// if we get something prior to the first memento, just
+				// go with the first one
+				$id = $firstRev->getId();
 			}
 		}
-
 	}
 
 	/**
