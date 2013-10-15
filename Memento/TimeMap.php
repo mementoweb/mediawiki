@@ -219,7 +219,7 @@ class TimeMap extends SpecialPage {
 				$page = $this->timeMapFactory(
 					$config, $dbr, $article, $urlparam );
 
-				$page->render();
+				$page->alterEntity();
 			} catch (MementoResourceException $e) {
 				MementoResource::renderError(
 					$out, $e, $config->get('ErrorPageType') );

@@ -29,7 +29,7 @@ class TimeMapPivotAscendingResource extends TimeMapResource {
 	 * Render the page
 	 *
 	 */
-	public function render() {
+	public function alterEntity() {
 
 		$article = $this->article;
 		$out = $article->getContext()->getOutput();
@@ -140,20 +140,10 @@ class TimeMapPivotAscendingResource extends TimeMapResource {
 	/**
 	 * alterHeaders
 	 *
-	 * Special:TimeMap doesn't work like the other MementoResource classes.
+	 * No headers to alter for Time Maps.
 	 */
 	public function alterHeaders() {
 		// do nothing to the headers
-	}
-
-	/**
-	 * alterEntity
-	 *
-	 * Special:TimeMap doesn't work like the other MementoResource classes.
-	 *
-	 */
-	public function alterEntity() {
-		// do nothing to the body
 	}
 
 }
