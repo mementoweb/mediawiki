@@ -55,7 +55,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			$pageID = $titleObj->getArticleID();
 			$oldID = $this->article->getOldID();
 
-			$mementoTimestamp = 
+			$mementoTimestamp =
 				$this->article->getRevisionFetched()->getTimestamp();
 
 			// convert for display

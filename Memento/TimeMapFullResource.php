@@ -100,7 +100,7 @@ class TimeMapFullResource extends TimeMapResource {
 
 			# get the first revision ID
 			$firstId = $titleObj->getFirstRevision()->getId();
-			
+
 			# get the last revision ID
 			$lastId = $titleObj->getLatestRevID();
 

@@ -65,7 +65,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			$linkEntries = $negotiator->getLinkRelationEntries();
 			$url = $negotiator->getLocationURI();
 
-			// this does not work for some reason, possibly because 
+			// this does not work for some reason, possibly because
 			// of the disable() below?
 			//$out->addVaryHeader( 'Accept-Datetime' );
 
@@ -75,9 +75,9 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 
 			$response->header( "Location: $url", true );
-	
+
 			$out->setStatusCode( 302 );
-	
+
 			$out->disable();
 		}
 

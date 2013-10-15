@@ -64,7 +64,7 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 			$url = $negotiator->getLocationURI();
 			$mementoDatetime = $negotiator->getMementoDatetime();
 			$mementoID = $negotiator->getMementoID();
-	
+
 			$response->header( "Memento-Datetime: $mementoDatetime", true );
 			$response->header( "Content-Location: $url", true );
 			$out->addVaryHeader( 'Accept-Datetime' );

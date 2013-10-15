@@ -62,7 +62,7 @@ class TimeNegotiator {
 	 */
 	public function __construct( $mementoResource ) {
 
-		$this->mementoResource = $mementoResource;	
+		$this->mementoResource = $mementoResource;
 
 		$this->linkRelations = array();
 
@@ -132,7 +132,7 @@ class TimeNegotiator {
 				TS_RFC2822, $mwMementoTimestamp );
 			$this->locationURI = $mr->getFullURIForID( $id, $title );
 			$this->mementoId = $memento['id'];
-			
+
 		} else {
 			$firsturi = $mr->getFullURIForID( $first['id'], $title );
 			$lasturi = $mr->getFullURIForID( $first['id'], $title );
@@ -156,7 +156,7 @@ class TimeNegotiator {
 	public function getLocationURI() {
 		return $this->locationURI;
 	}
-	
+
 	/**
 	 * getLinkRelationEntries
 	 *

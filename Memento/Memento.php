@@ -83,9 +83,9 @@ $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchT
 // set up the Time Gate (URI-G) classes
 $wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
 	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
-$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = 
+$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
 	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
-$wgAutoloadClasses['TimeNegotiator'] = 
+$wgAutoloadClasses['TimeNegotiator'] =
 	__DIR__ . '/TimeNegotiator.php';
 
 /**
@@ -134,7 +134,6 @@ class Memento {
 		}
 
 		return true;
-			
 	}
 
 	/**
@@ -207,7 +206,7 @@ class Memento {
 		$status = true;
 
 		// if we're an article, do memento processing, otherwise don't worry
-		if ( $out->isArticle() ) { 
+		if ( $out->isArticle() ) {
 			// if we're a diff page, Memento doesn't make sense
 			if ( ! self::$diffPage ) {
 

@@ -682,7 +682,6 @@ abstract class MementoResource {
 
 		if ( $oldID == 0 ) {
 
-			
 			if ( $request->getHeader('ACCEPT-DATETIME') ) {
 
 				if ( $conf->get('Negotiation') == "200" ) {
@@ -717,13 +716,13 @@ abstract class MementoResource {
 	 * at the same time as the Memento gets loaded and displayed with the
 	 * Memento.
 	 *
-	 * TODO: this function doesn't handle mementos that exist prior to the 
+	 * TODO: this function doesn't handle mementos that exist prior to the
 	 *			first memento
 	 *
 	 * @param $title - Title object of the page
 	 * @param $parser - Parsger object of the page
 	 * @param $id - the revision id of the page
-	 * 
+	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */
 	public function fixTemplate( $title, $parser, &$id ) {
@@ -740,7 +739,7 @@ abstract class MementoResource {
 			$pg_id = $title->getArticleID();
 
 			$this->dbr->begin();
-	
+
 			$res = $this->dbr->select(
 				'revision',
 				array( 'rev_id' ),
@@ -754,13 +753,12 @@ abstract class MementoResource {
 			);
 
 			if( $res ) {
-			    $row = $this->dbr->fetchObject( $res );
-			    $id = $row->rev_id;
+				$row = $this->dbr->fetchObject( $res );
+				$id = $row->rev_id;
 			}
 		}
 
 	}
-	
 
 	/**
 	 * Constructor for MementoResource and its children

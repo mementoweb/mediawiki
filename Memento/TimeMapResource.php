@@ -35,14 +35,14 @@ abstract class TimeMapResource extends MementoResource {
  	* TODO: move these member variables into TimeMapResource.
  	*
 	*/
-	const ascendingURLPattern = "^[0-9]+\/1\/";
-	const descendingURLPattern = "^[0-9]+\/-1\/";
+	const ASCENDINGURLPATTERN = "^[0-9]+\/1\/";
+	const DESCENDINGURLPATTERN = "^[0-9]+\/-1\/";
 
 	/*
 		this pattern exists to detect that a timestamp pivot exists, not
 		which type
 	*/
-	const pivotURLPattern = "^[0-9]+\/-*[0-9]\/";
+	const PIVOTURLPATTERN = "^[0-9]+\/-*[0-9]\/";
 
 	/**
 	 * containsPivot
@@ -54,7 +54,7 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public static function containsPivot($urlparam) {
 		return (
-			preg_match( '/' .  TimeMapResource::pivotURLPattern .
+			preg_match( '/' .  TimeMapResource::PIVOTURLPATTERN .
 				'/', $urlparam ) == 1 );
 	}
 
@@ -68,7 +68,7 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public static function isPivotAscending($urlparam) {
 		return (
-			preg_match( '/' . TimeMapResource::ascendingURLPattern . 
+			preg_match( '/' . TimeMapResource::ASCENDINGURLPATTERN .
 				'/', $urlparam ) == 1 );
 	}
 
@@ -82,7 +82,7 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public static function isPivotDescending($urlparam) {
 		return (
-			preg_match( '/' . TimeMapResource::descendingURLPattern .
+			preg_match( '/' . TimeMapResource::DESCENDINGURLPATTERN .
 				'/', $urlparam ) == 1 );
 	}
 
@@ -133,12 +133,12 @@ abstract class TimeMapResource extends MementoResource {
 
 		if ( TimeMapResource::isPivotAscending( $urlparam ) ) {
 			$title = preg_replace(
-				'/' . TimeMapResource::ascendingURLPattern . '/',
+				'/' . TimeMapResource::ASCENDINGURLPATTERN . '/',
 				"", $urlparam );
 			$title = Title::newFromText( $title );
 		} elseif ( TimeMapResource::isPivotDescending( $urlparam ) ) {
 			$title = preg_replace(
-				'/' . TimeMapResource::descendingURLPattern . '/',
+				'/' . TimeMapResource::DESCENDINGURLPATTERN . '/',
 				"", $urlparam );
 			$title = Title::newFromText( $title );
 		} else {
@@ -223,7 +223,7 @@ abstract class TimeMapResource extends MementoResource {
 			);
 
 		/*
-		 I couldn't figure out how to make the select function do 
+		 I couldn't figure out how to make the select function do
 		 the following:
 		 SELECT rev_id, rev_timestamp FROM (SELECT  rev_id,rev_timestamp
 		 FROM `revision`  WHERE rev_page = '2' AND
@@ -235,14 +235,14 @@ abstract class TimeMapResource extends MementoResource {
 		$interim = array();
 
 		while ($result = $results->fetchRow()) {
-			$interim[$result['rev_timestamp']] = $result['rev_id'];	
+			$interim[$result['rev_timestamp']] = $result['rev_id'];
 		}
 
 		if ( krsort($interim) )  {
 
 			foreach ($interim as $timestamp => $id ) {
 				$datum = array();
-				$datum['rev_id'] = $id; 
+				$datum['rev_id'] = $id;
 				$datum['rev_timestamp'] = wfTimestamp(
 					TS_RFC2822, $timestamp
 					);
@@ -268,24 +268,24 @@ abstract class TimeMapResource extends MementoResource {
 	 *			its starting time and ending time
 	 *
 	 */
-	 public function generateAscendingTimeMapPaginationData(
-	 	$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
+	public function generateAscendingTimeMapPaginationData(
+		$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getAscendingTimeMapData(
 			$pg_id, $pivotTimestamp
 			);
-		
+
 		$timeMapPage = array();
 
 		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
 		$earliestItem = end($paginatedResults);
 		reset($paginatedResults);
-		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );	
-		
-		$timeMapPage['uri'] = $this->mwbaseurl . '/' 
+		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );
+
+		$timeMapPage['uri'] = $this->mwbaseurl . '/'
 			. SpecialPage::getTitleFor('TimeMap') . '/'
 			. $pivotTimestamp . '/1/' . $title;
-		
+
 		array_push( $timeMapPages, $timeMapPage );
 
 		return $timeMapPages;
@@ -305,24 +305,24 @@ abstract class TimeMapResource extends MementoResource {
 	 *			its starting time and ending time
 	 *
 	 */
-	 public function generateDescendingTimeMapPaginationData(
-	 	$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
+	public function generateDescendingTimeMapPaginationData(
+		$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getDescendingTimeMapData(
 			$pg_id, $pivotTimestamp
 			);
-		
+
 		$timeMapPage = array();
-		
+
 		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
 		$earliestItem = end($paginatedResults);
 		reset($paginatedResults);
-		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );	
-		
-		$timeMapPage['uri'] = $this->mwbaseurl . '/' 
+		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );
+
+		$timeMapPage['uri'] = $this->mwbaseurl . '/'
 			. SpecialPage::getTitleFor('TimeMap') . '/'
 			. $pivotTimestamp . '/-1/' . $title;
-		
+
 		array_push( $timeMapPages, $timeMapPage );
 
 		return $timeMapPages;
@@ -416,7 +416,7 @@ abstract class TimeMapResource extends MementoResource {
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
-		$timemapEntry = '<' . $timeMapURI . 
+		$timemapEntry = '<' . $timeMapURI .
 			'>; rel="self"; type="application/link-format"; ' .
 			'from="' . $from . '; until="' . $until . '"';
 
@@ -429,8 +429,8 @@ abstract class TimeMapResource extends MementoResource {
 				'>; rel="timemap"; type="application/link-format";' .
 				'from="' . $pagedTimeMap['from'] . '"; ' .
 				'until="' . $pagedTimeMap['until'] . '"';
-				
-			array_push( $outputArray, $pagedTimemapEntry );	
+
+			array_push( $outputArray, $pagedTimemapEntry );
 		}
 
 		array_push( $outputArray, $timegateEntry );
