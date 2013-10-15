@@ -22,6 +22,14 @@
  * @file
  */
 
+/**
+ * This class handles TimeMaps from URIs of the form:
+ * http://example.com/index.php/Special:TimeMap/20130720011113/1/Page
+ * referred to here as an "ascending pivot" where the pivot is the date
+ * of 20130720011113 and the 1 in the URI indicates that we want a
+ * Time Map of mementos from after that pivot date.
+ *
+ */
 class TimeMapPivotAscendingResource extends TimeMapResource {
 
 	/**
@@ -39,7 +47,6 @@ class TimeMapPivotAscendingResource extends TimeMapResource {
 	public function getPivotTimeMapData( $page_id, $formattedTimestamp ) {
 		return $this->getAscendingTimeMapData( $page_id, $formattedTimestamp );
 	}
-
 
 	/**
 	 * Render the page

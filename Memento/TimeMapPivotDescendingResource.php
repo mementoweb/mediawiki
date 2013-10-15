@@ -22,6 +22,14 @@
  * @file
  */
 
+/**
+ * This class handles TimeMaps from URIs of the form:
+ * http://example.com/index.php/Special:TimeMap/20130720011113/-1/Page
+ * referred to here as a "descending pivot" where the pivot is the date
+ * of 20130720011113 and the -1 in the URI indicates that we want a
+ * Time Map of mementos from before that pivot date.
+ *
+ */
 class TimeMapPivotDescendingResource extends TimeMapResource {
 
 	/**
