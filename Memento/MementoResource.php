@@ -152,11 +152,6 @@ class MementoResourceException extends Exception {
 abstract class MementoResource {
 
 	/**
-	 * @var object $out: OutputPage object for Memento Extension
-	 */
-	protected $out;
-
-	/**
 	 * @var object $conf: configuration object for Memento Extension
 	 */
 	protected $conf;
@@ -177,19 +172,36 @@ abstract class MementoResource {
 	protected $mwrelurl;
 
 	/**
-	 * @var $urlparam - parameter part of the Special Page
+	 * @var $article - Article Object of this Resource
 	 */
-	protected $urlparam;
-
-	/**
-	 * @var $title - Title Object created from calling Special Page
-	 */
-	protected $title;
+	protected $article;
 
 	/**
 	 * @var $mementoOldID - timestamp of the Memento
 	 */
 	protected $mementoOldID;
+
+	/**
+	 * getArticleObject
+	 *
+	 * Getter for Article Object used in constructor.
+	 *
+	 * @return Article $article
+	 */
+	public function getArticleObject() {
+		return $this->article;
+	}
+
+	/**
+	 * getConfig
+	 *
+	 * Getter for MementoConfig object used in constructor.
+	 *
+	 * @return MementoConfig $config
+	 */
+	public function getConfig() {
+		return $this->conf;
+	}
 
 	/**
 	 * fetchMementoFromDatabase
@@ -201,7 +213,9 @@ abstract class MementoResource {
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function fetchMementoFromDatabase($dbr, $sqlCondition, $sqlOrder ) {
+	public function fetchMementoFromDatabase( $sqlCondition, $sqlOrder ) {
+
+		$dbr = $this->dbr;
 
 		$results = $dbr->select(
 			'revision',
@@ -236,7 +250,7 @@ abstract class MementoResource {
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getFirstMemento( $dbr, $pageID ) {
+	public function getFirstMemento( $pageID ) {
 
 		$sqlCondition =
 			array(
@@ -244,8 +258,7 @@ abstract class MementoResource {
 				);
 		$sqlOrder = 'rev_timestamp ASC';
 
-		return $this->fetchMementoFromDatabase(
-			$dbr, $sqlCondition, $sqlOrder );
+		return $this->fetchMementoFromDatabase( $sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -259,7 +272,7 @@ abstract class MementoResource {
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getLastMemento( $dbr, $pageID ) {
+	public function getLastMemento( $pageID ) {
 
 		$sqlCondition =
 			array(
@@ -268,13 +281,13 @@ abstract class MementoResource {
 		$sqlOrder = 'rev_timestamp DESC';
 
 		return $this->fetchMementoFromDatabase(
-			$dbr, $sqlCondition, $sqlOrder );
+			$sqlCondition, $sqlOrder );
 	}
 
 	/**
 	 * getCurrentMemento
 	 *
-	 * Extract the last memento from the database.
+	 * Extract the memento that best matches from the database.
 	 *
 	 * @param $dbr - DatabaseBase object
 	 * @param $pageID - page identifier
@@ -282,7 +295,9 @@ abstract class MementoResource {
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getCurrentMemento( $dbr, $pageID, $pageTimestamp ) {
+	public function getCurrentMemento( $pageID, $pageTimestamp ) {
+
+		$dbr = $this->dbr;
 
 		$sqlCondition =
 			array(
@@ -292,7 +307,7 @@ abstract class MementoResource {
 		$sqlOrder = 'rev_timestamp DESC';
 
 		return $this->fetchMementoFromDatabase(
-			$dbr, $sqlCondition, $sqlOrder );
+			$sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -300,13 +315,14 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param $dbr - DatabaseBase object
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getNextMemento( $dbr, $pageID, $pageTimestamp ) {
+	public function getNextMemento( $pageID, $pageTimestamp ) {
+
+		$dbr = $this->dbr;
 
 		$sqlCondition =
 			array(
@@ -316,7 +332,7 @@ abstract class MementoResource {
 		$sqlOrder = 'rev_timestamp ASC';
 
 		return $this->fetchMementoFromDatabase(
-			$dbr, $sqlCondition, $sqlOrder );
+			$sqlCondition, $sqlOrder );
 	}
 
 	/**
@@ -324,13 +340,14 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param $dbr - DatabaseBase object
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getPrevMemento( $dbr, $pageID, $pageTimestamp ) {
+	public function getPrevMemento( $pageID, $pageTimestamp ) {
+
+		$dbr = $this->dbr;
 
 		$sqlCondition =
 			array(
@@ -340,20 +357,20 @@ abstract class MementoResource {
 		$sqlOrder = 'rev_timestamp DESC';
 
 		return $this->fetchMementoFromDatabase(
-			$dbr, $sqlCondition, $sqlOrder );
+			$sqlCondition, $sqlOrder );
 	}
 
 	/**
 	 * getFullURIForID
 	 *
-	 * @param $mwBaseURL - Base URL of Mediawiki installation 
-	 * 			(e.g. http://e.com/index.php)
 	 * @param $id - ID of page
 	 * @param $title - article title
 	 *
 	 * @return $fullURI - full URI referring to article and revision
 	 */
-	public function getFullURIForID( $scriptPath, $id, $title ) {
+	public function getFullURIForID( $id, $title ) {
+
+		$scriptPath = $this->mwrelurl;
 
 		return wfAppendQuery(
 			wfExpandUrl( $scriptPath ),
@@ -422,18 +439,17 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for a memento for the Link Header.
 	 *
-	 * @param $scriptUrl - the base URI used for Mediawiki
 	 * @param $title - the title string of the given page
-	 * @param $oldid - the oldid of the given page
+	 * @param $id - the oldid of the given page
 	 * @param $timestamp - the timestamp of this Memento
 	 * @param $relation - the relation type of this Memento
 	 *
 	 * @return $entry - full Memento Link header entry
 	 */
 	public function constructMementoLinkHeaderEntry(
-		$scriptUrl, $title, $id, $timestamp, $relation ) {
+		$title, $id, $timestamp, $relation ) {
 
-		$url = $this->getFullURIForID( $scriptUrl, $id, $title );
+		$url = $this->getFullURIForID( $id, $title );
 
 		$entry = '<' . $url . '>; rel="' . $relation . '"; datetime="' .
 			$timestamp . '"';
@@ -447,7 +463,6 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for timemap in the Link Header.
 	 *
-	 * @param $scriptUrl - the base URL used for Mediawiki
 	 * @param $title - the title string of the given page
 	 * @param $from - the from timestamp for the TimeMap
 	 * @param $until - the until timestamp for the TimeMap
@@ -455,9 +470,9 @@ abstract class MementoResource {
 	 * @return $entry - full Memento TimeMap relation with from and until
 	 */
 	public function constructTimeMapLinkHeaderWithBounds(
-		$scriptUrl, $title, $from, $until ) {
+		$title, $from, $until ) {
 
-		$entry = $this->constructTimeMapLinkHeader( $scriptUrl, $title );
+		$entry = $this->constructTimeMapLinkHeader( $title );
 
 		$entry .= "; from=\"$from\"; until=\"$until\"";
 
@@ -469,12 +484,13 @@ abstract class MementoResource {
 	 *
 	 * This creates the entry for timemap in the Link Header.
 	 *
-	 * @param $scriptUrl - the base URL used for Mediawiki
 	 * @param $title - the title string of the given page
 	 *
 	 * @return $entry - Memento TimeMap relation
 	 */
-	public function constructTimeMapLinkHeader( $scriptUrl, $title ) {
+	public function constructTimeMapLinkHeader( $title ) {
+
+		$scriptUrl = $this->mwrelurl;
 
 		$title = rawurlencode($title);
 
@@ -493,12 +509,13 @@ abstract class MementoResource {
 	 * This function uses wfExpandUrl to safely form the URI for the given
 	 * page title string.
 	 *
-	 * @param $scriptUrl - the base URL used for Mediawiki
 	 * @param $title - the title string of the given page
 	 *
 	 * @return $safeURI - the safely formed URI
 	 */
-	public function getSafelyFormedURI( $scriptUrl, $title ) {
+	public function getSafelyFormedURI( $title ) {
+
+		$scriptUrl = $this->mwrelurl;
 
 		$title = rawurlencode($title);
 
@@ -544,40 +561,12 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * convertRevisionData
-	 *
-	 * The database functions return ID and Timestamp, but so many of the
-	 * functions need URI and Timestamp, so this function converts them.
-	 *
-	 * @param $scriptPath - the $wgScriptPath part of the URI
-	 * @param $revision - associative array consisting of id and timestamp keys
-	 * @param $title - the title of the article
-	 *
-	 * @return $convertedRev - associative array consisting of uri and dt keys
-	 */
-	public function convertRevisionData( $scriptPath, $revision, $title ) {
-
-		$convertedRev = array();
-
-		if ($revision) {
-			$convertedRev = array(
-				'uri' => $this->getFullURIForID(
-					$scriptPath, $revision['id'], $title ),
-				'dt' => $revision['timestamp']
-			);
-		}
-
-		return $convertedRev;
-	}
-
-	/**
 	 * generateRecommendedLinkHeaderRelations
 	 *
 	 * This function generates the recommended link header relations,
 	 * handling cases such as 'first memento' and 'last memento' vs.
 	 * 'first last memento', etc.
 	 *
-	 * @param $scriptPath - the $wgScriptPath part of the URI
 	 * @param $title - the article title text part of the URI
 	 * @param $first - associative array containing info on the first memento
 	 * 					with the keys 'timestamp' and 'id'
@@ -587,26 +576,28 @@ abstract class MementoResource {
 	 * @return $linkRelations - array of link relations
 	 */
 	public function generateRecommendedLinkHeaderRelations(
-		$scriptPath, $title, $first, $last ) {
+		$title, $first, $last ) {
+
+		$scriptPath = $this->mwrelurl;
 
 		$linkRelations = array();
 
 		$entry = $this->constructTimeMapLinkHeaderWithBounds(
-			$scriptPath, $title, $first['timestamp'], $last['timestamp'] );
+			$title, $first['timestamp'], $last['timestamp'] );
 		array_push( $linkRelations, $entry );
 
 		if ( $first['id'] == $last['id'] ) {
 			$entry = $this->constructMementoLinkHeaderEntry(
-				$scriptPath, $title, $first['id'], $first['timestamp'],
+				$title, $first['id'], $first['timestamp'],
 				'first last memento' );
 			array_push( $linkRelations, $entry );
 		} else {
 			$entry = $this->constructMementoLinkHeaderEntry(
-				$scriptPath, $title, $first['id'], $first['timestamp'],
+				$title, $first['id'], $first['timestamp'],
 				'first memento' );
 			array_push( $linkRelations, $entry );
 			$entry = $this->constructMementoLinkHeaderEntry(
-				$scriptPath, $title, $last['id'], $last['timestamp'],
+				$title, $last['id'], $last['timestamp'],
 				'last memento' );
 			array_push( $linkRelations, $entry );
 		}

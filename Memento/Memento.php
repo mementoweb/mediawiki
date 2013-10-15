@@ -85,6 +85,8 @@ $wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
 	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
 $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = 
 	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
+$wgAutoloadClasses['TimeNegotiator'] = 
+	__DIR__ . '/TimeNegotiator.php';
 
 /**
  * Main Memento class, used by hooks.

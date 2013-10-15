@@ -58,73 +58,19 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			array_push( $linkEntries, $entry );
 		} else {
-			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
-			$mwMementoTimestamp = $this->parseRequestDateTime(
-				$requestDatetime );
+			$negotiator = new TimeNegotiator($this);
+			$linkEntries = $negotiator->getLinkRelationEntries();
+			$url = $negotiator->getLocationURI();
+			$mementoDatetime = $negotiator->getMementoDatetime();
+			$mementoID = $negotiator->getMementoID();
+	
+			$response->header( "Memento-Datetime: $mementoDatetime", true );
+			$response->header( "Content-Location: $url", true );
+			$out->addVaryHeader( 'Accept-Datetime' );
 
-			$pageID = $titleObj->getArticleID();
-
-			// these database calls are required for time negotiation
-			$first = $this->getFirstMemento( $this->dbr, $pageID );
-			$last = $this->getLastMemento( $this->dbr, $pageID );
-
-			$title = $this->getFullNamespacePageTitle( $titleObj );
-
-			if ( $mwMementoTimestamp ) {
-				$mwMementoTimestamp = $this->chooseBestTimestamp(
-					$first['timestamp'], $last['timestamp'],
-					$mwMementoTimestamp );
-	
-				$memento = $this->getCurrentMemento(
-						$this->dbr, $pageID, $mwMementoTimestamp );
-	
-				$id = $memento['id'];
-	
-				$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
-	
-				$timegateuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
-	
-				$entry = $this->constructLinkRelationHeader( $timegateuri,
-						'original latest-version timegate' );
-				array_push( $linkEntries, $entry );
-	
-				if ( $this->conf->get('RecommendedRelations') ) {
-	
-					$entries = $this->generateRecommendedLinkHeaderRelations(
-						$this->mwrelurl, $title, $first, $last );
-	
-					$linkEntries = array_merge( $linkEntries, $entries);
-	
-				} else {
-					$entry = $this->constructTimeMapLinkHeader(
-							$this->mwrelurl, $title );
-					array_push( $linkEntries, $entry );
-				}
-	
-				$mwMementoTimestamp = wfTimestamp(
-					TS_RFC2822, $mwMementoTimestamp );
-	
-				$response->header(
-					"Memento-Datetime: $mwMementoTimestamp", true );
-
-				$response->header( "Content-Location: $url", true );
-	
-				$out->addVaryHeader( 'Accept-Datetime' );
-	
-				$this->setMementoOldID( $id );
-			} else {
-				$firsturi = $this->getFullURIForID(
-					$this->mwrelurl, $first['id'], $title );
-				$lasturi = $this->getFullURIForID(
-					$this->mwrelurl, $first['id'], $title );
-
-				throw new MementoResourceException(
-					'timegate-400-date', 'timegate',
-					$out, $response, 400,
-					array( $requestDatetime, $firsturi, $lasturi )
-					);
-			}
+			// for alterEntity, when it gets called
+			$this->setMementoOldID( $mementoID );
 		}
 
 		$linkEntries = implode( ',', $linkEntries );

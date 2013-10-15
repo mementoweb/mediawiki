@@ -286,7 +286,7 @@ abstract class TimeMapResource extends MementoResource {
 
 		$outputArray = array();
 
-		$timegateuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
+		$timegateuri = $this->getSafelyFormedURI( $title );
 		$timegateEntry = $this->constructLinkRelationHeader(
 			$timegateuri, 'original latest-version timegate' );
 
@@ -317,8 +317,7 @@ abstract class TimeMapResource extends MementoResource {
 			$datum = $data[$i];
 
 			$output = $this->constructMementoLinkHeaderEntry(
-				$this->mwrelurl, $title, $datum['rev_id'],
-				$datum['rev_timestamp'], "memento" );
+				$title, $datum['rev_id'], $datum['rev_timestamp'], "memento" );
 
 			array_push($outputArray, $output);
 		}

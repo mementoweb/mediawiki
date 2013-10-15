@@ -61,7 +61,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			// convert for display
 			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoTimestamp );
 
-			$myuri = $this->getSafelyFormedURI( $this->mwrelurl, $title );
+			$myuri = $this->getSafelyFormedURI( $title );
 
 			$entry = $this->constructLinkRelationHeader( $myuri,
 					'original latest-version timegate' );
@@ -71,17 +71,16 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 				// for performance, these database calls only occur
 				// when $wgMementoRecommendedRelations is true
-				$first = $this->getFirstMemento( $this->dbr, $pageID );
-				$last = $this->getLastMemento( $this->dbr, $pageID );
+				$first = $this->getFirstMemento( $pageID );
+				$last = $this->getLastMemento( $pageID );
 
 				$entries = $this->generateRecommendedLinkHeaderRelations(
-					$this->mwrelurl, $title, $first, $last );
+					$title, $first, $last );
 
 				$linkEntries = array_merge( $linkEntries, $entries);
 
 			} else  {
-				$entry = $this->constructTimeMapLinkHeader(
-					$this->mwrelurl, $title );
+				$entry = $this->constructTimeMapLinkHeader( $title );
 				array_push( $linkEntries, $entry );
 
 			}

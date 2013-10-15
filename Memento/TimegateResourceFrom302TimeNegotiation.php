@@ -60,77 +60,25 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			array_push( $linkEntries, $entry );
 		} else {
 
-			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
+			$negotiator = new TimeNegotiator($this);
 
-			$mwMementoTimestamp = $this->parseRequestDateTime(
-				$requestDatetime );
+			$linkEntries = $negotiator->getLinkRelationEntries();
+			$url = $negotiator->getLocationURI();
 
-			$pageID = $titleObj->getArticleID();
+			// this does not work for some reason, possibly because 
+			// of the disable() below?
+			//$out->addVaryHeader( 'Accept-Datetime' );
 
-			// these database calls are required for time negotiation
-			$first = $this->getFirstMemento( $this->dbr, $pageID );
-			$last = $this->getLastMemento( $this->dbr, $pageID );
+			// workaround for addVaryHeader
+			$varyEntries = explode( ':', $out->getVaryHeader() );
+			$varyEntries = $varyEntries[1];
+			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 
-			$title = $this->getFullNamespacePageTitle( $titleObj );
-
-			if ( $mwMementoTimestamp ) {
-				$mwMementoTimestamp = $this->chooseBestTimestamp(
-					$first['timestamp'], $last['timestamp'],
-					$mwMementoTimestamp );
+			$response->header( "Location: $url", true );
 	
-				$memento = $this->getCurrentMemento(
-						$this->dbr, $pageID, $mwMementoTimestamp );
+			$out->setStatusCode( 302 );
 	
-				$id = $memento['id'];
-	
-				$url = $this->getFullURIForID( $this->mwrelurl, $id, $title );
-	
-				$timegateuri = $this->getSafelyFormedURI(
-					$this->mwrelurl, $title );
-	
-				$entry = $this->constructLinkRelationHeader( $timegateuri,
-						'original latest-version timegate' );
-				array_push( $linkEntries, $entry );
-	
-				if ( $this->conf->get('RecommendedRelations') ) {
-	
-					$entries = $this->generateRecommendedLinkHeaderRelations(
-						$this->mwrelurl, $title, $first, $last );
-	
-					$linkEntries = array_merge( $linkEntries, $entries);
-	
-				} else {
-					$entry = $this->constructTimeMapLinkHeader(
-							$this->mwrelurl, $title );
-					array_push( $linkEntries, $entry );
-				}
-	
-				// this does not work for some reason, possibly because 
-				// of the disable() below?
-				//$out->addVaryHeader( 'Accept-Datetime' );
-	
-				// workaround for addVaryHeader
-				$varyEntries = explode( ':', $out->getVaryHeader() );
-				$varyEntries = $varyEntries[1];
-				$response->header( "Vary: $varyEntries,Accept-Datetime", true );
-	
-				$response->header( "Location: $url", true );
-	
-				$out->setStatusCode( 302 );
-	
-				$out->disable();
-			} else {
-				$firsturi = $this->getFullURIForID(
-					$this->mwrelurl, $first['id'], $title );
-				$lasturi = $this->getFullURIForID(
-					$this->mwrelurl, $first['id'], $title );
-
-				throw new MementoResourceException(
-					'timegate-400-date', 'timegate',
-					$out, $response, 400,
-					array( $requestDatetime, $firsturi, $lasturi )
-					);
-			}
+			$out->disable();
 		}
 
 		$linkEntries = implode( ',', $linkEntries );
