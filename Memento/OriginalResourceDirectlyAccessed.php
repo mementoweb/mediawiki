@@ -75,7 +75,7 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$title, $first, $last );
 
-				$linkEntires = array_merge( $linkEntries, $entries);
+				$linkEntries = array_merge( $linkEntries, $entries);
 
 			} else {
 				$entry = $this->constructTimeMapLinkHeader( $title );
