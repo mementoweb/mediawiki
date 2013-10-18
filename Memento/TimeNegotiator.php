@@ -99,6 +99,19 @@ class TimeNegotiator {
 
 		$title = $mr->getFullNamespacePageTitle( $titleObj );
 
+		if ( $conf->get('RecommendedRelations') ) {
+
+			$entries = $mr->generateRecommendedLinkHeaderRelations(
+				$title, $first, $last );
+
+		} else {
+			$entry = $mr->constructTimeMapLinkHeader( $title );
+			$entries = array( $entry );
+		}
+
+		$this->linkRelations = array_merge(
+			$this->linkRelations, $entries);
+
 		if ( $mwMementoTimestamp ) {
 			$mwMementoTimestamp = $mr->chooseBestTimestamp(
 				$first['timestamp'], $last['timestamp'],
@@ -114,19 +127,6 @@ class TimeNegotiator {
 					'original latest-version timegate' );
 			array_push( $this->linkRelations, $entry );
 
-			if ( $conf->get('RecommendedRelations') ) {
-
-				$entries = $mr->generateRecommendedLinkHeaderRelations(
-					$title, $first, $last );
-
-				$this->linkRelations = array_merge(
-					$this->linkRelations, $entries);
-
-			} else {
-				$entry = $mr->constructTimeMapLinkHeader( $title );
-				array_push( $this->linkRelations, $entry );
-			}
-
 			// storage for caller
 			$this->mementoDatetime = wfTimestamp(
 				TS_RFC2822, $mwMementoTimestamp );
@@ -136,6 +136,9 @@ class TimeNegotiator {
 		} else {
 			$firsturi = $mr->getFullURIForID( $first['id'], $title );
 			$lasturi = $mr->getFullURIForID( $first['id'], $title );
+
+			$out->addVaryHeader( 'Accept-Datetime' );
+			$response->header( 'Link: ' . $linkEntries, true );
 
 			throw new MementoResourceException(
 				'timegate-400-date', 'timegate',
