@@ -43,6 +43,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
         $this->assertArrayHasKey('Vary', $headers);
 
+		$varyItems = extractItemsFromVary($headers['Vary']);
         $this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary header");
 
 		# To catch any PHP errors that the test didn't notice
