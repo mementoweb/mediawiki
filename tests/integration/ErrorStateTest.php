@@ -57,7 +57,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timegate-400-date');
-		$this->assertStringMatchesFormat("$expected", $entity);
+		$this->assertStringMatchesFormat("%A" . $expected . "%A", $entity);
 
 	}
 
@@ -88,7 +88,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
-		$this->assertStringMatchesFormat("$expected", $entity);
+		$this->assertStringMatchesFormat("%A" . $expected . "%A", $entity);
 	}
 
 	public function Status400TimeMapErrorResponseCommonTests(
@@ -117,7 +117,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
 		# To ensure that the error message actually exists in the output
 		$expected = acquireFormattedI18NString('en', 'timemap-404-title');
-		$this->assertStringMatchesFormat("$expected", $entity);
+		$this->assertStringMatchesFormat("%A" . $expected . "%A", $entity);
 		
 	}
 	
@@ -129,6 +129,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 	public function test400TimeGateTraditionalError(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -155,6 +156,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 	public function test400TimeGateFriendlyError(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -253,7 +255,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeNegotiationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 12);
+			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 13);
 	}
 
 	public function acquireTimeMap404Urls() {

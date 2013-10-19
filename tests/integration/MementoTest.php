@@ -25,7 +25,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		self::$instance++;
 	}
 
-	public function StandardEntityTests( $entity ) {
+	public function StandardEntityTests( $entity, $uri ) {
 		# To catch any PHP errors that the test didn't notice
 		$this->assertFalse(strpos($entity, "<b>Fatal error</b>"), "Fatal error discovered in output");
 
@@ -35,14 +35,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		# To catch any PHP notices that the test didn't notice
 		$this->assertFalse(strpos($entity, "<b>Warning</b>"), "PHP warning discovered in output");
 		
-		if ($entity) {
-		    $this->fail("302 response should not contain entity for URI $URIG");
-		}
 	}
 
     public function Status302StyleTimeGateResponseCommonTests(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -52,14 +50,14 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		    $URIM,
 			$URIG,
 			$URIT,
-			$COMMENT
+			$COMMENT,
+			$outputfile,
+			$debugfile
 		) {
 
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIG\"";
 		#echo '[' . $curlCmd . "]\n";
@@ -85,12 +83,16 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$relations = extractItemsFromLink($headers['Link']);
 
 		$this->assertArrayHasKey('original latest-version timegate', $relations, "original latest-version timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['original latest-version timegate']);
+		$this->assertEquals($URIG, $relations['original latest-version timegate']['url']);
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['timemap']);
+		$this->assertEquals($URIT, $relations['timemap']['url']);
 
-		$this->StandardEntityTests($entity);
+		$this->StandardEntityTests($entity, $URIG);
+
+		if ($entity) {
+		    $this->fail("302 response should not contain entity for URI $uri");
+		}
 
 		return $response;
 	}
@@ -98,6 +100,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	public function Status200StyleTimeGateMementoResponseCommonTests(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -107,17 +110,16 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		    $URIM,
 			$URIG,
 			$URIT,
-			$COMMENT
+			$COMMENT,
+			$outputfile,
+			$debugfile
 			) {
 
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
-
-		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIR\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$REQUESTED_URI\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
 		$headers = extractHeadersFromResponse($response);
@@ -139,13 +141,14 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($URIR, $relations['original latest-version timegate']['url']);
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
-		$this->assertEquals($URIT, $relations['timemap']);
+
+		$this->assertEquals($URIT, $relations['timemap']['url']);
 
 		$varyItems = extractItemsFromVary($headers['Vary']);
 
 		$this->assertContains('Accept-Datetime', $varyItems);
 
-		$this->StandardEntityTests($entity);
+		$this->StandardEntityTests($entity, $URIR);
 
 		return $response;
 	}
@@ -153,6 +156,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function DirectOriginalResourceResponseCommonTests(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -162,16 +166,16 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		    $URIM,
 			$URIG,
 			$URIT,
-			$COMMENT
+			$COMMENT,
+			$outputfile,
+			$debugfile
 		) {
 		
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
-		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H \"X-TestComment: $COMMENT\" --url \"$URIM\"";
+		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H \"X-TestComment: $COMMENT\" --url \"$REQUESTED_URI\"";
 		#echo '[' . $curlCmd . "]\n";
 		$response = `$curlCmd 2> $debugfile | tee -a "$outputfile"`;
 		file_put_contents( $outputfile, "\n#########################################\n", FILE_APPEND );
@@ -192,12 +196,12 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$relations = extractItemsFromLink($headers['Link']);
 
 		$this->assertArrayHasKey('original latest-version timegate', $relations, "original latest-version timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['original latest-version timegate']);
+		$this->assertEquals($URIG, $relations['original latest-version timegate']['url']);
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
-		$this->assertEquals($URIT, $relations['timemap']);
+		$this->assertEquals($URIT, $relations['timemap']['url']);
 
-		$this->StandardEntityTests($entity);
+		$this->StandardEntityTests($entity, $URIM);
 
 		return $response;
 	}
@@ -206,6 +210,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function DirectMementoResponseCommonTests(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -215,14 +220,14 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		    $URIM,
 			$URIG,
 			$URIT,
-			$COMMENT
+			$COMMENT,
+			$outputfile,
+			$debugfile
 		) {
 		
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H \"X-TestComment: $COMMENT\" --url \"$URIM\"";
 		#echo '[' . $curlCmd . "]\n";
@@ -243,14 +248,14 @@ class MementoTest extends PHPUnit_Framework_TestCase {
         $mementoDatetime = $headers['Memento-Datetime'];
 
 		$this->assertArrayHasKey('original latest-version timegate', $relations, "original latest-version timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['original latest-version timegate']);
+		$this->assertEquals($URIG, $relations['original latest-version timegate']['url']);
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['timemap']);
+		$this->assertEquals($URIT, $relations['timemap']['url']);
 
         # need test for expected Memento Datetime, and need data field in input for it too
 
-		$this->StandardEntityTests($entity);
+		$this->StandardEntityTests($entity, $URIM);
 
 		return $response;
 	}
@@ -289,6 +294,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	public function testDirectMementoResponse(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -301,21 +307,26 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
         $response = $this->DirectMementoResponseCommonTests(
-			$IDENTIFIER, $ACCEPTDATETIME, $URIR, $ORIGINALLATEST, $FIRSTMEMENTO,
-			$LASTMEMENTO, $PREVPREDECESSOR, $NEXTSUCCESSOR,
-			$URIM, $URIG, $URIT, $COMMENT );
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
 
 	}
 
     /**
-	 * @group all
+	 * @group all-recommended-headers
 	 *
      * @dataProvider acquireTimeNegotiationData
      */
 	public function testDirectMementoResponseWithRecommendedHeaders(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -328,12 +339,17 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
-        $response = $this->DirectMementoResponseCommonTests(
-			$IDENTIFIER, $ACCEPTDATETIME, $URIR, $ORIGINALLATEST, $FIRSTMEMENTO,
-			$LASTMEMENTO, $PREVPREDECESSOR, $NEXTSUCCESSOR,
-			$URIM, $URIG, $URIT, $COMMENT );
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
-		$this->recommendedRelationsTests( $response, $FIRSTMEMENTO, $LASTMEMENTO );
+        $response = $this->DirectMementoResponseCommonTests(
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
+
+		$this->recommendedRelationsTests(
+			$response, $FIRSTMEMENTO, $LASTMEMENTO, $URIM );
 	}
 
 	/**
@@ -344,6 +360,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	public function testDirectOriginalResourceResponse(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -355,21 +372,27 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIT,
 			$COMMENT
 		) {
+
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
         $response = $this->DirectOriginalResourceResponseCommonTests(
-			$IDENTIFIER, $ACCEPTDATETIME, $URIR, $ORIGINALLATEST, $FIRSTMEMENTO,
-			$LASTMEMENTO, $PREVPREDECESSOR, $NEXTSUCCESSOR,
-			$URIM, $URIG, $URIT, $COMMENT );
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
 
 	}
 
 	/**
-	 * @group all
+	 * @group all-recommended-headers
 	 *
 	 * @dataProvider acquireTimeNegotiationData
 	 */
 	public function testDirectOriginalResourceResponseWithRecommendedHeaders(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -381,12 +404,18 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$URIT,
 			$COMMENT
 		) {
-        $response = $this->DirectOriginalResourceResponseCommonTests(
-			$IDENTIFIER, $ACCEPTDATETIME, $URIR, $ORIGINALLATEST, $FIRSTMEMENTO,
-			$LASTMEMENTO, $PREVPREDECESSOR, $NEXTSUCCESSOR,
-			$URIM, $URIG, $URIT, $COMMENT );
 
-		$this->recommendedRelationsTests( $response, $FIRSTMEMENTO, $LASTMEMENTO );
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
+
+        $response = $this->DirectOriginalResourceResponseCommonTests(
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
+
+		$this->recommendedRelationsTests(
+			$response, $FIRSTMEMENTO, $LASTMEMENTO, $URIM );
 	}
 
     /**
@@ -397,6 +426,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function test302StyleTimeGateResponse(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -409,9 +439,14 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
-        $this->Status302StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
-		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+        $this->Status302StyleTimeGateResponseCommonTests(
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
     }
 
     /**
@@ -422,6 +457,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function test302StyleTimeGateResponseWithRecommendedHeaders(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -434,11 +470,17 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
-        $response = $this->Status302StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
-		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$this->recommendedRelationsTests( $response, $FIRSTMEMENTO, $LASTMEMENTO );
+        $this->Status302StyleTimeGateResponseCommonTests(
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
+
+		$this->recommendedRelationsTests(
+			$response, $FIRSTMEMENTO, $LASTMEMENTO, $URIM );
     }
 
 
@@ -450,6 +492,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function test200StyleTimeGateMementoResponse(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -462,9 +505,14 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 			) {
 
-        $response = $this->Status200StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
-		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+        $response = $this->Status200StyleTimeGateMementoResponseCommonTests(
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
 	}
 
 	/**
@@ -475,6 +523,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
     public function test200StyleTimeGateMementoResponseWithRecommendedHeaders(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
+			$REQUESTED_URI,
 		    $URIR,
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
@@ -487,11 +536,17 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 			) {
 
-        $response = $this->Status200StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
-		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		$this->recommendedRelationsTests( $response, $FIRSTMEMENTO, $LASTMEMENTO );
+        $response = $this->Status200StyleTimeGateMementoResponseCommonTests(
+			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
+		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$outputfile, $debugfile);
+
+		$this->recommendedRelationsTests(
+			$response, $FIRSTMEMENTO, $LASTMEMENTO, $URIM );
 	}
 
 	/**
@@ -515,7 +570,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals("200", $statusline["code"]);
 
-		$this->StandardEntityTests($entity);
+		$this->StandardEntityTests($entity, $URIR);
 	}
 	/**
 	 * @group all
@@ -539,13 +594,13 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($statusline["code"], "200");
 
-		$this->StandardEntityTests($entity);
+		$this->StandardEntityTests($entity, $URIR);
 	}
 
 
     public function acquireTimeNegotiationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 12);
+			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 13);
     }
 
 	# TODO: need an automated test for timemaps' happy path
