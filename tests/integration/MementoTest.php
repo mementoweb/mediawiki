@@ -40,7 +40,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 
-    public function 302StyleTimeGateResponseCommonTests(
+    public function Status302StyleTimeGateResponseCommonTests(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
 		    $URIR,
@@ -95,7 +95,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		return $response;
 	}
 
-	public function 200StyleTimeGateMementoResponseCommonTests(
+	public function Status200StyleTimeGateMementoResponseCommonTests(
 			$IDENTIFIER,
 		    $ACCEPTDATETIME,
 		    $URIR,
@@ -117,8 +117,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER;
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '.' . $IDENTIFIER . '-debug.txt';
 
-		# UA --- HEAD $URIR; Accept-Datetime: T ----> URI-R
-		# UA <--- 200; Link: URI-G ---- URI-R
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: $ACCEPTDATETIME' -H \"X-TestComment: $COMMENT\" --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 
@@ -126,7 +124,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$statusline = extractStatuslineFromResponse($response);
 		$entity = extractEntityFromResponse($response);
 
-		$this->assertEquals("200", $statusline["code"], "200");
+		$this->assertEquals("200", $statusline["code"]);
 
 		$this->assertArrayHasKey('Link', $headers);
 		$this->assertArrayHasKey('Memento-Datetime', $headers);
@@ -411,7 +409,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
-        $this->302StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
+        $this->Status302StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
 		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
 		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
     }
@@ -436,7 +434,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 		) {
 
-        $response = $this->302StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
+        $response = $this->Status302StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
 		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
 		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
 
@@ -464,7 +462,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 			) {
 
-        $response = $this->200StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
+        $response = $this->Status200StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
 		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
 		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
 	}
@@ -489,7 +487,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$COMMENT
 			) {
 
-        $response = $this->200StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
+        $response = $this->Status200StyleTimeGateResponseCommonTests( $IDENTIFIER, $ACCEPTDATETIME,
 		    $URIR, $ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
 		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT );
 
@@ -532,7 +530,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-		# UA <--- 200; Link: URI-G ---- URI-R
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url \"$URIR\"";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
 

@@ -25,14 +25,12 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 		self::$instance++;
 	}
 
-	public function 400TimeGateErrorResponseCommonTests($URIG, $statuscode) {
+	public function Status400TimeGateErrorResponseCommonTests(
+		$URIG, $statuscode, $outputfile, $debugfile) {
 
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i -H 'Accept-Datetime: bad-input' --url '$URIG'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
@@ -62,13 +60,13 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
 	}
 
-	public function 404TimeMapErrorResponseCommonTests($URIT, $statuscode) {
+	public function Status404TimeMapErrorResponseCommonTests(
+		$URIT, $statuscode, $outputfile, $debugfile) {
+
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIT'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
@@ -92,13 +90,12 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 		$this->assertStringMatchesFormat("$expected", $entity);
 	}
 
-	public function 400TimeMapErrorResponseCommonTests($URIT, $statuscode) {
+	public function Status400TimeMapErrorResponseCommonTests(
+		$URIT, $statuscode, $outputfile, $debugfile) {
+
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-
-		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
-		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIT'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
@@ -142,7 +139,11 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 			$URIT,
 			$COMMENT
 		) {
-		400TimeGateErrorResponseCommonTests($URIG, "400");
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+		
+		$this->Status400TimeGateErrorResponseCommonTests(
+			$URIG, "400", $outputfile, $debugfile);
 	}
 
 	/**
@@ -164,7 +165,37 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 			$URIT,
 			$COMMENT
 		) {
-		400TimeGateErrorResponseCommonTests($URIG, "200");
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+		
+		$this->Status400TimeGateErrorResponseCommonTests(
+			$URIG, "200", $outputfile, $debugfile);
+	}
+
+	/**
+	 * @group traditionalErrorPages
+	 *
+	 * @dataProvider acquireTimeMap404Urls
+	 */
+	public function test404TimeMapTraditionalError($URIT) {
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$this->Status404TimeMapErrorResponseCommonTests(
+			$URIT, "404", $outputfile, $debugfile);
+	}
+
+	/**
+	 * @group friendlyErrorPages
+	 *
+	 * @dataProvider acquireTimeMap404Urls
+	 */
+	public function test404TimeMapFriendlyError($URIT) {
+		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+
+		$this->Status404TimeMapErrorResponseCommonTests(
+			$URIT, "200", $outputfile, $debugfile);
 	}
 
 	/**
@@ -172,91 +203,61 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider acquireTimeNegotiationData
 	 */
-	public function test404TimeMapTraditionalError(
-			$IDENTIFIER,
-		    $ACCEPTDATETIME,
-		    $URIR,
-			$ORIGINALLATEST,
-		    $FIRSTMEMENTO,
-		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
-		    $URIM,
-			$URIG,
-			$URIT,
-			$COMMENT
-		) {
-		404TimeMapErrorResponseCommonTests($URIT, "404");
-	}
-
-	/**
-	 * @group friendlyErrorPages
-	 *
-	 * @dataProvider acquireTimeNegotiationData
-	 */
-	public function test404TimeMapFriendlyError(
-			$IDENTIFIER,
-		    $ACCEPTDATETIME,
-		    $URIR,
-			$ORIGINALLATEST,
-		    $FIRSTMEMENTO,
-		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
-		    $URIM,
-			$URIG,
-			$URIT,
-			$COMMENT
-		) {
-		404TimeMapErrorResponseCommonTests($URIT, "200");
-	}
-
-	/**
-	 * @group traditionalErrorPages
-	 *
-	 * @dataProvider acquireTimeNegotiationData
-	 */
-	public function test400TimeMapTraditionalError(
-			$IDENTIFIER,
-		    $ACCEPTDATETIME,
-		    $URIR,
-			$ORIGINALLATEST,
-		    $FIRSTMEMENTO,
-		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
-		    $URIM,
-			$URIG,
-			$URIT,
-			$COMMENT
-		) {
-		400TimeMapErrorResponseCommonTests($URIT, "400");
-	}
-
-	/**
-	 * @group friendlyErrorPages
-	 *
-	 * @dataProvider acquireTimeNegotiationData
-	 */
-	public function test400TimeMapFriendlyError(
-			$IDENTIFIER,
-		    $ACCEPTDATETIME,
-		    $URIR,
-			$ORIGINALLATEST,
-		    $FIRSTMEMENTO,
-		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
-		    $URIM,
-			$URIG,
-			$URIT,
-			$COMMENT
-		) {
-		400TimeMapErrorResponseCommonTests($URIT, "200");
-	}
+#	public function test400TimeMapTraditionalError(
+#			$IDENTIFIER,
+#		    $ACCEPTDATETIME,
+#		    $URIR,
+#			$ORIGINALLATEST,
+#		    $FIRSTMEMENTO,
+#		    $LASTMEMENTO,
+#			$PREVPREDECESSOR,
+#		    $NEXTSUCCESSOR,
+#		    $URIM,
+#			$URIG,
+#			$URIT,
+#			$COMMENT
+#		) {
+#		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+#		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+#
+#		$this->Status400TimeMapErrorResponseCommonTests(
+#			$URIT, "400", $outputfile, $debugfile);
+#	}
+#
+#	/**
+#	 * @group friendlyErrorPages
+#	 *
+#	 * @dataProvider acquireTimeNegotiationData
+#	 */
+#	public function test400TimeMapFriendlyError(
+#			$IDENTIFIER,
+#		    $ACCEPTDATETIME,
+#		    $URIR,
+#			$ORIGINALLATEST,
+#		    $FIRSTMEMENTO,
+#		    $LASTMEMENTO,
+#			$PREVPREDECESSOR,
+#		    $NEXTSUCCESSOR,
+#		    $URIM,
+#			$URIG,
+#			$URIT,
+#			$COMMENT
+#		) {
+#		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
+#		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
+#
+#		$this->Status400TimeMapErrorResponseCommonTests(
+#			$URIT, "200", $outputfile, $debugfile);
+#	}
 
 	public function acquireTimeNegotiationData() {
 		return acquireCSVDataFromFile(
 			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 12);
 	}
+
+	public function acquireTimeMap404Urls() {
+		return acquireLinesFromFile(
+			getenv('TESTDATADIR') . '/timemap-dneurls-testdata.csv');
+	}
+
 }

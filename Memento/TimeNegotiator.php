@@ -137,7 +137,18 @@ class TimeNegotiator {
 			$firsturi = $mr->getFullURIForID( $first['id'], $title );
 			$lasturi = $mr->getFullURIForID( $first['id'], $title );
 
+			
+			$linkEntries = implode( ',', $this->linkRelations );
+
+			// this does not work for traditional errors, possibly because
+			// of the disable() later, but does work for friendly
+			// errors
 			$out->addVaryHeader( 'Accept-Datetime' );
+
+			// workaround for addVaryHeader for traditional errors
+			$varyEntries = explode( ':', $out->getVaryHeader() );
+			$varyEntries = $varyEntries[1];
+			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 			$response->header( 'Link: ' . $linkEntries, true );
 
 			throw new MementoResourceException(
