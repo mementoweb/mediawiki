@@ -453,6 +453,124 @@ abstract class TimeMapResource extends MementoResource {
 	}
 
 	/**
+	 * getFullTimeMapData
+	 *
+	 * Extract the full time map data from the database.
+	 *
+	 * @param $pg_id - identifier of the requested page
+	 * @param $limit - the greatest number of results
+	 *
+	 * @return array $data - containing keys 'rev_id' and 'rev_timestamp'
+	 */
+	public function getFullTimeMapData($pg_id, $limit) {
+
+		$data = array();
+
+		$results = $this->dbr->select(
+			'revision',
+			array( 'rev_id', 'rev_timestamp'),
+			array( 'rev_page' => $pg_id ),
+			__METHOD__,
+			array(
+				'ORDER BY' => 'rev_timestamp DESC',
+				'LIMIT' => $limit
+				)
+			);
+
+		while($result = $results->fetchRow()) {
+			$datum = array();
+			$datum['rev_id'] = $result['rev_id'];
+			$datum['rev_timestamp'] = wfTimestamp(
+				TS_RFC2822, $result['rev_timestamp']
+				);
+			$data[] = $datum;
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * renderFullTimeMap
+	 *
+	 * This method handles all of the operations of rendering a Full TimeMap
+	 * referring to one not requested with a pivot.
+	 *
+	 */
+	public function renderFullTimeMap() {
+
+		$article = $this->article;
+		$out = $article->getContext()->getOutput();
+		$titleObj = $article->getTitle();
+
+		$server = $this->conf->get('Server');
+		$pg_id = $article->getTitle()->getArticleID();
+		$request = $out->getRequest();
+		$response = $request->response();
+
+		$timeMapURI = $request->getFullRequestURL();
+
+		if ( $pg_id > 0 ) {
+
+			$results = $this->getFullTimeMapData(
+				$pg_id, $this->conf->get('NumberOfMementos')
+				);
+
+			// get the first revision ID
+			$firstId = $titleObj->getFirstRevision()->getId();
+
+			// get the last revision ID
+			$lastId = $titleObj->getLatestRevID();
+
+			// calculate the difference
+			// this counts the revisions BETWEEN, non-inclusive
+			$revCount = $titleObj->countRevisionsBetween($firstId, $lastId);
+			$revCount = $revCount + 2; # for first and last
+
+			// if it is greater than limit then get the revision ID prior
+			// to the lowest one returned by getFullTimeMapData
+			// paginate if we have more than NumberOfMementos Mementos
+			$timeMapPages = array();
+
+			$title = $titleObj->getPrefixedURL();
+
+			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+				$earliestItem = end($results);
+				reset($results);
+
+				$pivotTimestamp =
+					$this->formatTimestampForDatabase(
+						$earliestItem['rev_timestamp'] );
+
+				# this function operates on $timeMapPages in place
+				$this->generateDescendingTimeMapPaginationData(
+					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+
+			}
+
+			// use that revision ID + limit revisions to calculate the from
+			// 	and until for the next timemap
+			echo $this->generateTimeMapText(
+				$results, $timeMapURI, $title, $timeMapPages
+				);
+
+			$response->header("Content-Type: application/link-format", true);
+
+			$out->disable();
+		} else {
+			$titleMessage = 'timemap';
+			$textMessage = 'timemap-404-title';
+			$title = $this->getFullNamespacePageTitle( $titleObj );
+
+			throw new MementoResourceException(
+				$textMessage, $titleMessage,
+				$out, $response, 404, array( $title )
+			);
+		}
+
+	}
+
+	/**
 	 * renderPivotTimeMap
 	 *
 	 * This template method handles all of the operations of rendering a
@@ -494,67 +612,65 @@ abstract class TimeMapResource extends MementoResource {
 				$pg_id, $formattedTimestamp
 				);
 
-			// this section is rather redundant when we throw 400 for
-			// the timestamp above, but exists in case some how an invalid
-			// timestamp is extracted
+			// if we get no results back, then the timestamp is likely outside
+			// the range offered by the resource, so return a Full Time Map
+			// instead
 			if (!$results) {
-				throw new MementoResourceException(
-					'timemap-400-date', 'timemap',
-					$out, $response, 400,
-					array( $timestamp )
-				);
+				$this->renderFullTimeMap();
+			} else {
+
+				$latestItem = $results[0];
+				$earliestItem = end($results);
+				reset($results);
+	
+				$firstId = $titleObj->getFirstRevision()->getId();
+				$lastId = $titleObj->getLatestRevId();
+	
+				# this counts revisions BETWEEN, non-inclusive
+				$revCount = $titleObj->countRevisionsBetween(
+					$firstId, $earliestItem['rev_id'] );
+				$revCount = $revCount + 2; # for first and last
+	
+				$timeMapPages = array();
+	
+				$title = $titleObj->getPrefixedURL();
+	
+				# if $revCount is higher, then we've gone over the limit
+				if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+	
+					$pivotTimestamp = $this->formatTimestampForDatabase(
+						$earliestItem['rev_timestamp'] );
+	
+					$this->generateDescendingTimeMapPaginationData(
+						$pg_id, $pivotTimestamp, $timeMapPages, $title );
+	
+				}
+	
+				# this counts revisions BETWEEN, non-inclusive
+				$revCount = $titleObj->countRevisionsBetween(
+					$latestItem['rev_id'], $lastId );
+				$revCount = $revCount + 2; # for first and last
+	
+				# if $revCount is higher, then we've gone over the limit
+				if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+	
+					$pivotTimestamp = $this->formatTimestampForDatabase(
+						$latestItem['rev_timestamp'] );
+	
+					$this->generateAscendingTimeMapPaginationData(
+						$pg_id, $pivotTimestamp, $timeMapPages, $title );
+	
+				}
+	
+				echo $this->generateTimeMapText(
+					$results, $timeMapURI, $title, $timeMapPages
+					);
+	
+				$response->header(
+					"Content-Type: application/link-format", true);
+	
+				$out->disable();
 			}
-
-			$latestItem = $results[0];
-			$earliestItem = end($results);
-			reset($results);
-
-			$firstId = $titleObj->getFirstRevision()->getId();
-			$lastId = $titleObj->getLatestRevId();
-
-			# this counts revisions BETWEEN, non-inclusive
-			$revCount = $titleObj->countRevisionsBetween(
-				$firstId, $earliestItem['rev_id'] );
-			$revCount = $revCount + 2; # for first and last
-
-			$timeMapPages = array();
-
-			$title = $titleObj->getPrefixedURL();
-
-			# if $revCount is higher, then we've gone over the limit
-			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
-
-				$pivotTimestamp = $this->formatTimestampForDatabase(
-					$earliestItem['rev_timestamp'] );
-
-				$this->generateDescendingTimeMapPaginationData(
-					$pg_id, $pivotTimestamp, $timeMapPages, $title );
-
-			}
-
-			# this counts revisions BETWEEN, non-inclusive
-			$revCount = $titleObj->countRevisionsBetween(
-				$latestItem['rev_id'], $lastId );
-			$revCount = $revCount + 2; # for first and last
-
-			# if $revCount is higher, then we've gone over the limit
-			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
-
-				$pivotTimestamp = $this->formatTimestampForDatabase(
-					$latestItem['rev_timestamp'] );
-
-				$this->generateAscendingTimeMapPaginationData(
-					$pg_id, $pivotTimestamp, $timeMapPages, $title );
-
-			}
-
-			echo $this->generateTimeMapText(
-				$results, $timeMapURI, $title, $timeMapPages
-				);
-
-			$response->header("Content-Type: application/link-format", true);
-
-			$out->disable();
 		} else {
 			$titleMessage = 'timemap';
 			$textMessage = 'timemap-404-title';
