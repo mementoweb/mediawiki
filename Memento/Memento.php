@@ -77,7 +77,6 @@ $wgSpecialPages['TimeMap'] = 'TimeMap';
 // Set up the hooks for this class
 $wgHooks['BeforePageDisplay'][] = 'Memento::onBeforePageDisplay';
 $wgHooks['ArticleViewHeader'][] = 'Memento::onArticleViewHeader';
-$wgHooks['DiffViewHeader'][] = 'Memento::onDiffViewHeader';
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
 
 // set up the Time Gate (URI-G) classes
@@ -98,11 +97,6 @@ $wgAutoloadClasses['TimeNegotiator'] =
  *
  */
 class Memento {
-
-	/**
-	 * @var bool $diffPage: flag indicating that this is a diff page
-	 */
-	static private $diffPage;
 
 
 	/**
@@ -140,9 +134,7 @@ class Memento {
 	 * The ArticleViewHeader hook, used to alter the headers before the rest
 	 * of the data is loaded.
 	 *
-	 * Note: this is not called when the Edit or History pages are loaded.
-	 *
-	 * TODO: determine if this is called when DiffPages are called
+	 * Note: this is not called when the Edit, Diff or History pages are loaded.
 	 *
 	 * @param: $article: pointer to the Article Object from the hook
 	 * @param: $outputDone: pointer to variable that indicates that 
@@ -156,41 +148,32 @@ class Memento {
 		&$article, &$outputDone, &$pcache
 		) {
 
-		$config = new MementoConfig();
-		$dbr = wfGetDB( DB_SLAVE );
-		$oldID = $article->getOldID();
-		$request = $article->getContext()->getRequest();
-
-		self::$mementoResource = MementoResource::MementoPageResourceFactory(
-			$config, $dbr, $article, $oldID, $request );
-
-		try {
-			self::$mementoResource->alterHeaders();
-		} catch (MementoResourceException $e) {
-
-			$out = $article->getContext()->getOutput();
-
-			MementoResource::renderError(
-				$out, $e, $config->get('ErrorPageType') );
+		// avoid processing Mementos for nonexistent pages
+		// if we're an article, do memento processing, otherwise don't worry
+		// if we're a diff page, Memento doesn't make sense
+		if ( $article->getTitle()->isKnown() ) {
+	
+			$config = new MementoConfig();
+			$dbr = wfGetDB( DB_SLAVE );
+			$oldID = $article->getOldID();
+			$request = $article->getContext()->getRequest();
+	
+			self::$mementoResource =
+				MementoResource::MementoPageResourceFactory(
+					$config, $dbr, $article, $oldID, $request );
+	
+			try {
+				self::$mementoResource->alterHeaders();
+			} catch (MementoResourceException $e) {
+	
+				$out = $article->getContext()->getOutput();
+	
+				MementoResource::renderError(
+					$out, $e, $config->get('ErrorPageType') );
+			}
 		}
 
 		return true; // TODO: return false if exception thrown?
-	}
-
-	/**
-	 * This hook runs when diffs are viewed.
-	 *
-	 * Note: The arguments to this function have been omitted because they are
-	 * 		not used and also to ensure backward compatibility between
-	 *		different versions of Mediawiki.
-	 *
-	 * @return boolean indicating success to the caller
-	 */
-	public static function onDiffViewHeader() {
-
-		self::$diffPage = true;
-
-		return true;
 	}
 
 	/**
@@ -205,19 +188,18 @@ class Memento {
 
 		$status = true;
 
-		// if we're an article, do memento processing, otherwise don't worry
-		if ( $out->isArticle() ) {
-			// if we're a diff page, Memento doesn't make sense
-			if ( ! self::$diffPage ) {
+		// if we didn't get declared during ArticleViewHeader, then there is
+		// no need to run the additional Memento code
+		if ( self::$mementoResource ) {
 
-				try {
-					self::$mementoResource->alterEntity();
-				} catch (MementoResourceException $e) {
-					$config = new MementoConfig();
-					MementoResource::renderError(
-						$out, $e, $config->get('ErrorPageType') );
-				}
+			try {
+				self::$mementoResource->alterEntity();
+			} catch (MementoResourceException $e) {
+				$config = new MementoConfig();
+				MementoResource::renderError(
+					$out, $e, $config->get('ErrorPageType') );
 			}
+
 		}
 
 		return $status; // TODO: return false if exception thrown?
