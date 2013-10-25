@@ -416,9 +416,13 @@ abstract class TimeMapResource extends MementoResource {
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
+		// we can't really use $this->constructTimeMapLinkHeaderWithBounds
+		// because that method creates an entry for a "full", or "starter"
+		// TimeMap and generateTimeMapText might be called by a function
+		// that is working with a pivot TimeMap
 		$timemapEntry = '<' . $timeMapURI .
 			'>; rel="self"; type="application/link-format"; ' .
-			'from="' . $from . '; until="' . $until . '"';
+			'from="' . $from . '"; until="' . $until . '"';
 
 		array_push( $outputArray, $timemapEntry );
 
