@@ -167,6 +167,9 @@ class Memento {
 			} catch (MementoResourceException $e) {
 	
 				$out = $article->getContext()->getOutput();
+
+				// unset for future hooks in the chain
+				self::$mementoResource = null;
 	
 				MementoResource::renderError(
 					$out, $e, $config->get('ErrorPageType') );
@@ -196,6 +199,10 @@ class Memento {
 				self::$mementoResource->alterEntity();
 			} catch (MementoResourceException $e) {
 				$config = new MementoConfig();
+
+				// unset for future hooks in the chain
+				self::$mementoResource = null;
+
 				MementoResource::renderError(
 					$out, $e, $config->get('ErrorPageType') );
 			}
