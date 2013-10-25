@@ -23,6 +23,16 @@
  */
 
 /**
+ * Ensure that this file is only executed in the right context.
+ *
+ * @see http://www.mediawiki.org/wiki/Security_for_developers
+ */
+if ( ! defined( 'MEDIAWIKI' ) ) {
+	echo "Not a valid entry point";
+	exit( 1 );
+}
+
+/**
  * This class implements the header alteration and entity alteration functions
  * used for any style of Time Negotiation when an Accept-Datetime header is NOT
  * given in the request.

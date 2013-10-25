@@ -23,6 +23,16 @@
  */
 
 /**
+ * Ensure that this file is only executed in the right context.
+ *
+ * @see http://www.mediawiki.org/wiki/Security_for_developers
+ */
+if ( ! defined( 'MEDIAWIKI' ) ) {
+	echo "Not a valid entry point";
+	exit( 1 );
+}
+
+/**
  * This class handles TimeMaps from URIs of the form:
  * http://example.com/index.php/Special:TimeMap/20130720011113/-1/Page
  * referred to here as a "descending pivot" where the pivot is the date

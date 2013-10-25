@@ -22,6 +22,21 @@
  * @file
  */
 
+/**
+ * Ensure that this file is only executed in the right context.
+ *
+ * @see http://www.mediawiki.org/wiki/Security_for_developers
+ */
+if ( ! defined( 'MEDIAWIKI' ) ) {
+	echo "Not a valid entry point";
+	exit( 1 );
+}
+
+/**
+ * This class implements Full (starter) Time Map rendering for Time Maps
+ * of the form:
+ * http://example.com/index.php/Special:TimeMap/Page
+ */
 class TimeMapFullResource extends TimeMapResource {
 
 	/**

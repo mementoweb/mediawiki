@@ -23,6 +23,16 @@
  */
 
 /**
+ * Ensure that this file is only executed in the right context.
+ *
+ * @see http://www.mediawiki.org/wiki/Security_for_developers
+ */
+if ( ! defined( 'MEDIAWIKI' ) ) {
+	echo "Not a valid entry point";
+	exit( 1 );
+}
+
+/**
  * This class centralizes Time Negotiation.  It uses a Memento Resource as
  * input, manipulates that resource to its liking, then stores output
  * available in a variety of getters.
