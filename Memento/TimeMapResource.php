@@ -552,13 +552,13 @@ abstract class TimeMapResource extends MementoResource {
 
 			}
 
+			$response->header("Content-Type: application/link-format", true);
+
 			// use that revision ID + limit revisions to calculate the from
 			// 	and until for the next timemap
 			echo $this->generateTimeMapText(
 				$results, $timeMapURI, $title, $timeMapPages
 				);
-
-			$response->header("Content-Type: application/link-format", true);
 
 			$out->disable();
 		} else {
@@ -666,12 +666,12 @@ abstract class TimeMapResource extends MementoResource {
 	
 				}
 	
+				$response->header(
+					"Content-Type: application/link-format", true);
+	
 				echo $this->generateTimeMapText(
 					$results, $timeMapURI, $title, $timeMapPages
 					);
-	
-				$response->header(
-					"Content-Type: application/link-format", true);
 	
 				$out->disable();
 			}
