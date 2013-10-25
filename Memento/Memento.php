@@ -152,25 +152,25 @@ class Memento {
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
-	
+
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
 			$oldID = $article->getOldID();
 			$request = $article->getContext()->getRequest();
-	
+
 			self::$mementoResource =
 				MementoResource::MementoPageResourceFactory(
 					$config, $dbr, $article, $oldID, $request );
-	
+
 			try {
 				self::$mementoResource->alterHeaders();
 			} catch (MementoResourceException $e) {
-	
+
 				$out = $article->getContext()->getOutput();
 
 				// unset for future hooks in the chain
 				self::$mementoResource = null;
-	
+
 				MementoResource::renderError(
 					$out, $e, $config->get('ErrorPageType') );
 			}

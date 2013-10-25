@@ -738,9 +738,9 @@ abstract class MementoResource {
 			if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
 
 				$pg_id = $title->getArticleID();
-	
+
 				$this->dbr->begin();
-	
+
 				$res = $this->dbr->select(
 					'revision',
 					array( 'rev_id' ),
@@ -752,7 +752,7 @@ abstract class MementoResource {
 					__METHOD__,
 					array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
 				);
-	
+
 				if( $res ) {
 					$row = $this->dbr->fetchObject( $res );
 					$id = $row->rev_id;

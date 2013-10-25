@@ -137,7 +137,6 @@ class TimeNegotiator {
 			$firsturi = $mr->getFullURIForID( $first['id'], $title );
 			$lasturi = $mr->getFullURIForID( $first['id'], $title );
 
-			
 			$linkEntries = implode( ',', $this->linkRelations );
 
 			// this does not work for traditional errors, possibly because

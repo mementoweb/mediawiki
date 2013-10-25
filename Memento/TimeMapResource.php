@@ -626,53 +626,53 @@ abstract class TimeMapResource extends MementoResource {
 				$latestItem = $results[0];
 				$earliestItem = end($results);
 				reset($results);
-	
+
 				$firstId = $titleObj->getFirstRevision()->getId();
 				$lastId = $titleObj->getLatestRevId();
-	
+
 				# this counts revisions BETWEEN, non-inclusive
 				$revCount = $titleObj->countRevisionsBetween(
 					$firstId, $earliestItem['rev_id'] );
 				$revCount = $revCount + 2; # for first and last
-	
+
 				$timeMapPages = array();
-	
+
 				$title = $titleObj->getPrefixedURL();
-	
+
 				# if $revCount is higher, then we've gone over the limit
 				if ( $revCount > $this->conf->get('NumberOfMementos') ) {
-	
+
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$earliestItem['rev_timestamp'] );
-	
+
 					$this->generateDescendingTimeMapPaginationData(
 						$pg_id, $pivotTimestamp, $timeMapPages, $title );
-	
+
 				}
-	
+
 				# this counts revisions BETWEEN, non-inclusive
 				$revCount = $titleObj->countRevisionsBetween(
 					$latestItem['rev_id'], $lastId );
 				$revCount = $revCount + 2; # for first and last
-	
+
 				# if $revCount is higher, then we've gone over the limit
 				if ( $revCount > $this->conf->get('NumberOfMementos') ) {
-	
+
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$latestItem['rev_timestamp'] );
-	
+
 					$this->generateAscendingTimeMapPaginationData(
 						$pg_id, $pivotTimestamp, $timeMapPages, $title );
-	
+
 				}
-	
+
 				$response->header(
 					"Content-Type: application/link-format", true);
-	
+
 				echo $this->generateTimeMapText(
 					$results, $timeMapURI, $title, $timeMapPages
 					);
-	
+
 				$out->disable();
 			}
 		} else {
