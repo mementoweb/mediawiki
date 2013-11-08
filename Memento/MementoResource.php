@@ -789,7 +789,6 @@ abstract class MementoResource {
 
 		$waddress = str_replace( '/$1', '', $conf->get('ArticlePath') );
 
-		$this->mwbaseurl = $this->conf->get('Server') . $waddress;
 		$this->mwrelurl = $waddress;
 	}
 

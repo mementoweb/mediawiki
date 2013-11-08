@@ -506,7 +506,6 @@ abstract class TimeMapResource extends MementoResource {
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
 
-		$server = $this->conf->get('Server');
 		$pg_id = $article->getTitle()->getArticleID();
 		$request = $out->getRequest();
 		$response = $request->response();
@@ -587,7 +586,6 @@ abstract class TimeMapResource extends MementoResource {
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
 
-		$server = $this->conf->get('Server');
 		$pg_id = $titleObj->getArticleID();
 		$request = $out->getRequest();
 		$response = $request->response();
