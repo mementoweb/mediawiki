@@ -57,7 +57,6 @@ class MementoConfig {
 
 		global $wgScriptPath; // for ArticlePath default
 		global $wgArticlePath;
-		global $wgServer;
 
 		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimemapNumberOfMementos;

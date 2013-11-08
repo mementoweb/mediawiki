@@ -581,8 +581,6 @@ abstract class MementoResource {
 	public function generateRecommendedLinkHeaderRelations(
 		$title, $first, $last ) {
 
-		$scriptPath = $this->mwrelurl;
-
 		$linkRelations = array();
 
 		$entry = $this->constructTimeMapLinkHeaderWithBounds(
