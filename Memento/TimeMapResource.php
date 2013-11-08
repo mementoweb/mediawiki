@@ -339,8 +339,7 @@ abstract class TimeMapResource extends MementoResource {
 	public function extractTimestampPivot( $urlparam ) {
 		$pivot = null;
 
-		$prefix = $this->mwrelurl . '/' .
-			SpecialPage::getTitleFor('TimeMap') . '/';
+		$prefix = SpecialPage::getTitleFor( 'TimeMap' )->getLocalURL() . '/';
 
 		$urlparam = str_replace($prefix, '', $urlparam);
 

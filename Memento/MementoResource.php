@@ -172,11 +172,6 @@ abstract class MementoResource {
 	protected $dbr;
 
 	/**
-	 * @var string $mwbaseurl: Base URL for Mediawiki installation
-	 */
-	protected $mwbaseurl;
-
-	/**
 	 * @var string $mwrelurl: Base relative URL for Mediawiki installation
 	 */
 	protected $mwrelurl;
