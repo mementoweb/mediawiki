@@ -81,8 +81,8 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 				// for performance, these database calls only occur
 				// when $wgMementoRecommendedRelations is true
-				$first = $this->getFirstMemento( $pageID );
-				$last = $this->getLastMemento( $pageID );
+				$first = $this->getFirstMemento( $titleObj );
+				$last = $this->getLastMemento( $titleObj );
 
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$title, $first, $last );

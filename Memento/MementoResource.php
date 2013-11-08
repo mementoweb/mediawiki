@@ -254,21 +254,20 @@ abstract class MementoResource {
 	 *
 	 * Extract the first memento from the database.
 	 *
-	 * @param $dbr - DatabaseBase object
-	 * @param $pageID - page identifier
-	 * @param $pageTimestamp - timestamp used for finding the first memento
+	 * @param $title - title object
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getFirstMemento( $pageID ) {
+	public function getFirstMemento( $title ) {
+		$revision = array();
 
-		$sqlCondition =
-			array(
-				'rev_page' => $pageID
-				);
-		$sqlOrder = 'rev_timestamp ASC';
+		$firstRevision = $title->getFirstRevision();
 
-		return $this->fetchMementoFromDatabase( $sqlCondition, $sqlOrder );
+		$revision['timestamp'] = 
+			wfTimestamp( TS_RFC2822, $firstRevision->getTimestamp());
+		$revision['id'] = $firstRevision->getId();
+
+		return $revision;
 	}
 
 	/**
@@ -276,22 +275,21 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param $dbr - DatabaseBase object
-	 * @param $pageID - page identifier
-	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 * @param $title - title object
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getLastMemento( $pageID ) {
+	public function getLastMemento( $title ) {
 
-		$sqlCondition =
-			array(
-				'rev_page' => $pageID
-				);
-		$sqlOrder = 'rev_timestamp DESC';
+		$revision = array();
 
-		return $this->fetchMementoFromDatabase(
-			$sqlCondition, $sqlOrder );
+		$lastRevision = WikiPage::factory( $title )->getRevision();
+
+		$revision['timestamp'] =
+			wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp());
+		$revision['id'] = $lastRevision->getId();
+
+		return $revision;
 	}
 
 	/**

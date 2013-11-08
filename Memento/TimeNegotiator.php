@@ -104,8 +104,8 @@ class TimeNegotiator {
 		$pageID = $titleObj->getArticleID();
 
 		// these database calls are required for time negotiation
-		$first = $mr->getFirstMemento( $pageID );
-		$last = $mr->getLastMemento( $pageID );
+		$first = $mr->getFirstMemento( $titleObj );
+		$last = $mr->getLastMemento( $titleObj );
 
 		$title = $mr->getFullNamespacePageTitle( $titleObj );
 
