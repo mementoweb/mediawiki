@@ -43,7 +43,7 @@ This extension has sensible defaults, but also allows the following settings to 
         * '200' - Time Negotiation is performed in place, replacing the given wiki page with its Memento if an Accept-Datetime header is sent by the client
                 - http://www.mementoweb.org/guide/rfc/ID/#Pattern1.2
 
-* $wgMementoRecomendedRelations - mandatory Memento relations in the Link header are always provided, but this is a boolean true/false toggle for the use of RECOMMENDED Memento link relations from the Memento RFC
+* $wgMementoRecommendedRelations - mandatory Memento relations in the Link header are always provided, but this is a boolean true/false toggle for the use of RECOMMENDED Memento link relations from the Memento RFC
         * false - (default) return none of the RECOMMENDED link relations in the Link header to the client
         * true - return all of the RECOMMENDED link relations (first memento, last memento, from, until, etc.) in the Link header to the client; note that this can be computationally expensive and may affect performance on a heavy usage site
 
