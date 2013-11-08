@@ -281,9 +281,10 @@ abstract class TimeMapResource extends MementoResource {
 		reset($paginatedResults);
 		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );
 
-		$timeMapPage['uri'] = $this->mwbaseurl . '/'
-			. SpecialPage::getTitleFor('TimeMap') . '/'
-			. $pivotTimestamp . '/1/' . $title;
+		$timeMapPage['uri'] = 
+			SpecialPage::getTitleFor(
+				'TimeMap', $pivotTimestamp . '/1/' . $title
+			)->getFullURL();
 
 		array_push( $timeMapPages, $timeMapPage );
 
@@ -318,9 +319,10 @@ abstract class TimeMapResource extends MementoResource {
 		reset($paginatedResults);
 		$timeMapPage['from'] = wfTimestamp( TS_RFC2822, $pivotTimestamp );
 
-		$timeMapPage['uri'] = $this->mwbaseurl . '/'
-			. SpecialPage::getTitleFor('TimeMap') . '/'
-			. $pivotTimestamp . '/-1/' . $title;
+		$timeMapPage['uri'] = 
+			SpecialPage::getTitleFor(
+				'TimeMap', $pivotTimestamp . '/-1/' . $title
+			)->getFullURL();
 
 		array_push( $timeMapPages, $timeMapPage );
 
