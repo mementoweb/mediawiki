@@ -497,11 +497,9 @@ abstract class MementoResource {
 
 		$title = rawurlencode($title);
 
-		$entry = '<' .
-			wfExpandUrl(
-				$scriptUrl . '/' . SpecialPage::getTitleFor( 'TimeMap' )
-				) . '/' . $title .
-			'>; rel="timemap"; type="application/link-format"';
+		$uri = SpecialPage::getTitleFor( 'TimeMap', $title )->getFullURL();
+
+		$entry = '<' . $uri .  '>; rel="timemap"; type="application/link-format"';
 
 		return $entry;
 	}
