@@ -80,6 +80,9 @@ class MementoResourceFrom200TimeNegotiation extends MementoResource {
 			$out->addVaryHeader( 'Accept-Datetime' );
 
 			// for alterEntity, when it gets called
+			// TODO: find a better way so that this relationship is not so
+			// obvious (i.e. alterEntity shouldn't be dependent on 
+			// alterHeaders)
 			$this->setMementoOldID( $mementoID );
 		}
 
