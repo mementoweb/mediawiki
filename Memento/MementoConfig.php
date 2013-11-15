@@ -85,9 +85,14 @@ class MementoConfig {
 			$this->setDefault(
 				$wgMementoRecommendedRelations, false );
 
+		$excludeNamespaceDefault = array_diff(
+			MWNamespace::getValidNamespaces(),
+			MWNamespace::getContentNamespaces()
+		);
+
 		$this->settings['ExcludeNamespaces'] =
 			$this->setDefault(
-				$wgMementoExcludeNamespaces, array()
+				$wgMementoExcludeNamespaces, $excludeNamespaceDefault
 				);
 	}
 
