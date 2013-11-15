@@ -281,7 +281,7 @@ abstract class TimeMapResource extends MementoResource {
 		reset($paginatedResults);
 		$timeMapPage['from'] = $earliestItem['rev_timestamp'];
 
-		$timeMapPage['uri'] = 
+		$timeMapPage['uri'] =
 			SpecialPage::getTitleFor(
 				'TimeMap', $pivotTimestamp . '/1/' . $title
 			)->getFullURL();
@@ -319,7 +319,7 @@ abstract class TimeMapResource extends MementoResource {
 		reset($paginatedResults);
 		$timeMapPage['from'] = $earliestItem['rev_timestamp'];
 
-		$timeMapPage['uri'] = 
+		$timeMapPage['uri'] =
 			SpecialPage::getTitleFor(
 				'TimeMap', $pivotTimestamp . '/-1/' . $title
 			)->getFullURL();

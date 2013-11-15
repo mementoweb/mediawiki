@@ -258,7 +258,7 @@ abstract class MementoResource {
 
 		$firstRevision = $title->getFirstRevision();
 
-		$revision['timestamp'] = 
+		$revision['timestamp'] =
 			wfTimestamp( TS_RFC2822, $firstRevision->getTimestamp());
 		$revision['id'] = $firstRevision->getId();
 
