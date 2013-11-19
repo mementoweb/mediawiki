@@ -64,16 +64,15 @@ class TimeMap extends SpecialPage {
 		$out = $this->getOutput();
 		$this->setHeaders();
 
-		// so we can use the same framework as the rest of the
-		// MementoResource classes, we need an Article class
-		$title = TimeMapResource::deriveTitleObject( $urlparam );
-		$article = new Article($title);
-		$article->setContext($this->getContext());
-
 		if ( !$urlparam ) {
 			$out->addHTML( wfMessage( 'timemap-welcome-message' )->parse() );
 			return;
 		} else {
+			// so we can use the same framework as the rest of the
+			// MementoResource classes, we need an Article class
+			$title = TimeMapResource::deriveTitleObject( $urlparam );
+			$article = new Article($title);
+			$article->setContext($this->getContext());
 
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
