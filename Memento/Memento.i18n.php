@@ -63,14 +63,14 @@ where, the address that follows the TimeGate URL is the address of the article.
 EOT;
 
 $timemap_welcome = <<<EOT
-This is a Memento TimeMap for your wiki.  
+This Special Page takes care of creating Memento TimeMaps for your wiki, which are machine-readable versions of the history of the pages they represent.
 
 For a specific page, it lists the Mementos archived for that page.
 
 To see Memento in action, either follow instructions from the 
 [http://www.mediawiki.org/wiki/Extension:Memento MediaWiki Extension] page or 
 type in the address of the wiki page in this format:
-	http://yourwikisite/wiki/index.php/Special:TimeMap/http://yourwikisite/wiki/index.php/YourPage
+	http://yourwikisite/wiki/index.php/Special:TimeMap/YourPage
 where, the address that follows the TimeMap URL is the address of the article.
 EOT;
 
@@ -111,7 +111,9 @@ $messages['en'] = array(
 	'timegate-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
 	'timegate-403-inaccessible' => "Error 403: Resource '$1' is not accessible.",
 	'timegate-400-date' => $timegate_400_date,
-	'timemap' => 'Memento TimeMap',
+	'timemap' => 'Memento',
+	'timemap-title' => 'Memento TimeMap',
+	'timemap-specialpage-listing' => 'Memento',
 	'timemap-desc' => $timemap_desc,
 	'timemap-404-namespace-title' => $timemap_404_namespace_title,
 	'timemap-404-title' => "Error 404: Resource does not exist for the title: '$1'.",

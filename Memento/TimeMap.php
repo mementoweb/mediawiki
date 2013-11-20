@@ -49,7 +49,8 @@ class TimeMap extends SpecialPage {
 	 * Constructor
 	 */
 	function __construct() {
-		parent::__construct( "TimeMap" );
+		parent::__construct( $name = "TimeMap", $restriction = '', $listed = true, $function = false,
+			$file = 'default', $includable = false );
 	}
 
 	/**
@@ -80,7 +81,7 @@ class TimeMap extends SpecialPage {
 			try {
 
 				if (!$title) {
-					$titleMessage = 'timemap';
+					$titleMessage = 'timemap-title';
 					$textMessage = 'timemap-404-title';
 					$response = $this->getOutput()->getRequest()->response();
 
@@ -92,7 +93,7 @@ class TimeMap extends SpecialPage {
 
 				if ( in_array( $title->getNamespace(),
 					$config->get('ExcludeNamespaces') ) ) {
-					$titleMessage = 'timemap';
+					$titleMessage = 'timemap-title';
 					$textMessage = 'timemap-403-inaccessible';
 					$response = $this->getOutput()->getRequest()->response();
 

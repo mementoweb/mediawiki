@@ -105,7 +105,7 @@ abstract class TimeMapResource extends MementoResource {
 				$tm = new TimeMapPivotDescendingResource(
 					$config, $dbr, $article );
 			} else {
-				$titleMessage = 'timemap';
+				$titleMessage = 'timemap-title';
 				$textMessage = 'timemap-400-date';
 				$out = $article->getContext()->getOutput();
 				$response = $out->getRequest()->response();
@@ -561,7 +561,7 @@ abstract class TimeMapResource extends MementoResource {
 
 			$out->disable();
 		} else {
-			$titleMessage = 'timemap';
+			$titleMessage = 'timemap-title';
 			$textMessage = 'timemap-404-title';
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 
@@ -602,7 +602,7 @@ abstract class TimeMapResource extends MementoResource {
 				// we can't trust what came back, and we don't know the pivot
 				// so the parameter array is empty below
 				throw new MementoResourceException(
-					'timemap-400-date', 'timemap',
+					'timemap-400-date', 'timemap-title',
 					$out, $response, 400,
 					array( '' ) );
 			}
@@ -674,7 +674,7 @@ abstract class TimeMapResource extends MementoResource {
 				$out->disable();
 			}
 		} else {
-			$titleMessage = 'timemap';
+			$titleMessage = 'timemap-title';
 			$textMessage = 'timemap-404-title';
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 
