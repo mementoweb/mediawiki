@@ -34,7 +34,7 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 
 // Set up the extension
 $wgExtensionCredits['specialpage'][] = array(
-	'name' => 'Special:Memento',
+	'name' => 'Memento',
 	'descriptionmsg' => 'extension-overview',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:Memento',
 	'author' => array(
@@ -43,7 +43,7 @@ $wgExtensionCredits['specialpage'][] = array(
 		'Robert Sanderson',
 		'Shawn M. Jones'
 		),
-	'version' => '2.0-beta1-SNAPSHOT'
+	'version' => '2.0-beta2-SNAPSHOT'
 );
 
 // Set up the messages file
