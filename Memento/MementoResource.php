@@ -172,11 +172,6 @@ abstract class MementoResource {
 	protected $dbr;
 
 	/**
-	 * @var string $mwrelurl: Base relative URL for Mediawiki installation
-	 */
-	protected $mwrelurl;
-
-	/**
 	 * @var $article - Article Object of this Resource
 	 */
 	protected $article;
@@ -364,27 +359,6 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * getFullURIForID
-	 *
-	 * @param $id - ID of page
-	 * @param $title - article title
-	 *
-	 * @deprecated since 2.0-beta3
-	 *
-	 * @return $fullURI - full URI referring to article and revision
-	 */
-	public function getFullURIForID( $id, $title ) {
-
-		$scriptPath = $this->mwrelurl;
-
-		return wfAppendQuery(
-			wfExpandUrl( $scriptPath ),
-			array( 'title' => $title, 'oldid' => $id )
-			);
-
-	}
-
-	/**
 	 * parseRequestDateTime
 	 *
 	 * Take in the RFC2822 datetime and convert it to the format used by
@@ -437,32 +411,6 @@ abstract class MementoResource {
 		}
 
 		return $chosenTimestamp;
-	}
-
-	/**
-	 * constructMementoLinkHeaderEntry
-	 *
-	 * This creates the entry for a memento for the Link Header.
-	 *
-	 * @param $title - the title string of the given page
-	 * @param $id - the oldid of the given page
-	 * @param $timestamp - the timestamp of this Memento
-	 * @param $relation - the relation type of this Memento
-	 *
-	 * @deprecated since 2.0-beta3
-	 *
-	 * @return $entry - full Memento Link header entry
-	 */
-	public function constructMementoLinkHeaderEntry(
-		$title, $id, $timestamp, $relation ) {
-
-		$url = $this->getFullURIForID( $id, $title );
-
-		$entry = '<' . $url . '>; rel="' . $relation . '"; datetime="' .
-			$timestamp . '"';
-
-		return $entry;
-
 	}
 
 	/**
@@ -522,29 +470,6 @@ abstract class MementoResource {
 		$entry = '<' . $uri .  '>; rel="timemap"; type="application/link-format"';
 
 		return $entry;
-	}
-
-	/**
-	 * getSafelyFormedURI
-	 *
-	 * This function uses wfExpandUrl to safely form the URI for the given
-	 * page title string.
-	 *
-	 * @param $title - the title string of the given page
-	 *
-	 * @deprecated since 2.0-beta3
-	 *
-	 * @return $safeURI - the safely formed URI
-	 */
-	public function getSafelyFormedURI( $title ) {
-
-		$scriptUrl = $this->mwrelurl;
-
-		$title = rawurlencode($title);
-
-		$safeURI = wfExpandUrl( $scriptUrl . '/' . $title );
-
-		return $safeURI;
 	}
 
 	/**
@@ -802,9 +727,6 @@ abstract class MementoResource {
 		$this->dbr = $dbr;
 		$this->article = $article;
 
-		$waddress = str_replace( '/$1', '', $conf->get('ArticlePath') );
-
-		$this->mwrelurl = $waddress;
 	}
 
 

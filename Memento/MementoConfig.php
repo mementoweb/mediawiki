@@ -55,19 +55,12 @@ class MementoConfig {
 	 */
 	function __construct() {
 
-		global $wgScriptPath; // for ArticlePath default
-		global $wgArticlePath;
-
 		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
 		global $wgMementoTimeNegotiation;
 		global $wgMementoRecommendedRelations;
 		global $wgMementoExcludeNamespaces;
-
-		$this->settings['ArticlePath'] =
-			$this->setDefault(
-				$wgArticlePath, "$wgScriptPath/index.php/$1" );
 
 		$this->settings['NumberOfMementos'] =
 			$this->setDefault(

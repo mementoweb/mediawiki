@@ -397,7 +397,8 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param $data - array with entries containing the keys
 	 *					rev_id and rev_timestamp
 	 * @param $timeMapURI - used to construct self TimeMap URI relation
-	 * @param $title - the page name that the TimeMap is for
+	 * @param $titleObj - the Title Object associated with
+	 *					the page the TimeMap is for
 	 * @param $pagedTimeMapEntries - array of arrays, each entry containing
 	 *			the keys 'uri', 'from', and 'until' referring to the URI of
 	 *			the TimeMap and its from and until dates
@@ -405,14 +406,11 @@ abstract class TimeMapResource extends MementoResource {
 	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(
-		$data, $timeMapURI, $title, $pagedTimeMapEntries = array() ) {
+		$data, $timeMapURI, $titleObj, $pagedTimeMapEntries = array() ) {
 
 		$outputArray = array();
 
-		// TODO: replace with titleObj->getFullURL()
-		// which requires that we pass in a title object, which is a bigger
-		// challenge to unravel
-		$timegateuri = $this->getSafelyFormedURI( $title );
+		$timegateuri = $titleObj->getFullURL();
 		$timegateEntry = $this->constructLinkRelationHeader(
 			$timegateuri, 'original latest-version timegate' );
 
@@ -446,11 +444,10 @@ abstract class TimeMapResource extends MementoResource {
 			$output = "";
 			$datum = $data[$i];
 
-			// TODO: replace with constructMementoLinkHeaderRelationEntry
-			// which requires that we pass in a title object, which is a bigger
-			// challenge to unravel
-			$output = $this->constructMementoLinkHeaderEntry(
-				$title, $datum['rev_id'], $datum['rev_timestamp'], "memento" );
+			$uri = $titleObj->getFullURL( array( "oldid" => $datum['rev_id'] ) );
+
+			$output = $this->constructMementoLinkHeaderRelationEntry(
+				$uri, $datum['rev_timestamp'], "memento" );
 
 			array_push($outputArray, $output);
 		}
@@ -562,7 +559,7 @@ abstract class TimeMapResource extends MementoResource {
 			// use that revision ID + limit revisions to calculate the from
 			// 	and until for the next timemap
 			echo $this->generateTimeMapText(
-				$results, $timeMapURI, $title, $timeMapPages
+				$results, $timeMapURI, $titleObj, $timeMapPages
 				);
 
 			$out->disable();
@@ -674,7 +671,7 @@ abstract class TimeMapResource extends MementoResource {
 					"Content-Type: application/link-format", true);
 
 				echo $this->generateTimeMapText(
-					$results, $timeMapURI, $title, $timeMapPages
+					$results, $timeMapURI, $titleObj, $timeMapPages
 					);
 
 				$out->disable();
