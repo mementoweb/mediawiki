@@ -140,12 +140,12 @@ class TimeNegotiator {
 			// storage for caller
 			$this->mementoDatetime = wfTimestamp(
 				TS_RFC2822, $mwMementoTimestamp );
-			$this->locationURI = $mr->getFullURIForID( $id, $title );
+			$this->locationURI = $titleObj->getFullURL( array( "oldid" => $id ) );
 			$this->mementoId = $memento['id'];
 
 		} else {
-			$firsturi = $mr->getFullURIForID( $first['id'], $title );
-			$lasturi = $mr->getFullURIForID( $first['id'], $title );
+			$firsturi = $titleObj->getFullURL( array( "oldid" => $first['id'] ) );
+			$lasturi = $titleObj->getFullURL( array( "oldid" => $last['id'] ) );
 
 			$linkEntries = implode( ',', $this->linkRelations );
 
