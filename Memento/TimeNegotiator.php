@@ -131,7 +131,7 @@ class TimeNegotiator {
 
 			$id = $memento['id'];
 
-			$timegateuri = $mr->getSafelyFormedURI( $title );
+			$timegateuri = $titleObj->getFullURL();
 
 			$entry = $mr->constructLinkRelationHeader( $timegateuri,
 					'original latest-version timegate' );

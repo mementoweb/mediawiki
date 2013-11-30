@@ -493,10 +493,6 @@ abstract class MementoResource {
 	 */
 	public function constructTimeMapLinkHeader( $title ) {
 
-		$scriptUrl = $this->mwrelurl;
-
-		$title = rawurlencode($title);
-
 		$uri = SpecialPage::getTitleFor( 'TimeMap', $title )->getFullURL();
 
 		$entry = '<' . $uri .  '>; rel="timemap"; type="application/link-format"';

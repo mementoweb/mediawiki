@@ -71,7 +71,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			// convert for display
 			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoTimestamp );
 
-			$myuri = $this->getSafelyFormedURI( $title );
+			$myuri = $titleObj->getFullURL();
 
 			$entry = $this->constructLinkRelationHeader( $myuri,
 					'original latest-version timegate' );
