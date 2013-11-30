@@ -409,6 +409,9 @@ abstract class TimeMapResource extends MementoResource {
 
 		$outputArray = array();
 
+		// TODO: replace with titleObj->getFullURL()
+		// which requires that we pass in a title object, which is a bigger
+		// challenge to unravel
 		$timegateuri = $this->getSafelyFormedURI( $title );
 		$timegateEntry = $this->constructLinkRelationHeader(
 			$timegateuri, 'original latest-version timegate' );

@@ -369,6 +369,8 @@ abstract class MementoResource {
 	 * @param $id - ID of page
 	 * @param $title - article title
 	 *
+	 * @deprecated since 2.0-beta3
+	 *
 	 * @return $fullURI - full URI referring to article and revision
 	 */
 	public function getFullURIForID( $id, $title ) {
@@ -446,6 +448,8 @@ abstract class MementoResource {
 	 * @param $id - the oldid of the given page
 	 * @param $timestamp - the timestamp of this Memento
 	 * @param $relation - the relation type of this Memento
+	 *
+	 * @deprecated since 2.0-beta3
 	 *
 	 * @return $entry - full Memento Link header entry
 	 */
@@ -527,6 +531,8 @@ abstract class MementoResource {
 	 * page title string.
 	 *
 	 * @param $title - the title string of the given page
+	 *
+	 * @deprecated since 2.0-beta3
 	 *
 	 * @return $safeURI - the safely formed URI
 	 */
