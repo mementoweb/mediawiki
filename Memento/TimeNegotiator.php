@@ -112,7 +112,7 @@ class TimeNegotiator {
 		if ( $conf->get('RecommendedRelations') ) {
 
 			$entries = $mr->generateRecommendedLinkHeaderRelations(
-				$title, $first, $last );
+				$titleObj, $first, $last );
 
 		} else {
 			$entry = $mr->constructTimeMapLinkHeader( $title );

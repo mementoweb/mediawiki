@@ -443,6 +443,9 @@ abstract class TimeMapResource extends MementoResource {
 			$output = "";
 			$datum = $data[$i];
 
+			// TODO: replace with constructMementoLinkHeaderRelationEntry
+			// which requires that we pass in a title object, which is a bigger
+			// challenge to unravel
 			$output = $this->constructMementoLinkHeaderEntry(
 				$title, $datum['rev_id'], $datum['rev_timestamp'], "memento" );
 

@@ -84,7 +84,7 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 				$last = $this->getLastMemento( $titleObj );
 
 				$entries = $this->generateRecommendedLinkHeaderRelations(
-					$title, $first, $last );
+					$titleObj, $first, $last );
 
 				$linkEntries = array_merge( $linkEntries, $entries);
 

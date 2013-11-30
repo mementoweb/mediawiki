@@ -462,6 +462,26 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * constructMementoLinkHeaderRelationEntry
+	 *
+	 * This creates the entry for a memento for the Link Header.
+	 *
+	 * @param $url - the URL of the given page
+	 * @param $timestamp - the timestamp of this Memento
+	 * @param $relation - the relation type of this Memento
+	 *
+	 * @return $entry - full Memenot Link header entry
+	 */
+	public function constructMementoLinkHeaderRelationEntry(
+		$url, $timestamp, $relation ) {
+		
+		$entry = '<' . $url . '>; rel="' . $relation . '"; datetime="' .
+			$timestamp . '"';
+
+		return $entry;
+	}
+
+	/**
 	 * constructTimeMapLinkHeaderWithBounds
 	 *
 	 * This creates the entry for timemap in the Link Header.
@@ -564,7 +584,7 @@ abstract class MementoResource {
 	 * handling cases such as 'first memento' and 'last memento' vs.
 	 * 'first last memento', etc.
 	 *
-	 * @param $title - the article title text part of the URI
+	 * @param $titleObj - the article title object
 	 * @param $first - associative array containing info on the first memento
 	 * 					with the keys 'timestamp' and 'id'
 	 * @param $last	- associative array containing info on the last memento
@@ -573,27 +593,29 @@ abstract class MementoResource {
 	 * @return $linkRelations - array of link relations
 	 */
 	public function generateRecommendedLinkHeaderRelations(
-		$title, $first, $last ) {
+		$titleObj, $first, $last ) {
 
 		$linkRelations = array();
+
+		$title = $this->getFullNamespacePageTitle( $titleObj );
 
 		$entry = $this->constructTimeMapLinkHeaderWithBounds(
 			$title, $first['timestamp'], $last['timestamp'] );
 		array_push( $linkRelations, $entry );
 
+		$firsturi = $titleObj->getFullURL( array( "oldid" => $first['id'] ) );
+		$lasturi = $titleObj->getFullURL( array( "oldid" => $last['id'] ) );
+
 		if ( $first['id'] == $last['id'] ) {
-			$entry = $this->constructMementoLinkHeaderEntry(
-				$title, $first['id'], $first['timestamp'],
-				'first last memento' );
+			$entry = $this->constructMementoLinkHeaderRelationEntry(
+				$firsturi, $first['timestamp'], 'first last memento' );
 			array_push( $linkRelations, $entry );
 		} else {
-			$entry = $this->constructMementoLinkHeaderEntry(
-				$title, $first['id'], $first['timestamp'],
-				'first memento' );
+			$entry = $this->constructMementoLinkHeaderRelationEntry(
+				$firsturi, $first['timestamp'], 'first memento' );
 			array_push( $linkRelations, $entry );
-			$entry = $this->constructMementoLinkHeaderEntry(
-				$title, $last['id'], $last['timestamp'],
-				'last memento' );
+			$entry = $this->constructMementoLinkHeaderRelationEntry(
+				$lasturi, $last['timestamp'], 'last memento' );
 			array_push( $linkRelations, $entry );
 		}
 
