@@ -161,7 +161,7 @@ class TimeNegotiator {
 			$response->header( 'Link: ' . $linkEntries, true );
 
 			throw new MementoResourceException(
-				'timegate-400-date', 'timegate',
+				'timegate-400-date', 'timegate-title',
 				$out, $response, 400,
 				array( $requestDatetime, $firsturi, $lasturi )
 				);
