@@ -300,10 +300,10 @@ ifndef TESTDATADIR
 	$(error TESTDATADIR is not defined, type 'export TESTDATADIR=<folder holding test data files>')
 endif
 ifndef TESTUSERNAME
-	$(error TESTUSERNAME is not defined, type 'export TESTUSERNAME=<username of test user>')
+	$(error TESTUSERNAME is not defined, type 'export TESTUSERNAME=<username of test user>; set it to NOAUTH to avoid authentication')
 endif
 ifndef TESTPASSWORD
-	$(error TESTPASSWORD is not defined, type 'export TESTPASSWORD=<password of test user>')
+	$(error TESTPASSWORD is not defined, type 'export TESTPASSWORD=<password of test user>; set it to NOAUTH to avoid authentication')
 endif
 
 # verify code against coding standards

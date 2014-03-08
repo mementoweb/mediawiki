@@ -2,7 +2,6 @@
 require_once("HTTPFetch.php");
 require_once("MementoParse.php");
 require_once("TestSupport.php");
-require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
@@ -255,7 +254,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 
 	public function acquireTimeNegotiationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 13);
+			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 11);
 	}
 
 	public function acquireTimeMap404Urls() {

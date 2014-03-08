@@ -2,7 +2,6 @@
 require_once("HTTPFetch.php");
 require_once("MementoParse.php");
 require_once("TestSupport.php");
-require_once('PHPUnit/Extensions/TestDecorator.php');
 
 error_reporting(E_ALL | E_NOTICE | E_STRICT);
 
@@ -13,7 +12,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 	public static function setUpBeforeClass() {
 		global $sessionCookieString;
 
-		$sessionCookieString = authenticateWithMediawiki();
+		if ( getenv('TESTUSERNAME') == 'NOAUTH' ) {
+			$sessionCookieString = 'TESTING_MEMENTO';
+		} else {
+			$sessionCookieString = authenticateWithMediawiki();
+		}
 	}
 
 	public static function tearDownAfterClass() {
@@ -45,8 +48,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -105,8 +106,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -161,8 +160,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -215,8 +212,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -299,8 +294,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -312,8 +305,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->DirectMementoResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 
 	}
@@ -331,8 +324,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -344,8 +335,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->DirectMementoResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 
 		$this->recommendedRelationsTests(
@@ -365,8 +356,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -378,8 +367,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->DirectOriginalResourceResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 
 	}
@@ -397,8 +386,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -410,8 +397,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->DirectOriginalResourceResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 
 		$this->recommendedRelationsTests(
@@ -431,8 +418,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -444,8 +429,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $this->Status302StyleTimeGateResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
     }
 
@@ -462,8 +447,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -475,8 +458,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $this->Status302StyleTimeGateResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 
 		$this->recommendedRelationsTests(
@@ -497,8 +480,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -510,8 +491,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->Status200StyleTimeGateMementoResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 	}
 
@@ -528,8 +509,6 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -541,8 +520,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->Status200StyleTimeGateMementoResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
-			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO, $PREVPREDECESSOR,
-		    $NEXTSUCCESSOR, $URIM, $URIG, $URIT, $COMMENT,
+			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
+		    $URIM, $URIG, $URIT, $COMMENT,
 			$outputfile, $debugfile);
 
 		$this->recommendedRelationsTests(
@@ -600,7 +579,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
     public function acquireTimeNegotiationData() {
 		return acquireCSVDataFromFile(
-			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 13);
+			getenv('TESTDATADIR') . '/time-negotiation-testdata.csv', 11);
     }
 
 	# TODO: need an automated test for timemaps' happy path

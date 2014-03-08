@@ -95,5 +95,3 @@ function diffStrings($string1, $string2) {
 	}
 
 }
-
-?>
