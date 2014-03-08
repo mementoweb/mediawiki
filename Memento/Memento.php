@@ -161,7 +161,7 @@ class Memento {
 			$request = $article->getContext()->getRequest();
 
 			self::$mementoResource =
-				MementoResource::MementoPageResourceFactory(
+				MementoResource::mementoPageResourceFactory(
 					$config, $dbr, $article, $oldID, $request );
 
 			try {

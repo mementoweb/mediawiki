@@ -630,24 +630,18 @@ abstract class MementoResource {
 
 		if ( $oldID == 0 ) {
 
-			if ( $request->getHeader('ACCEPT-DATETIME') ) {
-
-				if ( $conf->get('Negotiation') == "200" ) {
+			if ( ( $request->getHeader('ACCEPT-DATETIME') )  &&
+				 ( $conf->get('Negotiation') == "200" ) ) {
 					/* we are requesting a Memento, but via 200-style
 						Time Negotiation */
 					$resource = new MementoResourceFrom200TimeNegotiation(
 						$conf, $dbr, $article );
 
-				} else {
-					/* we are requesting a 302-style Time Gate */
-					$resource = new TimeGateResourceFrom302TimeNegotiation(
-						$conf, $dbr, $article );
-				}
-
 			} else {
 				$resource = new OriginalResourceDirectlyAccessed(
 						$conf, $dbr, $article );
 			}
+
 		} else {
 			// we are requesting a Memento directly (an oldID URI)
 			$resource = new MementoResourceDirectlyAccessed(
