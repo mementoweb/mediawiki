@@ -56,7 +56,7 @@ To see Memento in action, either follow instructions from the
 [http://www.mediawiki.org/wiki/Extension:Memento MediaWiki Extension] page or 
 type in the address of the wiki page in this format:
 	http://yourwikisite/wiki/index.php/Special:TimeMap/YourPage
-where, the address that follows the TimeMap URL is the address of the article.
+where, the name that follows the TimeMap URL is the title of the article.
 EOT;
 
 $timemap_desc = <<<EOT
@@ -65,9 +65,23 @@ datetime when the revision was created. The revision list is serialized as
 application/link-format. Please see http://mementoweb.org for more information.
 EOT;
 
-$timemap_404_namespace_title = <<<EOT
-Error 404: Either the resource does not exist or the namespace is not 
+$status_404_namespace_title = <<<EOT
+Either the resource does not exist or the namespace is not 
 understood by memento for the title: '$1'.
+EOT;
+
+$status_403_inaccessible = "Error 403: Resource '$1' is not accessible.";
+
+$timegate_welcome = <<<EOT
+This Special Page takes care of performing datetime negotiation for your wiki, which is key to the Memento process.
+
+For a specific page, it performs datetime negotiation for the given page, redirecting you to the closest page to the time requested by your browser.
+
+To see Memento in action, either follow instructions from the 
+[http://www.mediawiki.org/wiki/Extension:Memento MediaWiki Extension] page or 
+type in the address of the wiki page in this format:
+	http://yourwikisite/wiki/index.php/Special:TimeGate/YourPage
+where, YourPage that follows the TimeGate URL is the title of our article.
 EOT;
 
 $timegate_400_date = <<<EOT
@@ -77,7 +91,7 @@ Error 400: Requested date '$1' not parseable.<br />
 EOT;
 
 $timemap_400_date = <<<EOT
-Error 400: Requested pivot date '$1' not parseable.<br />
+Requested pivot date '$1' not parseable.<br />
 EOT;
 
 $messages['en'] = array(
@@ -85,12 +99,16 @@ $messages['en'] = array(
 	'extension-overview' => $overview,
 	'timegate-title' => 'Memento TimeGate',
 	'timegate-400-date' => $timegate_400_date,
-	'timemap' => 'Memento',
+	'timemap' => 'Memento TimeMap',
 	'timemap-title' => 'Memento TimeMap',
 	'timemap-welcome-message' => $timemap_welcome,
 	'timemap-specialpage-listing' => 'Memento',
 	'timemap-desc' => $timemap_desc,
-	'timemap-404-title' => "Error 404: Resource does not exist for the title: '$1'.",
-	'timemap-403-inaccessible' => "Error 403: Resource '$1' is not accessible.",
+	'timemap-404-title' => $status_404_namespace_title,
+	'timemap-403-inaccessible' => $status_403_inaccessible,
 	'timemap-400-date' => $timemap_400_date,
+	'timegate' => 'Memento TimeGate',
+	'timegate-welcome-message' => $timegate_welcome,
+	'timegate-404-title' => $status_404_namespace_title,
+	'timegate-403-inaccessible' => $status_403_inaccessible,
 );
