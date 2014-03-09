@@ -580,6 +580,8 @@ abstract class MementoResource {
 	 *
 	 * Get the URI for the TimeGate.
 	 *
+	 * @param $title - wiki page title text
+	 *
 	 * @return $uri
 	 */
 	public function getTimeGateURI( $title ) {
