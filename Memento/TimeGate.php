@@ -70,7 +70,6 @@ class TimeGate extends SpecialPage {
 			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 			return;
 		} else {
-			echo "urlparam:  $urlparam<br />\n";
 			// so we can use the same framework as the rest of the
 			// MementoResource classes, we need an Article class
 			$title = Title::newFromText( $urlparam );
@@ -108,7 +107,6 @@ class TimeGate extends SpecialPage {
 				$page = new TimeGateResourceFrom302TimeNegotiation($config, $dbr, $article);
 
 				$page->alterHeaders();
-				echo "stuff will be done!<br />\n";
 			} catch (MementoResourceException $e) {
 				MementoResource::renderError(
 					$out, $e, $config->get('ErrorPageType') );
