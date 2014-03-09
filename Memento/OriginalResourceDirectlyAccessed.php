@@ -67,7 +67,7 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 			array_push( $linkEntries, $entry );
 		} else {
 
-			$timegateuri = $titleObj->getFullURL();
+			$timegateuri = $this->getTimeGateURI( $title );
 
 			$entry = $this->constructLinkRelationHeader( $timegateuri,
 					'original latest-version timegate' );

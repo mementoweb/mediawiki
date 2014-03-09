@@ -576,6 +576,26 @@ abstract class MementoResource {
 	}
 
 	/**
+	 * getTimeGateURI
+	 *
+	 * Get the URI for the TimeGate.
+	 *
+	 * @return $uri
+	 */
+	public function getTimeGateURI( $title ) {
+
+		if ( $this->conf->get('Negotiation') == '302' ) {
+			// return Special Page URI	
+			$tguri = SpecialPage::getTitleFor( 'TimeGate', $title )->getFullURL();
+		} else {
+			// return myuri
+			$tguri = $this->article->getTitle()->getFullURL();
+		}
+
+		return $tguri;
+	}
+
+	/**
 	 * renderError
 	 *
 	 * Render error page.  This is only used for 40* and 50* HTTP statuses.
