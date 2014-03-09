@@ -12,7 +12,11 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 	public static function setUpBeforeClass() {
 		global $sessionCookieString;
 
-		$sessionCookieString = authenticateWithMediawiki();
+		if ( getenv('TESTUSERNAME') == 'NOAUTH' ) {
+			$sessionCookieString = 'TESTING_MEMENTO';
+		} else {
+			$sessionCookieString = authenticateWithMediawiki();
+		}
 	}
 
 	public static function tearDownAfterClass() {
@@ -66,7 +70,6 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 		global $sessionCookieString;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
-
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url '$URIT'";
 		$response = `$curlCmd 2> $debugfile | tee "$outputfile"`;
@@ -133,8 +136,6 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -142,7 +143,7 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 		) {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
-		
+
 		$this->Status400TimeGateErrorResponseCommonTests(
 			$URIG, "400", $outputfile, $debugfile);
 	}
@@ -160,8 +161,6 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 			$ORIGINALLATEST,
 		    $FIRSTMEMENTO,
 		    $LASTMEMENTO,
-			$PREVPREDECESSOR,
-		    $NEXTSUCCESSOR,
 		    $URIM,
 			$URIG,
 			$URIT,
@@ -212,8 +211,6 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 #			$ORIGINALLATEST,
 #		    $FIRSTMEMENTO,
 #		    $LASTMEMENTO,
-#			$PREVPREDECESSOR,
-#		    $NEXTSUCCESSOR,
 #		    $URIM,
 #			$URIG,
 #			$URIT,
@@ -238,8 +235,6 @@ class ErrorStateTest extends PHPUnit_Framework_TestCase {
 #			$ORIGINALLATEST,
 #		    $FIRSTMEMENTO,
 #		    $LASTMEMENTO,
-#			$PREVPREDECESSOR,
-#		    $NEXTSUCCESSOR,
 #		    $URIM,
 #			$URIG,
 #			$URIT,
