@@ -131,7 +131,7 @@ class TimeNegotiator {
 
 			$id = $memento['id'];
 
-			$timegateuri = $this->getTimeGateURI( $title );
+			$timegateuri = $mr->getTimeGateURI( $title );
 
 			$entry = $mr->constructLinkRelationHeader( $timegateuri,
 					'original latest-version timegate' );
