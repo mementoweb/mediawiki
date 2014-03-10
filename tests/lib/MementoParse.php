@@ -22,34 +22,27 @@ function extractItemsFromLink($linkvalues) {
     $datetime = NULL;
     $item = NULL;
 
-	preg_match_all('/<([^>]*)>;[ ]*rel="timegate"/', $linkvalues, $matches);
+	preg_match_all('/,<([^>]*)>;[ ]*rel="[^"]*timegate"/', $linkvalues, $matches);
+
+	#print_r($matches);
 
 	if ( count($matches[0]) > 0 ) {
+		#echo "found " . $matches[1][0] . " for timegate";
 		$relations['timegate']['url'] = $matches[1][0];
 	}
 
-	preg_match_all('/<([^>]*)>;[ ]*rel="timemap"/', $linkvalues, $matches);
+	preg_match_all('/<([^>]*)>;[ ]*rel="timemap";[ ]*type="application\/link-format"/', $linkvalues, $matches);
+
+	#print_r($matches);
 
 	if ( count($matches[0]) > 0 ) {
 		$relations['timemap']['url'] = $matches[1][0];
 	}
 
-	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version timegate"/', $linkvalues, $matches);
-
-	if ( count($matches[0]) > 0 ) {
-		$relations['original latest-version timegate']['url'] = $matches[1][0];
-	}
-
-	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version"/', $linkvalues, $matches);
+	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version[^"]*",/', $linkvalues, $matches);
 
 	if ( count($matches[0]) > 0 ) {
 		$relations['original latest-version']['url'] = $matches[1][0];
-	}
-
-	preg_match_all('/<([^>]*)>;[ ]*rel="original timegate"/', $linkvalues, $matches);
-
-	if ( count($matches[0]) > 0 ) {
-		$relations['original timegate']['url'] = $matches[1][0];
 	}
 
 	// get the 'normal' memento link entries

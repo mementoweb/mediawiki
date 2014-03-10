@@ -83,8 +83,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$relations = extractItemsFromLink($headers['Link']);
 
-		$this->assertArrayHasKey('original latest-version timegate', $relations, "original latest-version timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['original latest-version timegate']['url']);
+		$this->assertArrayHasKey('original latest-version', $relations, "original latest-version relation not present in Link Header");
+		$this->assertEquals($URIR, $relations['original latest-version']['url'], "original latest-version URL is not correct");
+
+		$this->assertArrayHasKey('timegate', $relations, "timegate relation not present in Link Header");
+		$this->assertEquals($URIG, $relations['timegate']['url'], "timegate URL is not correct");
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
 		$this->assertEquals($URIT, $relations['timemap']['url']);
@@ -192,8 +195,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$relations = extractItemsFromLink($headers['Link']);
 
-		$this->assertArrayHasKey('original latest-version timegate', $relations, "original latest-version timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['original latest-version timegate']['url']);
+		$this->assertArrayHasKey('timegate', $relations, "timegate relation not present in Link Header");
+		$this->assertEquals($URIG, $relations['timegate']['url'], "timegate URI is wrong");
+
+		$this->assertArrayHasKey('original latest-version', $relations, "original latest-version  relation not present in Link Header");
+		$this->assertEquals($URIR, $relations['original latest-version']['url'], "orginal latest-version URI is wrong");
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
 		$this->assertEquals($URIT, $relations['timemap']['url']);
@@ -242,8 +248,11 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$relations = extractItemsFromLink($headers['Link']);
         $mementoDatetime = $headers['Memento-Datetime'];
 
-		$this->assertArrayHasKey('original latest-version timegate', $relations, "original latest-version timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['original latest-version timegate']['url']);
+		$this->assertArrayHasKey('timegate', $relations, "timegate relation not present in Link Header");
+		$this->assertEquals($URIG, $relations['timegate']['url'], "timegate URI is incorrect");
+
+		$this->assertArrayHasKey('original latest-version', $relations, "original latest-version relation not present in Link Header");
+		$this->assertEquals($URIR, $relations['original latest-version']['url'], "original latest-version URI is incorrect");
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
 		$this->assertEquals($URIT, $relations['timemap']['url']);
