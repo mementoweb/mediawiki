@@ -410,11 +410,13 @@ abstract class TimeMapResource extends MementoResource {
 
 		$outputArray = array();
 
-		#$timegateuri = $titleObj->getFullURL();
+		$latesturi = $titleObj->getFullURL();
 		$title = $this->getFullNamespacePageTitle( $this->article->getTitle() );
 		$timegateuri = $this->getTimeGateURI( $title );
+		$latestEntry = $this->constructLinkRelationHeader(
+			$latesturi, 'original latest-version' );
 		$timegateEntry = $this->constructLinkRelationHeader(
-			$timegateuri, 'original latest-version timegate' );
+			$timegateuri, 'timegate' );
 
 		$from = $data[count($data) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
@@ -441,6 +443,7 @@ abstract class TimeMapResource extends MementoResource {
 		}
 
 		array_push( $outputArray, $timegateEntry );
+		array_push( $outputArray, $latestEntry );
 
 		for ($i = count($data) - 1; $i >= 0; $i--) {
 			$output = "";

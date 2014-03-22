@@ -67,12 +67,23 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 			array_push( $linkEntries, $entry );
 		} else {
 
-			$timegateuri = $this->getTimeGateURI( $title );
+			$uri = $titleObj->getFullURL();
 
-			$entry = $this->constructLinkRelationHeader( $timegateuri,
+			$tguri = $this->getTimeGateURI( $title );
+
+			if ( $uri == $tguri ) {
+				$entry = $this->constructLinkRelationHeader( $tguri,
 					'original latest-version timegate' );
+				array_push( $linkEntries, $entry );
+			} else {
+				$entry = $this->constructLinkRelationHeader( $uri,
+					'original latest-version' );
+				array_push( $linkEntries, $entry );
 
-			array_push( $linkEntries, $entry );
+				$entry = $this->constructLinkRelationHeader( $tguri,
+					'timegate' );
+				array_push( $linkEntries, $entry );
+			}
 
 			if ( $this->conf->get('RecommendedRelations') ) {
 				$pageID = $titleObj->getArticleID();

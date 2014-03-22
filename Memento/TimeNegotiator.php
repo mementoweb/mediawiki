@@ -131,11 +131,23 @@ class TimeNegotiator {
 
 			$id = $memento['id'];
 
-			$timegateuri = $mr->getTimeGateURI( $title );
+			$uri = $titleObj->getFullURL();
 
-			$entry = $mr->constructLinkRelationHeader( $timegateuri,
+			$tguri = $mr->getTimeGateURI( $title );
+
+			if ( $uri == $tguri ) {
+				$entry = $mr->constructLinkRelationHeader( $tguri,
 					'original latest-version timegate' );
-			array_push( $this->linkRelations, $entry );
+				array_push( $this->linkRelations, $entry );
+			} else {
+				$entry = $mr->constructLinkRelationHeader( $uri,
+					'original latest-version' );
+				array_push( $this->linkRelations, $entry );
+
+				$entry = $mr->constructLinkRelationHeader( $tguri,
+					'timegate' );
+				array_push( $this->linkRelations, $entry );
+			}
 
 			// storage for caller
 			$this->mementoDatetime = wfTimestamp(

@@ -71,10 +71,23 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			// convert for display
 			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoTimestamp );
 
+			$uri = $titleObj->getFullURL();
+
 			$tguri = $this->getTimeGateURI( $title );
-			$entry = $this->constructLinkRelationHeader( $tguri,
+
+			if ( $uri == $tguri ) {
+				$entry = $this->constructLinkRelationHeader( $tguri,
 					'original latest-version timegate' );
-			array_push( $linkEntries, $entry );
+				array_push( $linkEntries, $entry );
+			} else {
+				$entry = $this->constructLinkRelationHeader( $uri,
+					'original latest-version' );
+				array_push( $linkEntries, $entry );
+
+				$entry = $this->constructLinkRelationHeader( $tguri,
+					'timegate' );
+				array_push( $linkEntries, $entry );
+			}
 
 			if ( $this->conf->get('RecommendedRelations') ) {
 
