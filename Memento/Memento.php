@@ -43,7 +43,7 @@ $wgExtensionCredits['specialpage'][] = array(
 		'Robert Sanderson',
 		'Shawn M. Jones'
 	),
-	'version' => '2.0-beta3-SNAPSHOT'
+	'version' => '2.0-beta3'
 );
 
 // Set up the messages file
