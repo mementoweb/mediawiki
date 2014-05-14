@@ -105,8 +105,6 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 			}
 
 			$linkEntries = implode( ',', $linkEntries );
-
-			$out->addVaryHeader( 'Accept-Datetime' );
 		}
 
 		$response->header( 'Link: ' . $linkEntries, true );
