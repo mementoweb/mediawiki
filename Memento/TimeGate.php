@@ -81,14 +81,14 @@ class TimeGate extends SpecialPage {
 
 			try {
 
-				if (!$title) {
+				if (!$title->exists()) {
 					$titleMessage = 'timegate-title';
 					$textMessage = 'timegate-404-title';
 					$response = $this->getOutput()->getRequest()->response();
 
 					throw new MementoResourceException(
 						$textMessage, $titleMessage,
-						$out, $response, 400, array( "" )
+						$out, $response, 404, array( $urlparam )
 					);
 				}
 

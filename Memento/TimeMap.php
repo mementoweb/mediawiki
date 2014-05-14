@@ -80,14 +80,14 @@ class TimeMap extends SpecialPage {
 
 			try {
 
-				if (!$title) {
+				if (!$title->exists()) {
 					$titleMessage = 'timemap-title';
 					$textMessage = 'timemap-404-title';
 					$response = $this->getOutput()->getRequest()->response();
 
 					throw new MementoResourceException(
 						$textMessage, $titleMessage,
-						$out, $response, 400, array( "" )
+						$out, $response, 404, array( $urlparam )
 					);
 				}
 
