@@ -87,6 +87,10 @@ class MementoConfig {
 			$this->setDefault(
 				$wgMementoExcludeNamespaces, $excludeNamespaceDefault
 				);
+
+		$this->settings['TimeNegotiationForThumbnails'] =
+			$this->setDefault(
+				$wgMementoTimeNegotiationForThumbnails, false );
 	}
 
 	/**

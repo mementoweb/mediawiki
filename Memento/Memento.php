@@ -78,6 +78,7 @@ $wgSpecialPages['TimeMap'] = 'TimeMap';
 $wgHooks['BeforePageDisplay'][] = 'Memento::onBeforePageDisplay';
 $wgHooks['ArticleViewHeader'][] = 'Memento::onArticleViewHeader';
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
+$wgHooks['ImageBeforeProduceHTML'][] = 'Memento::onImageBeforeProduceHTML';
 
 // set up the Time Gate (URI-G) classes
 $wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
@@ -105,6 +106,48 @@ class Memento {
 	 * @var MementoResource $mementoResource: object that implements memento
 	 */
 	static private $mementoResource;
+
+	/**
+	 * @var string $articleDatetime: datetime of the article loaded
+	 */
+	static private $articleDatetime;
+
+	/**
+	 * @var boolean $oldIDSet: flag to indicate if this is an oldid page
+	 */
+	static private $oldIDSet;
+
+	/**
+	 * The ImageBeforeProduce HTML hook, used here to provide datetime
+	 * negotiation for embedded images.
+	 *
+	 * @param $skin: Skin object for this page
+	 * @param $title: Title object for this image
+	 * @param $file: File object for this image
+	 * @param $frameParams: frame parameters
+	 * @param $handlerParams: handler parameters
+	 * @param $time: not really used by hook
+	 * @param $res: used to replace HTML for image rendering
+	 *
+	 * @return boolean indicating whether caller should use $res instead of 
+	 * 		default HTML for image rendering
+	 */
+	public static function onImageBeforeProduceHTML(
+		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res) {
+
+		$config = new MementoConfig();
+
+		if ( $config->get('TimeNegotiationForThumbnails') == true ) {
+
+			if ( self::$oldIDSet == true ) {
+				$history = $file->getHistory($limit=1, $start=$articleDatetime);
+				$file = $history[0];
+			}
+
+		}
+	
+		return true;
+	}
 
 
 	/**
@@ -154,6 +197,10 @@ class Memento {
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
+
+			self::$oldIDSet = ( $article->getOldID() != 0 );
+
+			$articleDatetime = $article->getRevisionFetched()->getTimestamp();		
 
 			$config = new MementoConfig();
 			$dbr = wfGetDB( DB_SLAVE );
