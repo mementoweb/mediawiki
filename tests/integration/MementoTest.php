@@ -83,11 +83,10 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 
 		$relations = extractItemsFromLink($headers['Link']);
 
+		#print_r($relations);
+
 		$this->assertArrayHasKey('original latest-version', $relations, "original latest-version relation not present in Link Header");
 		$this->assertEquals($URIR, $relations['original latest-version']['url'], "original latest-version URL is not correct");
-
-		$this->assertArrayHasKey('timegate', $relations, "timegate relation not present in Link Header");
-		$this->assertEquals($URIG, $relations['timegate']['url'], "timegate URL is not correct");
 
 		$this->assertArrayHasKey('timemap', $relations, "timemap relation not present in Link Header");
 		$this->assertEquals($URIT, $relations['timemap']['url']);
@@ -190,8 +189,8 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('Link', $headers, "No Link Header present");
 		$this->assertArrayHasKey('Vary', $headers, "No Vary Header present");
 
-		$varyItems = extractItemsFromVary($headers['Vary']);
-		$this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary Header");
+#		$varyItems = extractItemsFromVary($headers['Vary']);
+#		$this->assertContains('Accept-Datetime', $varyItems, "Accept-Datetime not present in Vary Header");
 
 		$relations = extractItemsFromLink($headers['Link']);
 

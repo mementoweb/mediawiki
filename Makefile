@@ -204,6 +204,7 @@ defaults-integration-test: standard-integration-test 302-style-time-negotiation-
 
 # run tests on all non-configurable items
 standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "standard-integration-test"
 	@echo ""
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
@@ -214,6 +215,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 
 # run all of the tests using 200-style time negotiation
 200-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "200-style-time-negotiation-integration-test"
 	@echo ""
 	@echo "#########################"
 	@echo "Running 200-style time negotiation integration tests"
@@ -224,6 +226,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 
 # run all of the tests using 302-style time negotiation
 302-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "302-style-time-negotiation-integration-test"
 	@echo ""
 	@echo "#########################"
 	@echo "Running 302-style time negotiation integration tests"
@@ -244,6 +247,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 
 # run all of the tests using 302-style time negotiation and recommended headers
 302-style-time-negotiation-recommended-headers-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "302-style-time-negotiation-recommended-headers-integration-test"
 	@echo ""
 	@echo "#########################"
 	@echo "Running 302-style time negotiation integration with recommended headers tests"
@@ -254,6 +258,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 
 # run all of the friendly error integration tests
 friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "friendly-error-integration-test"
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
@@ -264,6 +269,7 @@ friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 
 # run all of the traditional error integration tests
 traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "traditional-error-integration-test"
 	@echo ""
 	@echo "#########################"
 	@echo "Running traditional error integration tests"
@@ -273,6 +279,7 @@ traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 
 anonymize-test-output: ${TESTOUTPUTDIR}
+	@echo "anonymize-test-output"
 	@echo ""
 	@echo "#########################"
 	@echo "Anonymizing sensitive data"

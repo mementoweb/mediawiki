@@ -39,11 +39,13 @@ function extractItemsFromLink($linkvalues) {
 		$relations['timemap']['url'] = $matches[1][0];
 	}
 
-	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version[^"]*",/', $linkvalues, $matches);
+	preg_match_all('/<([^>]*)>;[ ]*rel="original latest-version[^"]*".*$/', $linkvalues, $matches);
 
 	if ( count($matches[0]) > 0 ) {
 		$relations['original latest-version']['url'] = $matches[1][0];
 	}
+
+	#print_r($matches);
 
 	// get the 'normal' memento link entries
 	preg_match_all('/<([^>]*)>;[ ]*rel="([^"]*)";[ ]*datetime="([^"]*)"/',
