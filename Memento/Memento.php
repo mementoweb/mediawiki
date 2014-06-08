@@ -207,6 +207,7 @@ class Memento {
 			if ( is_object( $revision ) ) {
 
 				$articleDatetime = $revision->getTimestamp();		
+				$articleDatetime = '00000000000000';
 	
 				$config = new MementoConfig();
 				$dbr = wfGetDB( DB_SLAVE );

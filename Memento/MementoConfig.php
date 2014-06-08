@@ -61,6 +61,7 @@ class MementoConfig {
 		global $wgMementoTimeNegotiation;
 		global $wgMementoRecommendedRelations;
 		global $wgMementoExcludeNamespaces;
+		global $wgMementoTimeNegotiationForThumbnails;
 
 		$this->settings['NumberOfMementos'] =
 			$this->setDefault(
