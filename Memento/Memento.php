@@ -200,28 +200,35 @@ class Memento {
 
 			self::$oldIDSet = ( $article->getOldID() != 0 );
 
-			$articleDatetime = $article->getRevisionFetched()->getTimestamp();		
+			$revision = $article->getRevisionFetched();
 
-			$config = new MementoConfig();
-			$dbr = wfGetDB( DB_SLAVE );
-			$oldID = $article->getOldID();
-			$request = $article->getContext()->getRequest();
+			// avoid processing Mementos for bad revisions, 
+			// let MediaWiki handle that case instead
+			if ( is_object( $revision ) ) {
 
-			self::$mementoResource =
-				MementoResource::mementoPageResourceFactory(
-					$config, $dbr, $article, $oldID, $request );
-
-			try {
-				self::$mementoResource->alterHeaders();
-			} catch (MementoResourceException $e) {
-
-				$out = $article->getContext()->getOutput();
-
-				// unset for future hooks in the chain
-				self::$mementoResource = null;
-
-				MementoResource::renderError(
-					$out, $e, $config->get('ErrorPageType') );
+				$articleDatetime = $revision->getTimestamp();		
+	
+				$config = new MementoConfig();
+				$dbr = wfGetDB( DB_SLAVE );
+				$oldID = $article->getOldID();
+				$request = $article->getContext()->getRequest();
+	
+				self::$mementoResource =
+					MementoResource::mementoPageResourceFactory(
+						$config, $dbr, $article, $oldID, $request );
+	
+				try {
+					self::$mementoResource->alterHeaders();
+				} catch (MementoResourceException $e) {
+	
+					$out = $article->getContext()->getOutput();
+	
+					// unset for future hooks in the chain
+					self::$mementoResource = null;
+	
+					MementoResource::renderError(
+						$out, $e, $config->get('ErrorPageType') );
+				}
 			}
 		}
 
