@@ -464,7 +464,7 @@ class MementoTest extends PHPUnit_Framework_TestCase {
 		$outputfile = __CLASS__ . '.' . __FUNCTION__ . '.' . self::$instance . '.txt';
 		$debugfile = __CLASS__ . '.' . __FUNCTION__ . '-debug-' . self::$instance . '.txt';
 
-        $this->Status302StyleTimeGateResponseCommonTests(
+        $response = $this->Status302StyleTimeGateResponseCommonTests(
 			$IDENTIFIER, $ACCEPTDATETIME, $REQUESTED_URI, $URIR,
 			$ORIGINALLATEST, $FIRSTMEMENTO, $LASTMEMENTO,
 		    $URIM, $URIG, $URIT, $COMMENT,
