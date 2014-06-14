@@ -23,9 +23,9 @@ Note: the released version of this extension does not contain this file, so the 
 To install this package within Mediawiki perform the following:
 * copy the Memento directory into the extensions directory of your Mediawiki installation
 * add the following to the LocalSettings.php file in your Mediawiki installation:
-        require_once("$IP/extensions/Memento/Memento.php");
-        $wgArticlePath = "$wgScriptPath/index.php/$1";
-        $wgUsePathInfo = true;
+    require_once("$IP/extensions/Memento/Memento.php");
+    $wgArticlePath = "$wgScriptPath/index.php/$1";
+    $wgUsePathInfo = true;
 
 # Configuration
 
@@ -34,24 +34,24 @@ This extension has sensible defaults, but also allows the following settings to 
 * $wgMementoTimemapNumberOfMementos - (default is 500) allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
 
 * $wgMementoErrorPageType - has two values for the type of error page sent to the client:
-        * 'friendly' - (default) display Mediawiki-style error pages for error conditions along with a 200 OK status code returned to the client
-        * 'traditional' - display bare text error pages for error conditions along with the appropriate 400, 404, etc. status code returned to the client
+    * 'friendly' - (default) display Mediawiki-style error pages for error conditions along with a 200 OK status code returned to the client
+    * 'traditional' - display bare text error pages for error conditions along with the appropriate 400, 404, etc. status code returned to the client
 
 * $wgMementoTimeNegotiation - has two values for the type of Memento Time Negotiation performed:
-        * '302' - (default) Time Negotiation is performed via redirection, enabling a TimeGate SpecialPage that can then perform TimeNegotiation outside of the normal wiki pages
+    * '302' - (default) Time Negotiation is performed via redirection, enabling a TimeGate SpecialPage that can then perform TimeNegotiation outside of the normal wiki pages
                 - see http://www.mementoweb.org/guide/rfc/ID/#Pattern1.1
-        * '200' - Time Negotiation is performed in place, replacing the given wiki page with its Memento if an Accept-Datetime header is sent by the client
+    * '200' - Time Negotiation is performed in place, replacing the given wiki page with its Memento if an Accept-Datetime header is sent by the client
                 - http://www.mementoweb.org/guide/rfc/ID/#Pattern1.2
 
 * $wgMementoRecommendedRelations - mandatory Memento relations in the Link header are always provided, but this is a boolean true/false toggle for the use of RECOMMENDED Memento link relations from the Memento RFC
-        * false - (default) return none of the RECOMMENDED link relations in the Link header to the client
-        * true - return all of the RECOMMENDED link relations (first memento, last memento, from, until, etc.) in the Link header to the client; note that this can be computationally expensive and may affect performance on a heavy usage site
+    * false - (default) return none of the RECOMMENDED link relations in the Link header to the client
+    * true - return all of the RECOMMENDED link relations (first memento, last memento, from, until, etc.) in the Link header to the client; note that this can be computationally expensive and may affect performance on a heavy usage site
 
 * $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
 * $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.
-        * false - (default) do not attempt to match the old version of the image to the requested oldid page
-        * true - attempt to match the old version of the image to the requested oldid page
+    * false - (default) do not attempt to match the old version of the image to the requested oldid page
+    * true - attempt to match the old version of the image to the requested oldid page
 
 # Packaging
 
@@ -82,34 +82,34 @@ Running the unit and integration tests requires phpunit.
 You will need to change the test data inside tests/integration/test-data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from site to site, it was decided not to come up with a "one size fits all" integration test set.
 
 Before running the tests you will need to set the following environment variables:
-    * TESTDATADIR - the data directory containing the datasets for your test run
-    * TESTUSERNAME - the username for logging into your mediawiki instance
-    * TESTPASSWORD - the password that goes with TESTUSERNAME
+* TESTDATADIR - the data directory containing the datasets for your test run
+* TESTUSERNAME - the username for logging into your mediawiki instance
+* TESTPASSWORD - the password that goes with TESTUSERNAME
 
 Because of all of the possible combinations of configuration options, the following Make targets are intended to test the following capabilities:
 
-    * defaults-integration-test - test an installation with the default settings
+* defaults-integration-test - test an installation with the default settings
 
-    * 200-style-time-negotiation-integration-test - test only the 200-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "200", $wgMementoRecommendedRelations = false)
+* 200-style-time-negotiation-integration-test - test only the 200-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "200", $wgMementoRecommendedRelations = false)
 
-    * 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = false)
+* 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = false)
 
-    * 200-style-time-negotiation-recommended-headers-integration-test - test the 200-style Time Negotiation, along with the RECOMMENDED link relations ($wgMementoTimeNegotiation = "200", $wgMementoRecommendedRelations = true)
+* 200-style-time-negotiation-recommended-headers-integration-test - test the 200-style Time Negotiation, along with the RECOMMENDED link relations ($wgMementoTimeNegotiation = "200", $wgMementoRecommendedRelations = true)
 
-    * 302-style-time-negotiation-recommended-headers-integration-test - test the 302-style Time Negotiation, along with the RECOMMENDED link relations ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = true)
+* 302-style-time-negotiation-recommended-headers-integration-test - test the 302-style Time Negotiation, along with the RECOMMENDED link relations ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = true)
 
-    * friendly-error-integration-test - test the 200-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'friendly')
+* friendly-error-integration-test - test the 200-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'friendly')
 
-    * traditional-error-integration-test - test the 200-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'traditional')
+* traditional-error-integration-test - test the 200-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'traditional')
 
-    * friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'friendly')
+* friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'friendly')
 
-    * traditional-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'traditional')
+* traditional-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'traditional')
 
 Of course, the fastest development process is:
-    1. [edit tests or change code, if necessary]
-    2. make undeploy && make clean unit-test package deploy
-    3. run the integration test battery matching your deployment
+1. [edit tests or change code, if necessary]
+2. make undeploy && make clean unit-test package deploy
+3. run the integration test battery matching your deployment
 
 # Code compliance verification
 
