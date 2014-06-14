@@ -11,12 +11,15 @@ Note: the released version of this extension does not contain this file, so the 
 # Directory Contents
 
 * Makefile - the build script that does all of the magic
-* README - this file
+* README.md - this file
 * TODO - list of items to address in the codebase
-* Memento - the source code
-* tests/integration - the integration tests
-* tests/lib - libraries needed by the tests
-* coding-standards - directory of coding standards shamelessly stolen from Mediawiki
+* Memento/ - the source code for this extension
+* externals/ - git submodule linking to the code verification rules at https://gerrit.wikimedia.org/r/p/mediawiki/tools/codesniffer.git
+* scripts/ - command line scripts used for testing the extension by hand
+* tests/integration/ - the integration tests
+* tests/lib/ - libraries needed by the tests
+* tests/data/ - data used by the tests
+
 
 # Installation
 
@@ -68,12 +71,16 @@ This serves to run everything needed to verify the code and package the zip for 
 
 To deploy the Memento Mediawiki Extension locally for testing, one must first indicate to the shell where Mediawiki is installed, then run the appropriate make target.
 
+```
     export MWDIR=<where your Mediawiki is installed>
     make deploy
+```
 
 To remove the software from a Mediawiki instance, type:
 
+```
     make undeploy
+```
 
 # Integration Testing
 
@@ -120,8 +127,12 @@ Running the code compliance requires phpcs.
 
 This git repository uses and external repository for coding convention rules, so we can update the coding convention rules at any time.  The git command for performing the initial import is:
 
+```
     git submodule update --init
+```
 
 To see if the code complies with Mediawiki's coding conventions, run:
 
+```
     make verify
+```
