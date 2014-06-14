@@ -49,6 +49,10 @@ This extension has sensible defaults, but also allows the following settings to 
 
 * $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
+* $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.
+        * false - (default) do not attempt to match the old version of the image to the requested oldid page
+        * true - attempt to match the old version of the image to the requested oldid page
+
 # Packaging
 
 To package the Memento Mediawiki Extension, type the following 
