@@ -140,12 +140,13 @@ class Memento {
 		if ( $config->get('TimeNegotiationForThumbnails') == true ) {
 
 			if ( self::$oldIDSet == true ) {
-				$history = $file->getHistory($limit=1, $start=$articleDatetime);
+				$history = $file->getHistory(
+					$limit = 1, $start = $articleDatetime);
 				$file = $history[0];
 			}
 
 		}
-	
+
 		return true;
 	}
 
@@ -202,31 +203,31 @@ class Memento {
 
 			$revision = $article->getRevisionFetched();
 
-			// avoid processing Mementos for bad revisions, 
+			// avoid processing Mementos for bad revisions,
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
 
-				$articleDatetime = $revision->getTimestamp();		
+				$articleDatetime = $revision->getTimestamp();
 				$articleDatetime = '00000000000000';
-	
+
 				$config = new MementoConfig();
 				$dbr = wfGetDB( DB_SLAVE );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
-	
+
 				self::$mementoResource =
 					MementoResource::mementoPageResourceFactory(
 						$config, $dbr, $article, $oldID, $request );
-	
+
 				try {
 					self::$mementoResource->alterHeaders();
 				} catch (MementoResourceException $e) {
-	
+
 					$out = $article->getContext()->getOutput();
-	
+
 					// unset for future hooks in the chain
 					self::$mementoResource = null;
-	
+
 					MementoResource::renderError(
 						$out, $e, $config->get('ErrorPageType') );
 				}

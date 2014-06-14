@@ -426,7 +426,7 @@ abstract class MementoResource {
 	 */
 	public function constructMementoLinkHeaderRelationEntry(
 		$url, $timestamp, $relation ) {
-		
+
 		$entry = '<' . $url . '>; rel="' . $relation . '"; datetime="' .
 			$timestamp . '"';
 
@@ -587,7 +587,7 @@ abstract class MementoResource {
 	public function getTimeGateURI( $title ) {
 
 		if ( $this->conf->get('Negotiation') == '302' ) {
-			// return Special Page URI	
+			// return Special Page URI
 			$tguri = SpecialPage::getTitleFor( 'TimeGate', $title )->getFullURL();
 		} else {
 			// return myuri
@@ -652,8 +652,8 @@ abstract class MementoResource {
 
 		if ( $oldID == 0 ) {
 
-			if ( ( $request->getHeader('ACCEPT-DATETIME') )  &&
-				 ( $conf->get('Negotiation') == "200" ) ) {
+			if ( ( $request->getHeader('ACCEPT-DATETIME') ) &&
+				( $conf->get('Negotiation') == "200" ) ) {
 					/* we are requesting a Memento, but via 200-style
 						Time Negotiation */
 					$resource = new MementoResourceFrom200TimeNegotiation(

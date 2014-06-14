@@ -48,7 +48,8 @@ http://mementoweb.org for more information.
 EOT;
 
 $timemap_welcome = <<<EOT
-This Special Page takes care of creating Memento TimeMaps for your wiki, which are machine-readable versions of the history of the pages they represent.
+This Special Page takes care of creating Memento TimeMaps for your wiki, which
+are machine-readable versions of the history of the pages they represent.
 
 For a specific page, it lists the Mementos archived for that page.
 
@@ -73,9 +74,11 @@ EOT;
 $status_403_inaccessible = "Error 403: Resource '$1' is not accessible.";
 
 $timegate_welcome = <<<EOT
-This Special Page takes care of performing datetime negotiation for your wiki, which is key to the Memento process.
+This Special Page takes care of performing datetime negotiation for your wiki, 
+which is key to the Memento process.
 
-For a specific page, it performs datetime negotiation for the given page, redirecting you to the closest page to the time requested by your browser.
+For a specific page, it performs datetime negotiation for the given page, 
+redirecting you to the closest page to the time requested by your browser.
 
 To see Memento in action, either follow instructions from the 
 [http://www.mediawiki.org/wiki/Extension:Memento MediaWiki Extension] page or 
