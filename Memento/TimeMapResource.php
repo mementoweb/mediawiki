@@ -152,13 +152,13 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Extract the full time map data from the database.
 	 *
-	 * @param $pg_id - identifier of the requested page
+	 * @param $pgID - identifier of the requested page
 	 * @param $timestamp - the timestamp to query for
 	 *
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getDescendingTimeMapData($pg_id, $timestamp) {
+	public function getDescendingTimeMapData($pgID, $timestamp) {
 
 		$limit = $this->conf->get('NumberOfMementos');
 
@@ -168,7 +168,7 @@ abstract class TimeMapResource extends MementoResource {
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			array(
-				'rev_page' => $pg_id,
+				'rev_page' => $pgID,
 				'rev_timestamp<' . $this->dbr->addQuotes( $timestamp )
 				),
 			__METHOD__,
@@ -195,13 +195,13 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Extract the full time map data from the database.
 	 *
-	 * @param $pg_id - identifier of the requested page
+	 * @param $pgID - identifier of the requested page
 	 * @param $timestamp - the timestamp to query for
 	 *
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getAscendingTimeMapData($pg_id, $timestamp) {
+	public function getAscendingTimeMapData($pgID, $timestamp) {
 
 		$limit = $this->conf->get('NumberOfMementos');
 
@@ -211,7 +211,7 @@ abstract class TimeMapResource extends MementoResource {
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			array(
-				'rev_page' => $pg_id,
+				'rev_page' => $pgID,
 				'rev_timestamp>' . $this->dbr->addQuotes( $timestamp )
 				),
 			__METHOD__,
@@ -256,7 +256,7 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * generateAscendingTimeMapPaginationData
 	 *
-	 * @param $pg_id - the ID of the page, not the oldid
+	 * @param $pgID - the ID of the page, not the oldid
 	 * @param $pivotTimestamp - the pivotTimestamp in TS_MW format
 	 * @param $timeMapPages - array passed by reference to hold TimeMap pages
 	 * @param $title - the title of the page
@@ -268,7 +268,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 */
 	public function generateAscendingTimeMapPaginationData(
-		$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
+		$pgID, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getAscendingTimeMapData(
 			$pg_id, $pivotTimestamp
@@ -294,7 +294,7 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * generateDescendingTimeMapPaginationData
 	 *
-	 * @param $pg_id - the ID of the page, not the oldid
+	 * @param $pgID - the ID of the page, not the oldid
 	 * @param $pivotTimestamp - the pivotTimestamp in TS_MW format
 	 * @param $timeMapPages - array passed by reference to hold TimeMap pages
 	 * @param $title - the title of the page
@@ -306,10 +306,10 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 */
 	public function generateDescendingTimeMapPaginationData(
-		$pg_id, $pivotTimestamp, &$timeMapPages, $title ) {
+		$pgID, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getDescendingTimeMapData(
-			$pg_id, $pivotTimestamp
+			$pgID, $pivotTimestamp
 			);
 
 		$timeMapPage = array();
@@ -469,19 +469,19 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Extract the full time map data from the database.
 	 *
-	 * @param $pg_id - identifier of the requested page
+	 * @param $pgID - identifier of the requested page
 	 * @param $limit - the greatest number of results
 	 *
 	 * @return array $data - containing keys 'rev_id' and 'rev_timestamp'
 	 */
-	public function getFullTimeMapData($pg_id, $limit) {
+	public function getFullTimeMapData($pgID, $limit) {
 
 		$data = array();
 
 		$results = $this->dbr->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
-			array( 'rev_page' => $pg_id ),
+			array( 'rev_page' => $pgID ),
 			__METHOD__,
 			array(
 				'ORDER BY' => 'rev_timestamp DESC',
@@ -515,16 +515,16 @@ abstract class TimeMapResource extends MementoResource {
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
 
-		$pg_id = $article->getTitle()->getArticleID();
+		$pgID = $article->getTitle()->getArticleID();
 		$request = $out->getRequest();
 		$response = $request->response();
 
 		$timeMapURI = $request->getFullRequestURL();
 
-		if ( $pg_id > 0 ) {
+		if ( $pgID > 0 ) {
 
 			$results = $this->getFullTimeMapData(
-				$pg_id, $this->conf->get('NumberOfMementos')
+				$pgID, $this->conf->get('NumberOfMementos')
 				);
 
 			// get the first revision ID
@@ -555,7 +555,7 @@ abstract class TimeMapResource extends MementoResource {
 
 				# this function operates on $timeMapPages in place
 				$this->generateDescendingTimeMapPaginationData(
-					$pg_id, $pivotTimestamp, $timeMapPages, $title );
+					$pgID, $pivotTimestamp, $timeMapPages, $title );
 
 			}
 
@@ -595,14 +595,14 @@ abstract class TimeMapResource extends MementoResource {
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
 
-		$pg_id = $titleObj->getArticleID();
+		$pgID = $titleObj->getArticleID();
 		$request = $out->getRequest();
 		$response = $request->response();
 
 		$requestURL = $request->getRequestURL();
 		$timeMapURI = $request->getFullRequestURL();
 
-		if ( $pg_id > 0 ) {
+		if ( $pgID > 0 ) {
 
 			$timestamp = $this->extractTimestampPivot( $requestURL );
 
@@ -619,7 +619,7 @@ abstract class TimeMapResource extends MementoResource {
 				$this->formatTimestampForDatabase( $timestamp );
 
 			$results = $this->getPivotTimeMapData(
-				$pg_id, $formattedTimestamp
+				$pgID, $formattedTimestamp
 				);
 
 			// if we get no results back, then the timestamp is likely outside
@@ -652,7 +652,7 @@ abstract class TimeMapResource extends MementoResource {
 						$earliestItem['rev_timestamp'] );
 
 					$this->generateDescendingTimeMapPaginationData(
-						$pg_id, $pivotTimestamp, $timeMapPages, $title );
+						$pgID, $pivotTimestamp, $timeMapPages, $title );
 
 				}
 
@@ -668,7 +668,7 @@ abstract class TimeMapResource extends MementoResource {
 						$latestItem['rev_timestamp'] );
 
 					$this->generateAscendingTimeMapPaginationData(
-						$pg_id, $pivotTimestamp, $timeMapPages, $title );
+						$pgID, $pivotTimestamp, $timeMapPages, $title );
 
 				}
 
@@ -698,12 +698,12 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Method that acquires TimeMap data, based on a given formatted timestamp.
 	 *
-	 * @param $page_id
+	 * @param $pageID
 	 * @param $formattedTimestamp
 	 *
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
 	abstract public function getPivotTimeMapData(
-		$page_id, $formattedTimestamp );
+		$pageID, $formattedTimestamp );
 }

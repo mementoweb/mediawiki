@@ -47,7 +47,7 @@ revision of a given article by matching a specified datetime. Please visit
 http://mementoweb.org for more information.  
 EOT;
 
-$timemap_welcome = <<<EOT
+$timemapWelcome = <<<EOT
 This Special Page takes care of creating Memento TimeMaps for your wiki, which
 are machine-readable versions of the history of the pages they represent.
 
@@ -60,20 +60,20 @@ type in the address of the wiki page in this format:
 where, the name that follows the TimeMap URL is the title of the article.
 EOT;
 
-$timemap_desc = <<<EOT
+$timemapDesc = <<<EOT
 The Memento TimeMap retrieves the revision list of an article including the 
 datetime when the revision was created. The revision list is serialized as 
 application/link-format. Please see http://mementoweb.org for more information.
 EOT;
 
-$status_404_namespace_title = <<<EOT
+$status404NamespaceTitle = <<<EOT
 Either the resource does not exist or the namespace is not 
 understood by memento for the title: '$1'.
 EOT;
 
-$status_403_inaccessible = "Error 403: Resource '$1' is not accessible.";
+$status403Inaccessible = "Error 403: Resource '$1' is not accessible.";
 
-$timegate_welcome = <<<EOT
+$timegateWelcome = <<<EOT
 This Special Page takes care of performing datetime negotiation for your wiki, 
 which is key to the Memento process.
 
@@ -87,13 +87,13 @@ type in the address of the wiki page in this format:
 where, YourPage that follows the TimeGate URL is the title of our article.
 EOT;
 
-$timegate_400_date = <<<EOT
+$timegate400Date = <<<EOT
 Error 400: Requested date '$1' not parseable.<br />
 <b>First Memento:</b> $2<br />
 <b>Last Memento:</b> $3<br />
 EOT;
 
-$timemap_400_date = <<<EOT
+$timemap400Date = <<<EOT
 Requested pivot date '$1' not parseable.<br />
 EOT;
 
@@ -101,17 +101,17 @@ $messages['en'] = array(
 	'memento' => 'Memento',
 	'extension-overview' => $overview,
 	'timegate-title' => 'Memento TimeGate',
-	'timegate-400-date' => $timegate_400_date,
+	'timegate-400-date' => $timegate400Date,
 	'timemap' => 'Memento TimeMap',
 	'timemap-title' => 'Memento TimeMap',
-	'timemap-welcome-message' => $timemap_welcome,
+	'timemap-welcome-message' => $timemapWelcome,
 	'timemap-specialpage-listing' => 'Memento',
-	'timemap-desc' => $timemap_desc,
-	'timemap-404-title' => $status_404_namespace_title,
-	'timemap-403-inaccessible' => $status_403_inaccessible,
-	'timemap-400-date' => $timemap_400_date,
+	'timemap-desc' => $timemapDesc,
+	'timemap-404-title' => $status404NamespaceTitle,
+	'timemap-403-inaccessible' => $status403Inaccessible,
+	'timemap-400-date' => $timemap400Date,
 	'timegate' => 'Memento TimeGate',
-	'timegate-welcome-message' => $timegate_welcome,
-	'timegate-404-title' => $status_404_namespace_title,
-	'timegate-403-inaccessible' => $status_403_inaccessible,
+	'timegate-welcome-message' => $timegateWelcome,
+	'timegate-404-title' => $status404NamespaceTitle,
+	'timegate-403-inaccessible' => $status403Inaccessible,
 );

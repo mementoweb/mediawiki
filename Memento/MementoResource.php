@@ -370,9 +370,9 @@ abstract class MementoResource {
 	 */
 	public function parseRequestDateTime( $requestDateTime ) {
 
-		$req_dt = str_replace( '"', '', $requestDateTime );
+		$reqDT = str_replace( '"', '', $requestDateTime );
 
-		$dt = wfTimestamp( TS_MW, $req_dt );
+		$dt = wfTimestamp( TS_MW, $reqDT );
 
 		return $dt;
 	}
@@ -701,7 +701,7 @@ abstract class MementoResource {
 
 			if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
 
-				$pg_id = $title->getArticleID();
+				$pgID = $title->getArticleID();
 
 				$this->dbr->begin();
 
@@ -709,7 +709,7 @@ abstract class MementoResource {
 					'revision',
 					array( 'rev_id' ),
 					array(
-						'rev_page' => $pg_id,
+						'rev_page' => $pgID,
 						'rev_timestamp <=' .
 							$this->dbr->addQuotes( $mwMementoTimestamp )
 						),
