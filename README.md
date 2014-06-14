@@ -2,7 +2,7 @@ The idea of the Memento extension is it to make it as straightforward to access 
 
 The Memento framework allows you to see versions of articles as they existed at some date in the past. All you need to do is enter a URL of an article in your browser and specify the desired date in a browser plug-in. This way you can browse the Web of the past. What the Memento extension will present to you is a version of the article as it existed on or very close to the selected date. Obviously, this will only work if previous (archived) versions are available on the Web. Fortunately, MediaWiki is a Content Management System which implies that it maintains all revisions made to an article. This extension leverages this archiving functionality and provides native Memento support for MediaWiki.
 
-This package contains the source code, build scripts, and tests for the Memento Mediawiki Extension.
+This package contains the source code, build scripts, and tests for the Memento MediaWiki Extension.
 
 This file also contains installation information, but more comprehensive information is at:  http://www.mediawiki.org/wiki/Extension:Memento
 
@@ -23,6 +23,7 @@ Note: the released version of this extension does not contain this file, so the 
 To install this package within Mediawiki perform the following:
 * copy the Memento directory into the extensions directory of your Mediawiki installation
 * add the following to the LocalSettings.php file in your Mediawiki installation:
+
     require_once("$IP/extensions/Memento/Memento.php");
     $wgArticlePath = "$wgScriptPath/index.php/$1";
     $wgUsePathInfo = true;
