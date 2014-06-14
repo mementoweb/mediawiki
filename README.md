@@ -23,10 +23,11 @@ Note: the released version of this extension does not contain this file, so the 
 To install this package within Mediawiki perform the following:
 * copy the Memento directory into the extensions directory of your Mediawiki installation
 * add the following to the LocalSettings.php file in your Mediawiki installation:
-
+```
     require_once("$IP/extensions/Memento/Memento.php");
     $wgArticlePath = "$wgScriptPath/index.php/$1";
     $wgUsePathInfo = true;
+```
 
 # Configuration
 
@@ -108,7 +109,8 @@ Because of all of the possible combinations of configuration options, the follow
 * traditional-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'traditional')
 
 Of course, the fastest development process is:
-1. [edit tests or change code, if necessary]
+
+1. edit tests or change code, if necessary
 2. make undeploy && make clean unit-test package deploy
 3. run the integration test battery matching your deployment
 
