@@ -43,7 +43,7 @@ $wgExtensionCredits['specialpage'][] = array(
 		'Robert Sanderson',
 		'Shawn M. Jones'
 	),
-	'version' => '2.0'
+	'version' => '2.0.1-SNAPSHOT'
 );
 
 // Set up the messages file
@@ -132,7 +132,7 @@ class Memento {
 
 			if ( self::$oldIDSet == true ) {
 				$history = $file->getHistory(
-					/* $limit = */ 1, /* $start = */ $articleDatetime); // @fixme undefined variable
+					/* $limit = */ 1, /* $start = */ self::$articleDatetime); 
 				$file = $history[0];
 			}
 
@@ -198,9 +198,7 @@ class Memento {
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
 
-				// @fixme duplicate variable definition?
-				$articleDatetime = $revision->getTimestamp();
-				$articleDatetime = '00000000000000';
+				self::$articleDatetime = $revision->getTimestamp();
 
 				$config = new MementoConfig();
 				$dbr = wfGetDB( DB_SLAVE );
