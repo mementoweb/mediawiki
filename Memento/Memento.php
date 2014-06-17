@@ -47,30 +47,24 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 // Set up the messages file
-$wgExtensionMessagesFiles['Memento'] = ( __DIR__ ) . '/Memento.i18n.php';
+$wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
 
 // Set up the core classes used by Memento
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
-$wgAutoloadClasses['MementoResourceException'] =
-	__DIR__ . '/MementoResource.php';
+$wgAutoloadClasses['MementoResourceException'] = __DIR__ . '/MementoResource.php';
 
 // Set up the Memento (URI-M) Classes
-$wgAutoloadClasses['MementoResourceDirectlyAccessed'] =
-	__DIR__ . '/MementoResourceDirectlyAccessed.php';
+$wgAutoloadClasses['MementoResourceDirectlyAccessed'] = __DIR__ . '/MementoResourceDirectlyAccessed.php';
 
 // Set up the Original page (URI-R) Classes
-$wgAutoloadClasses['OriginalResourceDirectlyAccessed'] =
-	__DIR__ . '/OriginalResourceDirectlyAccessed.php';
+$wgAutoloadClasses['OriginalResourceDirectlyAccessed'] = __DIR__ . '/OriginalResourceDirectlyAccessed.php';
 
 // set up the Time Map (URI-T) classes
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
-$wgAutoloadClasses['TimeMapFullResource'] =
-	__DIR__ . '/TimeMapFullResource.php';
-$wgAutoloadClasses['TimeMapPivotAscendingResource'] =
-	__DIR__ . '/TimeMapPivotAscendingResource.php';
-$wgAutoloadClasses['TimeMapPivotDescendingResource'] =
-	__DIR__ . '/TimeMapPivotDescendingResource.php';
+$wgAutoloadClasses['TimeMapFullResource'] = __DIR__ . '/TimeMapFullResource.php';
+$wgAutoloadClasses['TimeMapPivotAscendingResource'] = __DIR__ . '/TimeMapPivotAscendingResource.php';
+$wgAutoloadClasses['TimeMapPivotDescendingResource'] = __DIR__ . '/TimeMapPivotDescendingResource.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
@@ -81,12 +75,9 @@ $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchT
 $wgHooks['ImageBeforeProduceHTML'][] = 'Memento::onImageBeforeProduceHTML';
 
 // set up the Time Gate (URI-G) classes
-$wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
-	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
-$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
-	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
-$wgAutoloadClasses['TimeNegotiator'] =
-	__DIR__ . '/TimeNegotiator.php';
+$wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] = __DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
+$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = __DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
+$wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 
@@ -121,9 +112,9 @@ class Memento {
 	 * The ImageBeforeProduce HTML hook, used here to provide datetime
 	 * negotiation for embedded images.
 	 *
-	 * @param $skin: Skin object for this page
-	 * @param $title: Title object for this image
-	 * @param $file: File object for this image
+	 * @param Skin $skin: Skin object for this page
+	 * @param Title $title: Title object for this image
+	 * @param File $file: File object for this image
 	 * @param $frameParams: frame parameters
 	 * @param $handlerParams: handler parameters
 	 * @param $time: not really used by hook
@@ -141,7 +132,7 @@ class Memento {
 
 			if ( self::$oldIDSet == true ) {
 				$history = $file->getHistory(
-					$limit = 1, $start = $articleDatetime);
+					/* $limit = */ 1, /* $start = */ $articleDatetime); // @fixme undefined variable
 				$file = $history[0];
 			}
 
@@ -156,8 +147,8 @@ class Memento {
 	 * Template pages loaded so that their revision is closer in date/time to
 	 * that of the rest of the page.
 	 *
-	 * @param $parser: Parser object for this page
-	 * @param $title: Title object for this page
+	 * @param Parser $parser: Parser object for this page
+	 * @param Title $title: Title object for this page
 	 * @param $skip: boolean flag allowing the caller to skip the rest of
 	 *					statelessFetchTemplate
 	 * @param $id: revision id of this page
@@ -170,7 +161,7 @@ class Memento {
 		// $mementoResource is only set if we are on an actual page
 		// as opposed to diff pages, edit pages, etc.
 		if ( self::$mementoResource ) {
-			self::$mementoResource->fixTemplate($title, $parser, $id);
+			self::$mementoResource->fixTemplate( $title, $parser, $id );
 		}
 
 		return true;
@@ -182,10 +173,10 @@ class Memento {
 	 *
 	 * Note: this is not called when the Edit, Diff or History pages are loaded.
 	 *
-	 * @param: $article: pointer to the Article Object from the hook
-	 * @param: $outputDone: pointer to variable that indicates that 
-	 *			the output should be terminated
-	 * @param: $pcache: pointer to variable that indicates whether the parser
+	 * @param Article $article: pointer to the Article Object from the hook
+	 * @param bool $outputDone pointer to variable that indicates that
+	 *                         the output should be terminated
+	 * @param $pcache: pointer to variable that indicates whether the parser
 	 * 			cache should try retrieving the cached results
 	 *
 	 * @return boolean indicating success to the caller
@@ -207,6 +198,7 @@ class Memento {
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
 
+				// @fixme duplicate variable definition?
 				$articleDatetime = $revision->getTimestamp();
 				$articleDatetime = '00000000000000';
 
@@ -221,7 +213,7 @@ class Memento {
 
 				try {
 					self::$mementoResource->alterHeaders();
-				} catch (MementoResourceException $e) {
+				} catch ( MementoResourceException $e ) {
 
 					$out = $article->getContext()->getOutput();
 
@@ -229,7 +221,7 @@ class Memento {
 					self::$mementoResource = null;
 
 					MementoResource::renderError(
-						$out, $e, $config->get('ErrorPageType') );
+						$out, $e, $config->get( 'ErrorPageType' ) );
 				}
 			}
 		}
@@ -240,14 +232,12 @@ class Memento {
 	/**
 	 * The main hook for the plugin.
 	 *
-	 * @param $out: pointer to the OutputPage Object from the hook
-	 * @param $skin: skin object that will be used to generate the page
+	 * @param OutputPage $out pointer to the OutputPage Object from the hook
+	 * @param Skin $skin skin object that will be used to generate the page
 	 *
 	 * @returns boolean indicating success to the caller
 	 */
-	public static function onBeforePageDisplay(&$out, &$skin) {
-
-		$status = true;
+	public static function onBeforePageDisplay( $out, $skin ) {
 
 		// if we didn't get declared during ArticleViewHeader, then there is
 		// no need to run the additional Memento code
@@ -255,18 +245,18 @@ class Memento {
 
 			try {
 				self::$mementoResource->alterEntity();
-			} catch (MementoResourceException $e) {
+			} catch ( MementoResourceException $e ) {
 				$config = new MementoConfig();
 
 				// unset for future hooks in the chain
 				self::$mementoResource = null;
 
 				MementoResource::renderError(
-					$out, $e, $config->get('ErrorPageType') );
+					$out, $e, $config->get( 'ErrorPageType' ) );
 			}
 
 		}
 
-		return $status; // TODO: return false if exception thrown?
+		return true; // TODO: return false if exception thrown?
 	}
 }

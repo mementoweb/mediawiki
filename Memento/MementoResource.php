@@ -604,12 +604,12 @@ abstract class MementoResource {
 	 * This function is static so it can be called in cases where we have
 	 * no MementoResource object.
 	 *
-	 * @param $out - OutputPage object
-	 * @param $error - MementoResourceException object
-	 * @param $errorPageType - the error page type 'traditional' or 'friendly'
+	 * @param OutputPage $out
+	 * @param MementoResourceException $error
+	 * @param string $errorPageType - the error page type 'traditional' or 'friendly'
 	 *
 	 */
-	public static function renderError($out, $error, $errorPageType) {
+	public static function renderError( $out, $error, $errorPageType ) {
 		if ( $errorPageType == 'traditional' ) {
 
 			$msg = wfMessage(
@@ -673,16 +673,17 @@ abstract class MementoResource {
 		return $resource;
 	}
 
-	/*
+	/**
 	 * fixTemplate
 	 *
 	 * This code ensures that the version of the Template that was in existence
 	 * at the same time as the Memento gets loaded and displayed with the
 	 * Memento.
 	 *
-	 * @param $title - Title object of the page
-	 * @param $parser - Parsger object of the page
-	 * @param $id - the revision id of the page
+	 * @fixme make this compatible with parser cache
+	 * @param Title $title
+	 * @param Parser $parser
+	 * @param int $id
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */
