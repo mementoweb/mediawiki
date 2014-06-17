@@ -55,7 +55,6 @@ class MementoConfig {
 	 */
 	function __construct() {
 
-		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
 		global $wgMementoTimeNegotiation;
@@ -97,9 +96,9 @@ class MementoConfig {
 	/**
 	 * Set return the value given or, if it is not set, the default.
 	 *
-	 * @param $settingToCheck: string
+	 * @param $valueToCheck: string
 	 * @param $defaultValue: anything
-	 *
+	 * @return mixed
 	 */
 	public function setDefault( $valueToCheck, $defaultValue ) {
 
@@ -118,9 +117,6 @@ class MementoConfig {
 	 * Simple get function that retrieves settings.
 	 */
 	public function get( $setting ) {
-
 		return $this->settings[$setting];
-
 	}
-
 }
