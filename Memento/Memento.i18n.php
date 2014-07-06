@@ -99,7 +99,7 @@ EOT;
 
 $messages['en'] = array(
 	'memento' => 'Memento',
-	'extension-overview' => $overview,
+	'memento-desc' => $overview,
 	'timegate-title' => 'Memento TimeGate',
 	'timegate-400-date' => $timegate400Date,
 	'timemap' => 'Memento TimeMap',
