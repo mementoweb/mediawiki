@@ -52,7 +52,7 @@ $wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
 // Set up the core classes used by Memento
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
-$wgAutoloadClasses['MementoResourceException'] = __DIR__ . '/MementoResource.php';
+$wgAutoloadClasses['MementoResourceException'] = __DIR__ . '/MementoResourceException.php';
 
 // Set up the Memento (URI-M) Classes
 $wgAutoloadClasses['MementoResourceDirectlyAccessed'] = __DIR__ . '/MementoResourceDirectlyAccessed.php';

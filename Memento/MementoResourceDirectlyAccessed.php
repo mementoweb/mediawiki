@@ -62,8 +62,6 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			array_push( $linkEntries, $entry );
 		} else {
 			$title = $this->getFullNamespacePageTitle( $titleObj );
-			$pageID = $titleObj->getArticleID();
-			$oldID = $this->article->getOldID();
 
 			$mementoTimestamp =
 				$this->article->getRevisionFetched()->getTimestamp();

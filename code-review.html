@@ -98,8 +98,8 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </ul>
 <h2><span class="mw-headline" id="MementoResource.php">MementoResource.php</span></h2>
 <ul>
-<li>MementoResourceException is large enough to have its own file.</li>
-<li>MementoResourceException should extend MWException.</li>
+<li>MementoResourceException is large enough to have its own file. - <b>DONE, needs testing</b></li>
+<li>MementoResourceException should extend MWException. - <b>DONE, needs testing</b></li>
 </ul>
 <dl>
 <dt>MementoResource</dt>
@@ -123,12 +123,12 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </ul>
 <h2><span class="mw-headline" id="MementoResourceDirectlyAccessed.php">MementoResourceDirectlyAccessed.php</span></h2>
 <ul>
-<li>alterHeaders: $pageID and $oldID are never used, use $uri === $tguri</li>
+<li>alterHeaders: $pageID and $oldID are never used, use $uri === $tguri - <b>DONE, needs testing</b></li>
 </ul>
 <h2><span class="mw-headline" id="MementoResourceFrom200TimeNegotiation.php">MementoResourceFrom200TimeNegotiation.php</span></h2>
 <ul>
-<li>alterHeaders: You can use&#160;!$titleObj-&gt;inNamespaces( $this-&gt;conf-&gt;get('ExcludeNamespaces') ). I think this can be used in a few other places too.</li>
-<li>alterEntity: $pageID is not used. When constructing an Article object, you just pass the arguments directly, no need to do $title = $titleObj, that actually just creates a local variable named $title. (PHP doesn't support keyword arguments like say, Python.) That said, do you need to construct an Article object? Will Revision::newFromId( $id ) work? I don't like how the clearHTML() and addWikiText() part works...</li>
+<li>alterHeaders: You can use&#160;!$titleObj-&gt;inNamespaces( $this-&gt;conf-&gt;get('ExcludeNamespaces') ). I think this can be used in a few other places too. - <b>That's what I get for thinking in Python while doing PHP</b></li>
+<li>alterEntity: $pageID is not used. When constructing an Article object, you just pass the arguments directly, no need to do $title = $titleObj, that actually just creates a local variable named $title. (PHP doesn't support keyword arguments like say, Python.) That said, do you need to construct an Article object? Will Revision::newFromId( $id ) work? I don't like how the clearHTML() and addWikiText() part works... - <b>I'll have to discuss further if there is a better way of accomplishing this, I didn't see any other way of accomplishing this</b></li>
 </ul>
 <h2><span class="mw-headline" id="OriginalResourceDirectlyAccessed.php">OriginalResourceDirectlyAccessed.php</span></h2>
 <ul>
