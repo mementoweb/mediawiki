@@ -25,7 +25,7 @@
 /**
  * Ensure that this file is only executed in the right context.
  *
- * @see http://www.mediawiki.org/wiki/Security_for_developers
+
  */
 if ( ! defined( 'MEDIAWIKI' ) ) {
 	echo "Not a valid entry point";
@@ -84,9 +84,11 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			$varyEntries = $varyEntries[1];
 			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 
-			$response->header( "Location: $url", true );
-
-			$out->setStatusCode( 302 );
+			// TODO: delete the following two lines once you 
+			// verify that the next line works
+			//$response->header( "Location: $url", true );
+			//$out->setStatusCode( 302 );
+			$out->redirect($url, 302);
 
 			$out->disable();
 		}

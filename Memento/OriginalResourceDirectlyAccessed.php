@@ -25,7 +25,7 @@
 /**
  * Ensure that this file is only executed in the right context.
  *
- * @see http://www.mediawiki.org/wiki/Security_for_developers
+
  */
 if ( ! defined( 'MEDIAWIKI' ) ) {
 	echo "Not a valid entry point";
@@ -54,7 +54,6 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 		$response = $request->response();
 		$titleObj = $this->article->getTitle();
 
-		$requestURL = $request->getFullRequestURL();
 		$title = $this->getFullNamespacePageTitle( $titleObj );
 
 		$linkEntries = array();
@@ -86,11 +85,9 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 			}
 
 			if ( $this->conf->get('RecommendedRelations') ) {
-				$pageID = $titleObj->getArticleID();
 
 				// for performance, these database calls only occur
 				// when $wgMementoRecommendedRelations is true
-				//$first = $this->getFirstMemento( $pageID );
 				$first = $this->getFirstMemento($titleObj);
 				$last = $this->getLastMemento( $titleObj );
 

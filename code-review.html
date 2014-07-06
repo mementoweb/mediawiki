@@ -73,8 +73,8 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <li>Extension should be in Gerrit to get better reviews from MediaWiki developers</li>
 <li>Code conventions should be followed, see <a href="/wiki/CC/PHP" title="CC/PHP" class="mw-redirect">mw:CC/PHP</a>. Mainly spacing issues I noticed.</li>
 <li>Add type hinting</li>
-<li>The link to "@see <a class="external free" href="http://www.mediawiki.org/wiki/Security_for_developers">http://www.mediawiki.org/wiki/Security_for_developers</a>" at the top of every file is unnecessary.</li>
-<li>Use proper PHPDoc annotations: @param type $varname brief description if not obvious</li>
+<li>The link to "@see <a class="external free" href="http://www.mediawiki.org/wiki/Security_for_developers">http://www.mediawiki.org/wiki/Security_for_developers</a>" at the top of every file is unnecessary. - <b>DONE</b></li>
+<li>Use proper PHPDoc annotations: @param type $varname brief description if not obvious - <b>Waiting till rest of review is done</b></li>
 </ul>
 <h2><span class="mw-headline" id="Memento.php">Memento.php</span></h2>
 <ul>
@@ -132,11 +132,11 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </ul>
 <h2><span class="mw-headline" id="OriginalResourceDirectlyAccessed.php">OriginalResourceDirectlyAccessed.php</span></h2>
 <ul>
-<li>alterHeaders: $requestURL not used anywhere. Strict comparison for $uri === $tguri. $pageID isn't used anywhere.</li>
+<li>alterHeaders: $requestURL not used anywhere. Strict comparison for $uri === $tguri. $pageID isn't used anywhere. - <b>DONE, needs testing</b></li>
 </ul>
 <h2><span class="mw-headline" id="TimeGateResourceFrom302TimeNegotiation.php">TimeGateResourceFrom302TimeNegotiation.php</span></h2>
 <ul>
-<li>alterHeaders: If you want to redirect to a URL, just use OutputPage::redirect().</li>
+<li>alterHeaders: If you want to redirect to a URL, just use OutputPage::redirect(). - <b>DONE, needs testing</b></li>
 </ul>
 
 
@@ -333,7 +333,7 @@ mw.loader.load(["mediawiki.toc","mediawiki.action.view.postEdit","mobile.desktop
 }</script>
 <script src="//bits.wikimedia.org/www.mediawiki.org/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=scripts&amp;printable=1&amp;skin=vector&amp;*"></script>
 <script>if(window.mw){
-mw.config.set({"wgBackendResponseTime":206,"wgHostname":"mw1067"});
+mw.config.set({"wgBackendResponseTime":164,"wgHostname":"mw1170"});
 }</script>
 	</body>
 </html>
