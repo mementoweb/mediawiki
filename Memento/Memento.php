@@ -128,9 +128,9 @@ class Memento {
 
 		$config = new MementoConfig();
 
-		if ( $config->get('TimeNegotiationForThumbnails') == true ) {
+		if ( $config->get('TimeNegotiationForThumbnails') === true ) {
 
-			if ( self::$oldIDSet == true ) {
+			if ( self::$oldIDSet === true ) {
 				$history = $file->getHistory(
 					/* $limit = */ 1, /* $start = */ self::$articleDatetime); 
 				$file = $history[0];

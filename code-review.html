@@ -86,7 +86,7 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <dt>Memento class</dt>
 </dl>
 <ul>
-<li>In onImageBeforeProduceHTML: $config-&gt;get() should use === true</li>
+<li>In onImageBeforeProduceHTML: $config-&gt;get() should use === true - <b>DONE, needs testing</b></li>
 <li>In onImageBeforeProduceHTML: function looks like it could be really expensive for non-locally hosted files...</li>
 <li>In onArticleViewHeader: Use -&gt;getTitle()-&gt;exists(), to check whether the page exists in the database, which is what I think you want. -&gt;isKnown() returns true for special pages.</li>
 <li>I'm not sure what I think about using static members like this. It feels weird.</li>
