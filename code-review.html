@@ -105,7 +105,7 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <dt>MementoResource</dt>
 </dl>
 <ul>
-<li>Member variable should not be named $dbr since a non-slave database could be passed in the constructor.</li>
+<li>Member variable should not be named $dbr since a non-slave database could be passed in the constructor. - <b>DONE, needs testing</b></li>
 <li>fetchMementoFromDatabase: Use $db-&gt;selectRow()</li>
 <li>getFirstMemento: Should check if Title::getFirstRevision() returned null</li>
 <li>getLastMemento: Use Revision::newFromTitle( $title ) instead of creating a WikiPage object.</li>
