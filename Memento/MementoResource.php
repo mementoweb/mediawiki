@@ -95,7 +95,7 @@ abstract class MementoResource {
 
 		$db = $this->db;
 
-		$results = $db->select(
+		$results = $db->selectRow(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			$sqlCondition,
