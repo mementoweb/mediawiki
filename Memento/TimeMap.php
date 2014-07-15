@@ -76,7 +76,7 @@ class TimeMap extends SpecialPage {
 			$article->setContext($this->getContext());
 
 			$config = new MementoConfig();
-			$dbr = wfGetDB( DB_SLAVE );
+			$db = wfGetDB( DB_SLAVE );
 
 			try {
 
@@ -104,7 +104,7 @@ class TimeMap extends SpecialPage {
 				}
 
 				$page = TimeMapResource::timeMapFactory(
-					$config, $dbr, $article, $urlparam );
+					$config, $db, $article, $urlparam );
 
 				$page->alterEntity();
 			} catch (MementoResourceException $e) {

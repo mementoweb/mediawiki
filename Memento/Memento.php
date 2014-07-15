@@ -201,13 +201,13 @@ class Memento {
 				self::$articleDatetime = $revision->getTimestamp();
 
 				$config = new MementoConfig();
-				$dbr = wfGetDB( DB_SLAVE );
+				$db = wfGetDB( DB_SLAVE );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
 
 				self::$mementoResource =
 					MementoResource::mementoPageResourceFactory(
-						$config, $dbr, $article, $oldID, $request );
+						$config, $db, $article, $oldID, $request );
 
 				try {
 					self::$mementoResource->alterHeaders();

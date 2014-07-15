@@ -95,15 +95,15 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 */
 	public static function timeMapFactory(
-		$config, $dbr, $article, $urlparam ) {
+		$config, $db, $article, $urlparam ) {
 
 		if ( TimeMapResource::containsPivot( $urlparam ) ) {
 			if ( TimeMapResource::isPivotAscending( $urlparam ) ) {
 				$tm = new TimeMapPivotAscendingResource(
-					$config, $dbr, $article );
+					$config, $db, $article );
 			} elseif ( TimeMapResource::isPivotDescending( $urlparam ) ) {
 				$tm = new TimeMapPivotDescendingResource(
-					$config, $dbr, $article );
+					$config, $db, $article );
 			} else {
 				$titleMessage = 'timemap-title';
 				$textMessage = 'timemap-400-date';
@@ -116,7 +116,7 @@ abstract class TimeMapResource extends MementoResource {
 				);
 			}
 		} else {
-			$tm = new TimeMapFullResource( $config, $dbr, $article );
+			$tm = new TimeMapFullResource( $config, $db, $article );
 		}
 
 		return $tm;
@@ -164,12 +164,12 @@ abstract class TimeMapResource extends MementoResource {
 
 		$data = array();
 
-		$results = $this->dbr->select(
+		$results = $this->db->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			array(
 				'rev_page' => $pgID,
-				'rev_timestamp<' . $this->dbr->addQuotes( $timestamp )
+				'rev_timestamp<' . $this->db->addQuotes( $timestamp )
 				),
 			__METHOD__,
 			array(
@@ -207,12 +207,12 @@ abstract class TimeMapResource extends MementoResource {
 
 		$data = array();
 
-		$results = $this->dbr->select(
+		$results = $this->db->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			array(
 				'rev_page' => $pgID,
-				'rev_timestamp>' . $this->dbr->addQuotes( $timestamp )
+				'rev_timestamp>' . $this->db->addQuotes( $timestamp )
 				),
 			__METHOD__,
 			array(
@@ -478,7 +478,7 @@ abstract class TimeMapResource extends MementoResource {
 
 		$data = array();
 
-		$results = $this->dbr->select(
+		$results = $this->db->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			array( 'rev_page' => $pgID ),

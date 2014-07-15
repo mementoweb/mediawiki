@@ -45,9 +45,9 @@ abstract class MementoResource {
 	protected $conf;
 
 	/**
-	 * @var object $dbr: DatabaseBase object for Memento Extension
+	 * @var object $db: DatabaseBase object for Memento Extension
 	 */
-	protected $dbr;
+	protected $db;
 
 	/**
 	 * @var $article - Article Object of this Resource
@@ -93,9 +93,9 @@ abstract class MementoResource {
 	 */
 	public function fetchMementoFromDatabase( $sqlCondition, $sqlOrder ) {
 
-		$dbr = $this->dbr;
+		$db = $this->db;
 
-		$results = $dbr->select(
+		$results = $db->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			$sqlCondition,
@@ -103,7 +103,7 @@ abstract class MementoResource {
 			array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
 			);
 
-		$row = $dbr->fetchObject( $results );
+		$row = $db->fetchObject( $results );
 
 		$revision = array();
 
@@ -165,7 +165,7 @@ abstract class MementoResource {
 	 *
 	 * Extract the memento that best matches from the database.
 	 *
-	 * @param $dbr - DatabaseBase object
+	 * @param $db - DatabaseBase object
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
@@ -173,12 +173,12 @@ abstract class MementoResource {
 	 */
 	public function getCurrentMemento( $pageID, $pageTimestamp ) {
 
-		$dbr = $this->dbr;
+		$db = $this->db;
 
 		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
-				'rev_timestamp<=' . $dbr->addQuotes( $pageTimestamp )
+				'rev_timestamp<=' . $db->addQuotes( $pageTimestamp )
 				);
 		$sqlOrder = 'rev_timestamp DESC';
 
@@ -198,12 +198,12 @@ abstract class MementoResource {
 	 */
 	public function getNextMemento( $pageID, $pageTimestamp ) {
 
-		$dbr = $this->dbr;
+		$db = $this->db;
 
 		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
-				'rev_timestamp>' . $dbr->addQuotes( $pageTimestamp )
+				'rev_timestamp>' . $db->addQuotes( $pageTimestamp )
 				);
 		$sqlOrder = 'rev_timestamp ASC';
 
@@ -223,12 +223,12 @@ abstract class MementoResource {
 	 */
 	public function getPrevMemento( $pageID, $pageTimestamp ) {
 
-		$dbr = $this->dbr;
+		$db = $this->db;
 
 		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
-				'rev_timestamp<' . $dbr->addQuotes( $pageTimestamp )
+				'rev_timestamp<' . $db->addQuotes( $pageTimestamp )
 				);
 		$sqlOrder = 'rev_timestamp DESC';
 
@@ -516,7 +516,7 @@ abstract class MementoResource {
 	 * A factory for creating the correct MementoPageResource type.
 	 *
 	 * @param $conf - MementoConfig object, passed to constructor
-	 * @param $dbr - DatabaseBase object, passed to constructor
+	 * @param $db - DatabaseBase object, passed to constructor
 	 * @param $oldID - string indicating revision ID
 	 *		used in decision
 	 *
@@ -524,7 +524,7 @@ abstract class MementoResource {
 	 *						on current conditions
 	 */
 	public static function mementoPageResourceFactory(
-		$conf, $dbr, $article, $oldID, $request ) {
+		$conf, $db, $article, $oldID, $request ) {
 
 		$resource = null;
 
@@ -535,17 +535,17 @@ abstract class MementoResource {
 					/* we are requesting a Memento, but via 200-style
 						Time Negotiation */
 					$resource = new MementoResourceFrom200TimeNegotiation(
-						$conf, $dbr, $article );
+						$conf, $db, $article );
 
 			} else {
 				$resource = new OriginalResourceDirectlyAccessed(
-						$conf, $dbr, $article );
+						$conf, $db, $article );
 			}
 
 		} else {
 			// we are requesting a Memento directly (an oldID URI)
 			$resource = new MementoResourceDirectlyAccessed(
-				$conf, $dbr, $article );
+				$conf, $db, $article );
 		}
 
 		return $resource;
@@ -582,22 +582,22 @@ abstract class MementoResource {
 
 				$pgID = $title->getArticleID();
 
-				$this->dbr->begin();
+				$this->db->begin();
 
-				$res = $this->dbr->select(
+				$res = $this->db->select(
 					'revision',
 					array( 'rev_id' ),
 					array(
 						'rev_page' => $pgID,
 						'rev_timestamp <=' .
-							$this->dbr->addQuotes( $mwMementoTimestamp )
+							$this->db->addQuotes( $mwMementoTimestamp )
 						),
 					__METHOD__,
 					array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
 				);
 
 				if( $res ) {
-					$row = $this->dbr->fetchObject( $res );
+					$row = $this->db->fetchObject( $res );
 					$id = $row->rev_id;
 				}
 			} else {
@@ -612,14 +612,14 @@ abstract class MementoResource {
 	 * Constructor for MementoResource and its children
 	 * 
 	 * @param $conf - configuration object
-	 * @param $dbr - database object
+	 * @param $db - database object
 	 * @param $article - article object
 	 *
 	 */
-	public function __construct( $conf, $dbr, $article ) {
+	public function __construct( $conf, $db, $article ) {
 
 		$this->conf = $conf;
-		$this->dbr = $dbr;
+		$this->db = $db;
 		$this->article = $article;
 
 	}

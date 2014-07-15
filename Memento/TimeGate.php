@@ -77,7 +77,7 @@ class TimeGate extends SpecialPage {
 			$article->setContext($this->getContext());
 
 			$config = new MementoConfig();
-			$dbr = wfGetDB( DB_SLAVE );
+			$db = wfGetDB( DB_SLAVE );
 
 			try {
 
@@ -104,7 +104,7 @@ class TimeGate extends SpecialPage {
 					);
 				}
 
-				$page = new TimeGateResourceFrom302TimeNegotiation($config, $dbr, $article);
+				$page = new TimeGateResourceFrom302TimeNegotiation($config, $db, $article);
 
 				$page->alterHeaders();
 			} catch (MementoResourceException $e) {
