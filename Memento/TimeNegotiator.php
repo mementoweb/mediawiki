@@ -107,6 +107,8 @@ class TimeNegotiator {
 		$first = $mr->getFirstMemento( $titleObj );
 		$last = $mr->getLastMemento( $titleObj );
 
+		// TODO: Throw a 400-status error message if getFirstMemento is null?
+
 		$title = $mr->getFullNamespacePageTitle( $titleObj );
 
 		if ( $conf->get('RecommendedRelations') ) {

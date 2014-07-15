@@ -91,6 +91,9 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 				$first = $this->getFirstMemento($titleObj);
 				$last = $this->getLastMemento( $titleObj );
 
+				// TODO: Throw a 400-status error message if getFirstMemento is null
+				// how would we have gotten here if titleObj was bad?
+
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$titleObj, $first, $last );
 

@@ -79,14 +79,14 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <h2><span class="mw-headline" id="Memento.php">Memento.php</span></h2>
 <ul>
 <li>Convert i18n to JSON-based i18n</li>
-<li>"extension-overview" is too general of a key name, it should be prefixed with "memento" at the very least. Typically the message key used here is "memento-desc". - <b>DONE, needs testing</b></li>
+<li>"extension-overview" is too general of a key name, it should be prefixed with "memento" at the very least. Typically the message key used here is "memento-desc". - <b>DONE, needs regression testing</b></li>
 <li>The main Memento class should be moved into it's own file (Memento.body.php) and autoloaded.</li>
 </ul>
 <dl>
 <dt>Memento class</dt>
 </dl>
 <ul>
-<li>In onImageBeforeProduceHTML: $config-&gt;get() should use === true - <b>DONE, needs testing</b></li>
+<li>In onImageBeforeProduceHTML: $config-&gt;get() should use === true - <b>DONE, needs regression testing</b></li>
 <li>In onImageBeforeProduceHTML: function looks like it could be really expensive for non-locally hosted files...</li>
 <li>In onArticleViewHeader: Use -&gt;getTitle()-&gt;exists(), to check whether the page exists in the database, which is what I think you want. -&gt;isKnown() returns true for special pages.</li>
 <li>I'm not sure what I think about using static members like this. It feels weird.</li>
@@ -98,16 +98,16 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </ul>
 <h2><span class="mw-headline" id="MementoResource.php">MementoResource.php</span></h2>
 <ul>
-<li>MementoResourceException is large enough to have its own file. - <b>DONE, needs testing</b></li>
-<li>MementoResourceException should extend MWException. - <b>DONE, needs testing</b></li>
+<li>MementoResourceException is large enough to have its own file. - <b>DONE, needs regression testing</b></li>
+<li>MementoResourceException should extend MWException. - <b>DONE, needs regression testing</b></li>
 </ul>
 <dl>
 <dt>MementoResource</dt>
 </dl>
 <ul>
-<li>Member variable should not be named $dbr since a non-slave database could be passed in the constructor. - <b>DONE, needs testing</b></li>
-<li>fetchMementoFromDatabase: Use $db-&gt;selectRow() - <b>DONE, needs testing</b></li>
-<li>getFirstMemento: Should check if Title::getFirstRevision() returned null</li>
+<li>Member variable should not be named $dbr since a non-slave database could be passed in the constructor. - <b>DONE, needs regression testing</b></li>
+<li>fetchMementoFromDatabase: Use $db-&gt;selectRow() - <b>DONE, needs regression testing</b></li>
+<li>getFirstMemento: Should check if Title::getFirstRevision() returned null - <b>DONE, new error state that needs an exit path, needs regression testing</b></li>
 <li>getLastMemento: Use Revision::newFromTitle( $title ) instead of creating a WikiPage object.</li>
 <li>getCurrentMemento/getNextMemento/getPrevMemento: No need to assign $this-&gt;dbr to a local variable, just use it directly.</li>
 <li>parseRequestDateTime: MediaWiki*, also, why is the str_replace necessary? wfTimestamp/MWTimestamp should just handle it properly.</li>
@@ -123,7 +123,7 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </ul>
 <h2><span class="mw-headline" id="MementoResourceDirectlyAccessed.php">MementoResourceDirectlyAccessed.php</span></h2>
 <ul>
-<li>alterHeaders: $pageID and $oldID are never used, use $uri === $tguri - <b>DONE, needs testing</b></li>
+<li>alterHeaders: $pageID and $oldID are never used, use $uri === $tguri - <b>DONE, needs regression testing</b></li>
 </ul>
 <h2><span class="mw-headline" id="MementoResourceFrom200TimeNegotiation.php">MementoResourceFrom200TimeNegotiation.php</span></h2>
 <ul>
@@ -132,11 +132,11 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 </ul>
 <h2><span class="mw-headline" id="OriginalResourceDirectlyAccessed.php">OriginalResourceDirectlyAccessed.php</span></h2>
 <ul>
-<li>alterHeaders: $requestURL not used anywhere. Strict comparison for $uri === $tguri. $pageID isn't used anywhere. - <b>DONE, needs testing</b></li>
+<li>alterHeaders: $requestURL not used anywhere. Strict comparison for $uri === $tguri. $pageID isn't used anywhere. - <b>DONE, needs regression testing</b></li>
 </ul>
 <h2><span class="mw-headline" id="TimeGateResourceFrom302TimeNegotiation.php">TimeGateResourceFrom302TimeNegotiation.php</span></h2>
 <ul>
-<li>alterHeaders: If you want to redirect to a URL, just use OutputPage::redirect(). - <b>DONE, needs testing</b></li>
+<li>alterHeaders: If you want to redirect to a URL, just use OutputPage::redirect(). - <b>DONE, needs regression testing</b></li>
 </ul>
 
 
