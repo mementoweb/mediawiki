@@ -155,11 +155,15 @@ abstract class MementoResource {
 
 		$revision = array();
 
-		$lastRevision = WikiPage::factory( $title )->getRevision();
+		$lastRevision = Revision::newFromTitle( $title );
 
-		$revision['timestamp'] =
-			wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp());
-		$revision['id'] = $lastRevision->getId();
+		if ( $lastRevision != null ) {
+
+			$revision['timestamp'] =
+				wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp());
+			$revision['id'] = $lastRevision->getId();
+
+		}
 
 		return $revision;
 	}
@@ -169,7 +173,6 @@ abstract class MementoResource {
 	 *
 	 * Extract the memento that best matches from the database.
 	 *
-	 * @param $db - DatabaseBase object
 	 * @param $pageID - page identifier
 	 * @param $pageTimestamp - timestamp used for finding the last memento
 	 *
@@ -177,12 +180,10 @@ abstract class MementoResource {
 	 */
 	public function getCurrentMemento( $pageID, $pageTimestamp ) {
 
-		$db = $this->db;
-
 		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
-				'rev_timestamp<=' . $db->addQuotes( $pageTimestamp )
+				'rev_timestamp<=' . $this->db->addQuotes( $pageTimestamp )
 				);
 		$sqlOrder = 'rev_timestamp DESC';
 
@@ -202,12 +203,10 @@ abstract class MementoResource {
 	 */
 	public function getNextMemento( $pageID, $pageTimestamp ) {
 
-		$db = $this->db;
-
 		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
-				'rev_timestamp>' . $db->addQuotes( $pageTimestamp )
+				'rev_timestamp>' . $this->db->addQuotes( $pageTimestamp )
 				);
 		$sqlOrder = 'rev_timestamp ASC';
 
@@ -227,12 +226,10 @@ abstract class MementoResource {
 	 */
 	public function getPrevMemento( $pageID, $pageTimestamp ) {
 
-		$db = $this->db;
-
 		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
-				'rev_timestamp<' . $db->addQuotes( $pageTimestamp )
+				'rev_timestamp<' . $this->db->addQuotes( $pageTimestamp )
 				);
 		$sqlOrder = 'rev_timestamp DESC';
 

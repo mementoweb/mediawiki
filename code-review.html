@@ -108,8 +108,8 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <li>Member variable should not be named $dbr since a non-slave database could be passed in the constructor. - <b>DONE, needs regression testing</b></li>
 <li>fetchMementoFromDatabase: Use $db-&gt;selectRow() - <b>DONE, needs regression testing</b></li>
 <li>getFirstMemento: Should check if Title::getFirstRevision() returned null - <b>DONE, new error state that needs an exit path, needs regression testing</b></li>
-<li>getLastMemento: Use Revision::newFromTitle( $title ) instead of creating a WikiPage object.</li>
-<li>getCurrentMemento/getNextMemento/getPrevMemento: No need to assign $this-&gt;dbr to a local variable, just use it directly.</li>
+<li>getLastMemento: Use Revision::newFromTitle( $title ) instead of creating a WikiPage object. - <b>DONE, new error state that needs an exit path, needs regression testing</b></li>
+<li>getCurrentMemento/getNextMemento/getPrevMemento: No need to assign $this-&gt;dbr to a local variable, just use it directly. - <b>DONE, needs regression testing</b></li>
 <li>parseRequestDateTime: MediaWiki*, also, why is the str_replace necessary? wfTimestamp/MWTimestamp should just handle it properly.</li>
 <li>chooseBestTimestamp: Documentation says it already is in TS_MW format, so why do you need to pass it through wfTimestamp again?</li>
 <li>constructMementoLinkHeaderRelationEntry/constructLinkRelationHeader: For easier security review, it would be good to specify if this is going into raw HTML, or what. Is everything already escaped? Ok, found where it is populated. Just add a comment explaining what inputs they will be.</li>
