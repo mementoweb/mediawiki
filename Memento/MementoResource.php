@@ -292,11 +292,14 @@ abstract class MementoResource {
 	/**
 	 * constructMementoLinkHeaderRelationEntry
 	 *
-	 * This creates the entry for a memento for the Link Header.
+	 * This creates the entry for a memento for the HTTP Link Header for
+	 * communication with a Memento client.
+	 * This is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param $url - the URL of the given page
-	 * @param $timestamp - the timestamp of this Memento
-	 * @param $relation - the relation type of this Memento
+	 * @param string $url - the URL of the given page
+	 * @param string $timestamp - the timestamp of this Memento,
+	 *							in RFC 1123 format
+	 * @param string $relation - the relation type of this Memento
 	 *
 	 * @return $entry - full Memenot Link header entry
 	 */
@@ -312,11 +315,17 @@ abstract class MementoResource {
 	/**
 	 * constructTimeMapLinkHeaderWithBounds
 	 *
-	 * This creates the entry for timemap in the Link Header.
+	 * This creates the entry for a timemap in the HTTP Link Header for
+	 * communication with a Memento client.  This special version
+	 * of this function allows one to specify additional from and until
+	 * relations for use in the HTTP Link Header.
+	 * This is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param $title - the title string of the given page
-	 * @param $from - the from timestamp for the TimeMap
-	 * @param $until - the until timestamp for the TimeMap
+	 * @param string $title - the title string of the given page
+	 * @param string $from - the from timestamp for the TimeMap,
+	 *							in RFC 1123 format
+	 * @param string $until - the until timestamp for the TimeMap,
+	 *							in RFC 1123 format
 	 *
 	 * @return $entry - full Memento TimeMap relation with from and until
 	 */
@@ -333,7 +342,9 @@ abstract class MementoResource {
 	/**
 	 * constructTimeMapLinkHeader
 	 *
-	 * This creates the entry for timemap in the Link Header.
+	 * This creates the entry for timemap in the HTTP Link Header for
+	 * communication with a Memento client.
+	 * This is not intended to be used for HTML or any HTTP entity format.
 	 *
 	 * @param $title - the title string of the given page
 	 *
@@ -374,9 +385,12 @@ abstract class MementoResource {
 	 *
 	 * This creates a link header entry for the given URI, with no
 	 * extra information, just URL and relation.
+	 * This creates the entry for the HTTP Link Header for
+	 * communication with a Memento client.
+	 * It is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param $url
-	 * @param $relation
+	 * @param string $url - the URL of the relation
+	 * @param string $relation - the relation type for this Link header entry
 	 *
 	 * @return relation string
 	 */
