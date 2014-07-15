@@ -267,15 +267,14 @@ abstract class MementoResource {
 	 * @param $firstTimestamp - the first timestamp for which we have a memento
 	 *				formatted in the TS_MW format
 	 * @param $lastTimestamp - the last timestamp for which we have a memento
+	 *				formatted in the TS_MW format
 	 * @param $givenTimestamp - the timestamp given by the request header
+	 *				formatted in the TS_MW format
 	 *
 	 * @return $chosenTimestamp - the timestamp to use
 	 */
 	public function chooseBestTimestamp(
 		$firstTimestamp, $lastTimestamp, $givenTimestamp ) {
-
-		$firstTimestamp = wfTimestamp( TS_MW, $firstTimestamp );
-		$lastTimestamp = wfTimestamp( TS_MW, $lastTimestamp );
 
 		$chosenTimestamp = null;
 
