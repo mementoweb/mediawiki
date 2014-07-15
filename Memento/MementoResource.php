@@ -249,9 +249,7 @@ abstract class MementoResource {
 	 */
 	public function parseRequestDateTime( $requestDateTime ) {
 
-		$reqDT = str_replace( '"', '', $requestDateTime );
-
-		$dt = wfTimestamp( TS_MW, $reqDT );
+		$dt = wfTimestamp( TS_MW, $requestDateTime );
 
 		return $dt;
 	}
