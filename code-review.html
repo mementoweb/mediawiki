@@ -113,8 +113,8 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <li>parseRequestDateTime: MediaWiki*, also, why is the str_replace necessary? wfTimestamp/MWTimestamp should just handle it properly. - <b>DONE, needs regression testing</b></li>
 <li>chooseBestTimestamp: Documentation says it already is in TS_MW format, so why do you need to pass it through wfTimestamp again? - <b>DONE, needs regression testing</b></li>
 <li>constructMementoLinkHeaderRelationEntry/constructLinkRelationHeader: For easier security review, it would be good to specify if this is going into raw HTML, or what. Is everything already escaped? Ok, found where it is populated. Just add a comment explaining what inputs they will be. - <b>DONE</b></li>
-<li>constructTimeMapLinkHeader: Will using a PROTO_RELATIVE url be ok?</li>
-<li>getFullNamespacePageTitle: Use Title::getPrefixedText()</li>
+<li>constructTimeMapLinkHeader: Will using a PROTO_RELATIVE url be ok? - <b>Needs clarification, Memento was written with standards-based URIs in mind (containing schemes)</b></li>
+<li>getFullNamespacePageTitle: Use Title::getPrefixedText() - <b>Can't do this, getPrefixedText returns spaces; we need the page title as it shows in the URI</b></li>
 <li>generateRecommendedLinkHeaderRelations: Why array_push over $linkRelations[] = $entry;?</li>
 <li>renderError: I would recommend using ErrorPageError rather than writing your own implementation.</li>
 <li>mementoPageResourceFactory: Use === 0</li>

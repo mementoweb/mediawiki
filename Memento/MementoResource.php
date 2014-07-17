@@ -363,7 +363,8 @@ abstract class MementoResource {
 	 * getFullNamespacePageTitle
 	 * 
 	 * This function returns the namespace:title string from the URI
-	 * corresponding to this resource.
+	 * corresponding to this resource.  It is meant to be the URI version,
+	 * without spaces, hence we cannot use Title::getPrefixedText.
 	 *
 	 * @param $titleObj - title object corresponding to this resource
 	 *
