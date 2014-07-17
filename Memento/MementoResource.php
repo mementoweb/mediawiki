@@ -40,6 +40,22 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 abstract class MementoResource {
 
 	/**
+	 * Constructor for MementoResource and its children
+	 * 
+	 * @param $conf - configuration object
+	 * @param $db - database object
+	 * @param $article - article object
+	 *
+	 */
+	public function __construct( $conf, $db, $article ) {
+
+		$this->conf = $conf;
+		$this->db = $db;
+		$this->article = $article;
+
+	}
+
+	/**
 	 * @var object $conf: configuration object for Memento Extension
 	 */
 	protected $conf;
@@ -580,6 +596,8 @@ abstract class MementoResource {
 	 */
 	public function fixTemplate( $title, $parser, &$id ) {
 
+		$parser->disableCache();
+
 		$request = $parser->getUser()->getRequest();
 
 		if ( $request->getHeader('ACCEPT-DATETIME') ) {
@@ -597,7 +615,7 @@ abstract class MementoResource {
 
 				$this->db->begin();
 
-				$res = $this->db->select(
+				$res = $this->db->selectRow(
 					'revision',
 					array( 'rev_id' ),
 					array(
@@ -619,22 +637,6 @@ abstract class MementoResource {
 				$id = $firstRev->getId();
 			}
 		}
-	}
-
-	/**
-	 * Constructor for MementoResource and its children
-	 * 
-	 * @param $conf - configuration object
-	 * @param $db - database object
-	 * @param $article - article object
-	 *
-	 */
-	public function __construct( $conf, $db, $article ) {
-
-		$this->conf = $conf;
-		$this->db = $db;
-		$this->article = $article;
-
 	}
 
 

@@ -117,9 +117,9 @@ mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.
 <li>getFullNamespacePageTitle: Use Title::getPrefixedText() - <b>Can't do this, getPrefixedText returns spaces; we need the page title as it shows in the URI</b></li>
 <li>generateRecommendedLinkHeaderRelations: Why array_push over $linkRelations[] = $entry;? - <b>DONE, quite an elegant suggestion, replaced all instances of array_push throughout the extension, needs regression testing</b></li>
 <li>renderError: I would recommend using ErrorPageError rather than writing your own implementation.</li>
-<li>mementoPageResourceFactory: Use === 0</li>
-<li>fixTemplate: As stated in the @fixme, this should support the parser cache. Also, use dbr-&gt;selectRow().</li>
-<li>Constructor should be at the top of the class definition for ease of reading.</li>
+<li>mementoPageResourceFactory: Use === 0 - <b>DONE, needs regression testing</b></li>
+<li>fixTemplate: As stated in the @fixme, this should support the parser cache. Also, use dbr-&gt;selectRow(). - <b>changed to dbr-&gt;selectRow(); still not sure how to support the parser cache properly yet; chose $parser-&gt;disableCache() for now; needs regression testing</b></li>
+<li>Constructor should be at the top of the class definition for ease of reading. - <b>DONE, needs regression testing</b></li>
 </ul>
 <h2><span class="mw-headline" id="MementoResourceDirectlyAccessed.php">MementoResourceDirectlyAccessed.php</span></h2>
 <ul>
