@@ -271,7 +271,7 @@ abstract class TimeMapResource extends MementoResource {
 		$pgID, $pivotTimestamp, &$timeMapPages, $title ) {
 
 		$paginatedResults = $this->getAscendingTimeMapData(
-			$pg_id, $pivotTimestamp
+			$pgID, $pivotTimestamp
 			);
 
 		$timeMapPage = array();

@@ -48,14 +48,14 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 	 * Concrete implementation of a method that acquires decreasing
 	 * TimeMap data, based on a given formatted timestamp.
 	 *
-	 * @param $page_id
+	 * @param $pageID
 	 * @param $formattedTimestamp
 	 *
  	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getPivotTimeMapData( $page_id, $formattedTimestamp ) {
-		return $this->getDescendingTimeMapData( $page_id, $formattedTimestamp );
+	public function getPivotTimeMapData( $pageID, $formattedTimestamp ) {
+		return $this->getDescendingTimeMapData( $pageID, $formattedTimestamp );
 	}
 
 	/**
