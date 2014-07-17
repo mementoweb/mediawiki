@@ -142,11 +142,11 @@ class TimeNegotiator {
 			if ( $uri == $tguri ) {
 				$entry = $mr->constructLinkRelationHeader( $tguri,
 					'original latest-version timegate' );
-				array_push( $this->linkRelations, $entry );
+				$this->linkRelations[] = $entry;
 			} else {
 				$entry = $mr->constructLinkRelationHeader( $uri,
 					'original latest-version' );
-				array_push( $this->linkRelations, $entry );
+				$this->linkRelations[] = $entry;
 			}
 
 			// storage for caller

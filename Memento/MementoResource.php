@@ -423,7 +423,7 @@ abstract class MementoResource {
 
 		$entry = $this->constructTimeMapLinkHeaderWithBounds(
 			$title, $first['timestamp'], $last['timestamp'] );
-		array_push( $linkRelations, $entry );
+		$linkRelations[] = $entry;
 
 		$firsturi = $titleObj->getFullURL( array( "oldid" => $first['id'] ) );
 		$lasturi = $titleObj->getFullURL( array( "oldid" => $last['id'] ) );
@@ -431,14 +431,14 @@ abstract class MementoResource {
 		if ( $first['id'] == $last['id'] ) {
 			$entry = $this->constructMementoLinkHeaderRelationEntry(
 				$firsturi, $first['timestamp'], 'first last memento' );
-			array_push( $linkRelations, $entry );
+			$linkRelations[] = $entry;
 		} else {
 			$entry = $this->constructMementoLinkHeaderRelationEntry(
 				$firsturi, $first['timestamp'], 'first memento' );
-			array_push( $linkRelations, $entry );
+			$linkRelations[] = $entry;
 			$entry = $this->constructMementoLinkHeaderRelationEntry(
 				$lasturi, $last['timestamp'], 'last memento' );
-			array_push( $linkRelations, $entry );
+			$linkRelations[] = $entry;
 		}
 
 		return $linkRelations;

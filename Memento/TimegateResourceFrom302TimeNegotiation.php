@@ -67,7 +67,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
-			array_push( $linkEntries, $entry );
+			$linkEntries[] = $entry;
 		} else {
 
 			$negotiator = new TimeNegotiator($this);

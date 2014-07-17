@@ -59,7 +59,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			$this->conf->get('ExcludeNamespaces') ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
-			array_push( $linkEntries, $entry );
+			$linkEntries[] = $entry;
 		} else {
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 
@@ -76,15 +76,15 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			if ( $uri == $tguri ) {
 				$entry = $this->constructLinkRelationHeader( $tguri,
 					'original latest-version timegate' );
-				array_push( $linkEntries, $entry );
+				$linkEntries[] = $entry;
 			} else {
 				$entry = $this->constructLinkRelationHeader( $uri,
 					'original latest-version' );
-				array_push( $linkEntries, $entry );
+				$linkEntries[] = $entry;
 
 				$entry = $this->constructLinkRelationHeader( $tguri,
 					'timegate' );
-				array_push( $linkEntries, $entry );
+				$linkEntries[] = $entry;
 			}
 
 			if ( $this->conf->get('RecommendedRelations') ) {
@@ -105,7 +105,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			} else  {
 				$entry = $this->constructTimeMapLinkHeader( $title );
-				array_push( $linkEntries, $entry );
+				$linkEntries[] = $entry;
 
 			}
 

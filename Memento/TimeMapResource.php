@@ -286,7 +286,7 @@ abstract class TimeMapResource extends MementoResource {
 				'TimeMap', $pivotTimestamp . '/1/' . $title
 			)->getFullURL();
 
-		array_push( $timeMapPages, $timeMapPage );
+		$timeMapPages[] = $timeMapPage;
 
 		return $timeMapPages;
 	}
@@ -324,7 +324,7 @@ abstract class TimeMapResource extends MementoResource {
 				'TimeMap', $pivotTimestamp . '/-1/' . $title
 			)->getFullURL();
 
-		array_push( $timeMapPages, $timeMapPage );
+		$timeMapPages[] = $timeMapPage;
 
 		return $timeMapPages;
 	}
@@ -429,7 +429,7 @@ abstract class TimeMapResource extends MementoResource {
 			'>; rel="self"; type="application/link-format"; ' .
 			'from="' . $from . '"; until="' . $until . '"';
 
-		array_push( $outputArray, $timemapEntry );
+		$outputArray[] = $timemapEntry;
 
 		foreach ( $pagedTimeMapEntries as &$pagedTimeMap ) {
 
@@ -439,11 +439,11 @@ abstract class TimeMapResource extends MementoResource {
 				'from="' . $pagedTimeMap['from'] . '"; ' .
 				'until="' . $pagedTimeMap['until'] . '"';
 
-			array_push( $outputArray, $pagedTimemapEntry );
+			$outputArray[] = $pagedTimemapEntry;
 		}
 
-		array_push( $outputArray, $timegateEntry );
-		array_push( $outputArray, $latestEntry );
+		$outputArray[] = $timegateEntry;
+		$outputArray[] = $latestEntry;
 
 		for ($i = count($data) - 1; $i >= 0; $i--) {
 			$output = "";
@@ -454,7 +454,7 @@ abstract class TimeMapResource extends MementoResource {
 			$output = $this->constructMementoLinkHeaderRelationEntry(
 				$uri, $datum['rev_timestamp'], "memento" );
 
-			array_push($outputArray, $output);
+			$outputArray[] = $output;
 		}
 
 		// the original implementation of TimeMap for Mediawiki used ,<SP><LF>
