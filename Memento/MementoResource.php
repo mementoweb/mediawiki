@@ -111,7 +111,9 @@ abstract class MementoResource {
 
 		$db = $this->db;
 
-		$results = $db->selectRow(
+		// TODO: use selectRow instead
+		// tried selectRow here, but it returned nothing
+		$results = $db->select(
 			'revision',
 			array( 'rev_id', 'rev_timestamp'),
 			$sqlCondition,
@@ -190,7 +192,7 @@ abstract class MementoResource {
 	 * Extract the memento that best matches from the database.
 	 *
 	 * @param $pageID - page identifier
-	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 * @param $pageTimestamp - timestamp used for finding the best memento
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */

@@ -127,11 +127,15 @@ class TimeNegotiator {
 			$this->linkRelations, $entries);
 
 		if ( $mwMementoTimestamp ) {
-			$mwMementoTimestamp = $mr->chooseBestTimestamp(
-				$first['timestamp'], $last['timestamp'],
+
+			$bestTimestamp = $mr->chooseBestTimestamp(
+				wfTimestamp( TS_MW, $first['timestamp'] ),
+				wfTimestamp( TS_MW, $last['timestamp'] ),
 				$mwMementoTimestamp );
 
-			$memento = $mr->getCurrentMemento( $pageID, $mwMementoTimestamp );
+			$outputTS = $bestTimestamp;
+
+			$memento = $mr->getCurrentMemento( $pageID, $bestTimestamp );
 
 			$id = $memento['id'];
 
@@ -150,8 +154,7 @@ class TimeNegotiator {
 			}
 
 			// storage for caller
-			$this->mementoDatetime = wfTimestamp(
-				TS_RFC2822, $mwMementoTimestamp );
+			$this->mementoDatetime = wfTimestamp( TS_RFC2822, $bestTimestamp );
 			$this->locationURI = $titleObj->getFullURL( array( "oldid" => $id ) );
 			$this->mementoId = $memento['id'];
 

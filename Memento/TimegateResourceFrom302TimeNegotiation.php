@@ -84,11 +84,11 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			$varyEntries = $varyEntries[1];
 			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 
-			// TODO: delete the following two lines once you 
-			// verify that the next line works
-			//$response->header( "Location: $url", true );
-			//$out->setStatusCode( 302 );
-			$out->redirect($url, 302);
+			// Tried this, but it didn't generate a 302 response
+			//$out->redirect($url, 302);
+			// the following two lines are a workaround
+			$response->header( "Location: $url", true );
+			$out->setStatusCode( 302 );
 
 			$out->disable();
 		}
