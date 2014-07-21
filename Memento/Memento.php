@@ -35,7 +35,7 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 // Set up the extension
 $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'Memento',
-	'descriptionmsg' => 'extension-overview',
+	'descriptionmsg' => 'memento-desc',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:Memento',
 	'author' => array(
 		'Harihar Shankar',
@@ -50,6 +50,7 @@ $wgExtensionCredits['specialpage'][] = array(
 $wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
 
 // Set up the core classes used by Memento
+$wgAutoloadClasses['Memento'] = __DIR__ . '/Memento.body.php';
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceException'] = __DIR__ . '/MementoResourceException.php';
@@ -80,181 +81,3 @@ $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = __DIR__ . '/Timeg
 $wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
-
-/**
- * Main Memento class, used by hooks.
- *
- * This class handles the entry point from Mediawiki and performs
- * the mediation over the real work.  The goal is to separate
- * the Mediawiki setup code from the Memento code as much as possible
- * for clarity, testing, maintainability, etc.
- *
- */
-class Memento {
-
-
-	/**
-	 * @var MementoResource $mementoResource: object that implements memento
-	 */
-	static private $mementoResource;
-
-	/**
-	 * @var string $articleDatetime: datetime of the article loaded
-	 */
-	static private $articleDatetime;
-
-	/**
-	 * @var boolean $oldIDSet: flag to indicate if this is an oldid page
-	 */
-	static private $oldIDSet;
-
-	/**
-	 * The ImageBeforeProduce HTML hook, used here to provide datetime
-	 * negotiation for embedded images.
-	 *
-	 * @param Skin $skin: Skin object for this page
-	 * @param Title $title: Title object for this image
-	 * @param File $file: File object for this image
-	 * @param $frameParams: frame parameters
-	 * @param $handlerParams: handler parameters
-	 * @param $time: not really used by hook
-	 * @param $res: used to replace HTML for image rendering
-	 *
-	 * @return boolean indicating whether caller should use $res instead of 
-	 * 		default HTML for image rendering
-	 */
-	public static function onImageBeforeProduceHTML(
-		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res) {
-
-		$config = new MementoConfig();
-
-		if ( $config->get('TimeNegotiationForThumbnails') === true ) {
-
-			if ( self::$oldIDSet === true ) {
-				$history = $file->getHistory(
-					/* $limit = */ 1, /* $start = */ self::$articleDatetime); 
-				$file = $history[0];
-			}
-
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * The BeforeParserFetchTemplateAndtitle hook, used here to change any
-	 * Template pages loaded so that their revision is closer in date/time to
-	 * that of the rest of the page.
-	 *
-	 * @param Parser $parser: Parser object for this page
-	 * @param Title $title: Title object for this page
-	 * @param $skip: boolean flag allowing the caller to skip the rest of
-	 *					statelessFetchTemplate
-	 * @param $id: revision id of this page
-	 *
-	 * @return boolean indicating success to the caller
-	 */
-	public static function onBeforeParserFetchTemplateAndtitle(
-		$parser, $title, &$skip, &$id ) {
-
-		// $mementoResource is only set if we are on an actual page
-		// as opposed to diff pages, edit pages, etc.
-		if ( self::$mementoResource ) {
-			self::$mementoResource->fixTemplate( $title, $parser, $id );
-		}
-
-		return true;
-	}
-
-	/**
-	 * The ArticleViewHeader hook, used to alter the headers before the rest
-	 * of the data is loaded.
-	 *
-	 * Note: this is not called when the Edit, Diff or History pages are loaded.
-	 *
-	 * @param Article $article: pointer to the Article Object from the hook
-	 * @param bool $outputDone pointer to variable that indicates that
-	 *                         the output should be terminated
-	 * @param $pcache: pointer to variable that indicates whether the parser
-	 * 			cache should try retrieving the cached results
-	 *
-	 * @return boolean indicating success to the caller
-	 */
-	public static function onArticleViewHeader(
-		&$article, &$outputDone, &$pcache
-		) {
-
-		// avoid processing Mementos for nonexistent pages
-		// if we're an article, do memento processing, otherwise don't worry
-		// if we're a diff page, Memento doesn't make sense
-		if ( $article->getTitle()->isKnown() ) {
-
-			self::$oldIDSet = ( $article->getOldID() != 0 );
-
-			$revision = $article->getRevisionFetched();
-
-			// avoid processing Mementos for bad revisions,
-			// let MediaWiki handle that case instead
-			if ( is_object( $revision ) ) {
-
-				self::$articleDatetime = $revision->getTimestamp();
-
-				$config = new MementoConfig();
-				$db = wfGetDB( DB_SLAVE );
-				$oldID = $article->getOldID();
-				$request = $article->getContext()->getRequest();
-
-				self::$mementoResource =
-					MementoResource::mementoPageResourceFactory(
-						$config, $db, $article, $oldID, $request );
-
-				try {
-					self::$mementoResource->alterHeaders();
-				} catch ( MementoResourceException $e ) {
-
-					$out = $article->getContext()->getOutput();
-
-					// unset for future hooks in the chain
-					self::$mementoResource = null;
-
-					MementoResource::renderError(
-						$out, $e, $config->get( 'ErrorPageType' ) );
-				}
-			}
-		}
-
-		return true; // TODO: return false if exception thrown?
-	}
-
-	/**
-	 * The main hook for the plugin.
-	 *
-	 * @param OutputPage $out pointer to the OutputPage Object from the hook
-	 * @param Skin $skin skin object that will be used to generate the page
-	 *
-	 * @returns boolean indicating success to the caller
-	 */
-	public static function onBeforePageDisplay( $out, $skin ) {
-
-		// if we didn't get declared during ArticleViewHeader, then there is
-		// no need to run the additional Memento code
-		if ( self::$mementoResource ) {
-
-			try {
-				self::$mementoResource->alterEntity();
-			} catch ( MementoResourceException $e ) {
-				$config = new MementoConfig();
-
-				// unset for future hooks in the chain
-				self::$mementoResource = null;
-
-				MementoResource::renderError(
-					$out, $e, $config->get( 'ErrorPageType' ) );
-			}
-
-		}
-
-		return true; // TODO: return false if exception thrown?
-	}
-}
