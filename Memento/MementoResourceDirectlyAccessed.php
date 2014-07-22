@@ -117,13 +117,4 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 		$response->header( "Link: $linkEntries", true );
 	}
 
-	/**
-	 * alterEntity
-	 *
-	 * No entity alterations are necessary for directly accessed Mementos.
-	 *
-	 */
-	public function alterEntity() {
-		// do nothing to the body
-	}
 }

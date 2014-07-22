@@ -111,13 +111,4 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 		$response->header( 'Link: ' . $linkEntries, true );
 	}
 
-	/**
-	 * alterEntity
-	 *
-	 * No entity alterations are necessary for directly accessed Original pages.
-	 *
-	 */
-	public function alterEntity() {
-		// do nothing to the body
-	}
 }

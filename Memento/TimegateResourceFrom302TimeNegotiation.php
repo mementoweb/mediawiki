@@ -99,14 +99,4 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 	}
 
-	/**
-	 * alterEntity
-	 *
-	 * There is no entity body for this 302 response, so no alterations are
-	 * necessary.
-	 *
-	 */
-	public function alterEntity() {
-		// do nothing to the body
-	}
 }

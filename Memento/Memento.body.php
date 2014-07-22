@@ -168,34 +168,4 @@ class Memento {
 		return true; // TODO: return false if exception thrown?
 	}
 
-	/**
-	 * The main hook for the plugin.
-	 *
-	 * @param OutputPage $out pointer to the OutputPage Object from the hook
-	 * @param Skin $skin skin object that will be used to generate the page
-	 *
-	 * @returns boolean indicating success to the caller
-	 */
-	public static function onBeforePageDisplay( $out, $skin ) {
-
-		// if we didn't get declared during ArticleViewHeader, then there is
-		// no need to run the additional Memento code
-		if ( self::$mementoResource ) {
-
-			try {
-				self::$mementoResource->alterEntity();
-			} catch ( MementoResourceException $e ) {
-				$config = new MementoConfig();
-
-				// unset for future hooks in the chain
-				self::$mementoResource = null;
-
-				MementoResource::renderError(
-					$out, $e, $config->get( 'ErrorPageType' ) );
-			}
-
-		}
-
-		return true; // TODO: return false if exception thrown?
-	}
 }

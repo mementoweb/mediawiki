@@ -70,10 +70,6 @@ class MementoConfig {
 			$this->setDefault(
 				$wgMementoErrorPageType, 'friendly' );
 
-		$this->settings['Negotiation'] =
-			$this->setDefault(
-				$wgMementoTimeNegotiation, "302" );
-
 		$this->settings['RecommendedRelations'] =
 			$this->setDefault(
 				$wgMementoRecommendedRelations, false );

@@ -71,7 +71,6 @@ $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
 // Set up the hooks for this class
-$wgHooks['BeforePageDisplay'][] = 'Memento::onBeforePageDisplay';
 $wgHooks['ArticleViewHeader'][] = 'Memento::onArticleViewHeader';
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
 $wgHooks['ImageBeforeProduceHTML'][] = 'Memento::onImageBeforeProduceHTML';

@@ -495,15 +495,8 @@ abstract class MementoResource {
 	 */
 	public function getTimeGateURI( $title ) {
 
-		if ( $this->conf->get('Negotiation') == '302' ) {
-			// return Special Page URI
-			$tguri = SpecialPage::getTitleFor( 'TimeGate', $title )->getFullURL();
-		} else {
-			// return myuri
-			$tguri = $this->article->getTitle()->getFullURL();
-		}
+		return SpecialPage::getTitleFor( 'TimeGate', $title )->getFullURL();
 
-		return $tguri;
 	}
 
 	/**
@@ -561,22 +554,15 @@ abstract class MementoResource {
 
 		if ( $oldID == 0 ) {
 
-			if ( ( $request->getHeader('ACCEPT-DATETIME') ) &&
-				( $conf->get('Negotiation') == "200" ) ) {
-					/* we are requesting a Memento, but via 200-style
-						Time Negotiation */
-					$resource = new MementoResourceFrom200TimeNegotiation(
+			$resource = new OriginalResourceDirectlyAccessed(
 						$conf, $db, $article );
-
-			} else {
-				$resource = new OriginalResourceDirectlyAccessed(
-						$conf, $db, $article );
-			}
 
 		} else {
+
 			// we are requesting a Memento directly (an oldID URI)
 			$resource = new MementoResourceDirectlyAccessed(
 				$conf, $db, $article );
+
 		}
 
 		return $resource;
@@ -651,15 +637,5 @@ abstract class MementoResource {
 	 *
 	 */
 	abstract public function alterHeaders();
-
-	/**
-	 * alterEntity
-	 *
-	 * This function is used to alter the entity of the outgoing response,
-	 * and must be implemented by the MementoResource implementation.
-	 * It is expected to be callsed from the BeforePageDisplay hook.
-	 *
-	 */
-	abstract public function alterEntity();
 
 }
