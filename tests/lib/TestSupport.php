@@ -47,15 +47,50 @@ function acquireCSVDataFromFile($filename, $columns) {
 	return $data;
 }
 
+/*
+ shamelessly stolen from:
+ http://www.if-not-true-then-false.com/2009/php-tip-convert-stdclass-object-to-multidimensional-array-and-convert-multidimensional-array-to-stdclass-object/
+ */
+function objectToArray($d) {
+	if (is_object($d)) {
+		// Gets the properties of the given object
+		// with get_object_vars function
+		$d = get_object_vars($d);
+	}
+
+	if (is_array($d)) {
+		/*
+		* Return array converted to object
+		* Using __FUNCTION__ (Magic constant)
+		* for recursive call
+		*/
+		return array_map(__FUNCTION__, $d);
+	}
+	else {
+		// Return array
+		return $d;
+	}
+}
+
 function acquireFormattedI18NString($lang, $key) {
 
 	if (!defined('MEDIAWIKI')) {
 		define("MEDIAWIKI", true);
 	}
 
-	require('Memento.i18n.php');
+	$filename = "../../Memento/i18n/$lang.json";
 
-	$format = $messages[$lang][$key];
+	$handle = fopen($filename, 'r');
+
+	$json = fread($handle, filesize($filename));	
+
+	fclose($handle);
+
+	$messages = json_decode($json);
+
+	$messages = objectToArray($messages);
+
+	$format = $messages[$key];
 	$format = str_replace(array('$1', '$2', '$3'), '%s', $format);
 
 	return $format;
