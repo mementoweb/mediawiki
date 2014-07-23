@@ -406,7 +406,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * @returns formatted timemap as a string
 	 */
 	public function generateTimeMapText(
-		$data, $timeMapURI, $titleObj, $pagedTimeMapEntries = array() ) {
+		$data, $timeMapURI, Title $titleObj, $pagedTimeMapEntries = array() ) {
 
 		$outputArray = array();
 
