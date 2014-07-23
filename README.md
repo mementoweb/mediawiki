@@ -42,16 +42,6 @@ This extension has sensible defaults, but also allows the following settings to 
     * 'friendly' - (default) display Mediawiki-style error pages for error conditions along with a 200 OK status code returned to the client
     * 'traditional' - display bare text error pages for error conditions along with the appropriate 400, 404, etc. status code returned to the client
 
-* $wgMementoTimeNegotiation - has two values for the type of Memento Time Negotiation performed:
-    * '302' - (default) Time Negotiation is performed via redirection, enabling a TimeGate SpecialPage that can then perform TimeNegotiation outside of the normal wiki pages
-                - see http://www.mementoweb.org/guide/rfc/ID/#Pattern1.1
-    * '200' - Time Negotiation is performed in place, replacing the given wiki page with its Memento if an Accept-Datetime header is sent by the client
-                - http://www.mementoweb.org/guide/rfc/ID/#Pattern1.2
-
-* $wgMementoRecommendedRelations - mandatory Memento relations in the Link header are always provided, but this is a boolean true/false toggle for the use of RECOMMENDED Memento link relations from the Memento RFC
-    * false - (default) return none of the RECOMMENDED link relations in the Link header to the client
-    * true - return all of the RECOMMENDED link relations (first memento, last memento, from, until, etc.) in the Link header to the client; note that this can be computationally expensive and may affect performance on a heavy usage site
-
 * $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
 * $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.  See http://arxiv.org/pdf/1402.0928.pdf for more information on this problem in web archives.
@@ -101,13 +91,7 @@ Because of all of the possible combinations of configuration options, the follow
 
 * defaults-integration-test - test an installation with the default settings
 
-* 200-style-time-negotiation-integration-test - test only the 200-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "200", $wgMementoRecommendedRelations = false)
-
 * 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = false)
-
-* 200-style-time-negotiation-recommended-headers-integration-test - test the 200-style Time Negotiation, along with the RECOMMENDED link relations ($wgMementoTimeNegotiation = "200", $wgMementoRecommendedRelations = true)
-
-* 302-style-time-negotiation-recommended-headers-integration-test - test the 302-style Time Negotiation, along with the RECOMMENDED link relations ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = true)
 
 * friendly-error-integration-test - test the 200-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'friendly')
 
