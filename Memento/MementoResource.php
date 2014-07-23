@@ -169,7 +169,7 @@ abstract class MementoResource {
 	 *
 	 * @return $revision - associative array with id and timestamp keys
 	 */
-	public function getLastMemento( $title ) {
+	public function getLastMemento( Title $title ) {
 
 		$revision = array();
 
@@ -319,7 +319,7 @@ abstract class MementoResource {
 	 *							in RFC 1123 format
 	 * @param string $relation - the relation type of this Memento
 	 *
-	 * @return $entry - full Memenot Link header entry
+	 * @return $entry - full Memento Link header entry
 	 */
 	public function constructMementoLinkHeaderRelationEntry(
 		$url, $timestamp, $relation ) {
@@ -388,7 +388,7 @@ abstract class MementoResource {
 	 *
 	 * @return $title - the namespace:title string for the given page
 	 */
-	public function getFullNamespacePageTitle( $titleObj ) {
+	public function getFullNamespacePageTitle( Title $titleObj ) {
 		$title = $titleObj->getDBkey();
 		$namespace = $titleObj->getNsText();
 
@@ -433,7 +433,7 @@ abstract class MementoResource {
 	 * @return $linkRelations - array of link relations
 	 */
 	public function generateRecommendedLinkHeaderRelations(
-		$titleObj, $first, $last ) {
+		Title $titleObj, $first, $last ) {
 
 		$linkRelations = array();
 
@@ -511,7 +511,10 @@ abstract class MementoResource {
 	 * @param string $errorPageType - the error page type 'traditional' or 'friendly'
 	 *
 	 */
-	public static function renderError( $out, $error, $errorPageType ) {
+	public static function renderError(
+		OutputPage $out, MementoResourceException $error, $errorPageType
+		) {
+
 		if ( $errorPageType == 'traditional' ) {
 
 			$msg = wfMessage(
@@ -548,7 +551,7 @@ abstract class MementoResource {
 	 *						on current conditions
 	 */
 	public static function mementoPageResourceFactory(
-		$conf, $db, $article, $oldID, $request ) {
+		$conf, DatabaseBase $db, $article, $oldID, $request ) {
 
 		$resource = null;
 
@@ -582,7 +585,7 @@ abstract class MementoResource {
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */
-	public function fixTemplate( $title, $parser, &$id ) {
+	public function fixTemplate( Title $title, Parser $parser, &$id ) {
 
 		$parser->disableCache();
 
