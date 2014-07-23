@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -79,7 +79,7 @@ class MementoResourceException extends MWException {
 	 */
 	public function __construct(
 		$textMessage, $titleMessage, $outputPage, $response, $statusCode,
-		$params = array()) {
+		$params = array() ) {
 
 		$this->statusCode = $statusCode;
 		$this->response = $response;
@@ -88,7 +88,7 @@ class MementoResourceException extends MWException {
 		$this->titleMessage = $titleMessage;
 		$this->params = $params;
 
-		parent::__construct($textMessage, $statusCode, null);
+		parent::__construct( $textMessage, $statusCode, null );
 	}
 
 	/**

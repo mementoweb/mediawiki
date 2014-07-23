@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -35,13 +35,13 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 /**
  * This abstract class is the parent of all MementoResource types.
  * As such, it contains the methods used by all of the Memento Pages.
- * 
+ *
  */
 abstract class MementoResource {
 
 	/**
 	 * Constructor for MementoResource and its children
-	 * 
+	 *
 	 * @param $conf - configuration object
 	 * @param $db - database object
 	 * @param $article - article object
@@ -115,7 +115,7 @@ abstract class MementoResource {
 		// tried selectRow here, but it returned nothing
 		$results = $db->select(
 			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+			array( 'rev_id', 'rev_timestamp' ),
 			$sqlCondition,
 			__METHOD__,
 			array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
@@ -125,7 +125,7 @@ abstract class MementoResource {
 
 		$revision = array();
 
-		if ($row) {
+		if ( $row ) {
 			$revision['id'] = $row->rev_id;
 			$revision['timestamp'] = wfTimestamp(
 				TS_RFC2822, $row->rev_timestamp );
@@ -149,10 +149,10 @@ abstract class MementoResource {
 
 		$firstRevision = $title->getFirstRevision();
 
-		if ( $firstRevision != null ){
+		if ( $firstRevision != null ) {
 
 			$revision['timestamp'] =
-				wfTimestamp( TS_RFC2822, $firstRevision->getTimestamp());
+				wfTimestamp( TS_RFC2822, $firstRevision->getTimestamp() );
 			$revision['id'] = $firstRevision->getId();
 
 		}
@@ -178,7 +178,7 @@ abstract class MementoResource {
 		if ( $lastRevision != null ) {
 
 			$revision['timestamp'] =
-				wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp());
+				wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp() );
 			$revision['id'] = $lastRevision->getId();
 
 		}
@@ -379,7 +379,7 @@ abstract class MementoResource {
 
 	/**
 	 * getFullNamespacePageTitle
-	 * 
+	 *
 	 * This function returns the namespace:title string from the URI
 	 * corresponding to this resource.  It is meant to be the URI version,
 	 * without spaces, hence we cannot use Title::getPrefixedText.
@@ -519,7 +519,7 @@ abstract class MementoResource {
 				)->text();
 
 			$error->getResponse()->header(
-				"HTTP", true, $error->getStatusCode());
+				"HTTP", true, $error->getStatusCode() );
 
 			echo $msg;
 
@@ -588,9 +588,9 @@ abstract class MementoResource {
 
 		$request = $parser->getUser()->getRequest();
 
-		if ( $request->getHeader('ACCEPT-DATETIME') ) {
+		if ( $request->getHeader( 'ACCEPT-DATETIME' ) ) {
 
-			$requestDatetime = $request->getHeader('ACCEPT-DATETIME');
+			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
 			$mwMementoTimestamp = $this->parseRequestDateTime(
 				$requestDatetime );
@@ -615,7 +615,7 @@ abstract class MementoResource {
 					array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
 				);
 
-				if( $res ) {
+				if ( $res ) {
 					$row = $this->db->fetchObject( $res );
 					$id = $row->rev_id;
 				}
