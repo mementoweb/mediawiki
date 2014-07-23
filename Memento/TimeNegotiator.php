@@ -113,15 +113,9 @@ class TimeNegotiator {
 
 		$title = $mr->getFullNamespacePageTitle( $titleObj );
 
-		if ( $conf->get( 'RecommendedRelations' ) ) {
+		$entries = $mr->generateRecommendedLinkHeaderRelations(
+			$titleObj, $first, $last );
 
-			$entries = $mr->generateRecommendedLinkHeaderRelations(
-				$titleObj, $first, $last );
-
-		} else {
-			$entry = $mr->constructTimeMapLinkHeader( $title );
-			$entries = array( $entry );
-		}
 
 		$this->linkRelations = array_merge(
 			$this->linkRelations, $entries );

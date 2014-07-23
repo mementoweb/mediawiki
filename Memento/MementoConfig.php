@@ -58,7 +58,6 @@ class MementoConfig {
 		global $wgMementoTimemapNumberOfMementos;
 		global $wgMementoErrorPageType;
 		global $wgMementoTimeNegotiation;
-		global $wgMementoRecommendedRelations;
 		global $wgMementoExcludeNamespaces;
 		global $wgMementoTimeNegotiationForThumbnails;
 
@@ -69,10 +68,6 @@ class MementoConfig {
 		$this->settings['ErrorPageType'] =
 			$this->setDefault(
 				$wgMementoErrorPageType, 'friendly' );
-
-		$this->settings['RecommendedRelations'] =
-			$this->setDefault(
-				$wgMementoRecommendedRelations, false );
 
 		$excludeNamespaceDefault = array_diff(
 			MWNamespace::getValidNamespaces(),

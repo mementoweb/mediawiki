@@ -73,41 +73,26 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			$tguri = $this->getTimeGateURI( $title );
 
-			if ( $uri == $tguri ) {
-				$entry = $this->constructLinkRelationHeader( $tguri,
-					'original latest-version timegate' );
-				$linkEntries[] = $entry;
-			} else {
-				$entry = $this->constructLinkRelationHeader( $uri,
-					'original latest-version' );
-				$linkEntries[] = $entry;
+			$entry = $this->constructLinkRelationHeader( $uri,
+				'original latest-version' );
+			$linkEntries[] = $entry;
 
-				$entry = $this->constructLinkRelationHeader( $tguri,
-					'timegate' );
-				$linkEntries[] = $entry;
-			}
+			$entry = $this->constructLinkRelationHeader( $tguri,
+				'timegate' );
+			$linkEntries[] = $entry;
 
-			if ( $this->conf->get( 'RecommendedRelations' ) ) {
+			$first = $this->getFirstMemento( $titleObj );
+			$last = $this->getLastMemento( $titleObj );
 
-				// for performance, these database calls only occur
-				// when $wgMementoRecommendedRelations is true
-				$first = $this->getFirstMemento( $titleObj );
-				$last = $this->getLastMemento( $titleObj );
+			// TODO: Throw a 400-status error message if
+			// getFirstMemento/getLastMemento is null?
+			// how would we have gotten here if titleObj was bad?
 
-				// TODO: Throw a 400-status error message if
-				// getFirstMemento/getLastMemento is null?
-				// how would we have gotten here if titleObj was bad?
+			$entries = $this->generateRecommendedLinkHeaderRelations(
+				$titleObj, $first, $last );
 
-				$entries = $this->generateRecommendedLinkHeaderRelations(
-					$titleObj, $first, $last );
+			$linkEntries = array_merge( $linkEntries, $entries );
 
-				$linkEntries = array_merge( $linkEntries, $entries );
-
-			} else  {
-				$entry = $this->constructTimeMapLinkHeader( $title );
-				$linkEntries[] = $entry;
-
-			}
 
 			$response->header( "Memento-Datetime:  $mementoDatetime", true );
 		}
