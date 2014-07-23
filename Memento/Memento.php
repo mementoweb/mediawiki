@@ -70,10 +70,6 @@ $wgAutoloadClasses['TimeMapPivotDescendingResource'] = __DIR__ . '/TimeMapPivotD
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
-// Set up the hooks for this class
-$wgHooks['ArticleViewHeader'][] = 'Memento::onArticleViewHeader';
-$wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'Memento::onBeforeParserFetchTemplateAndtitle';
-$wgHooks['ImageBeforeProduceHTML'][] = 'Memento::onImageBeforeProduceHTML';
 
 // set up the Time Gate (URI-G) classes
 $wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] = __DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
@@ -81,3 +77,11 @@ $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = __DIR__ . '/Timeg
 $wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
+
+// instantiate entry point
+$wgMemento = new Memento();
+
+// Set up the hooks for this class
+$wgHooks['ArticleViewHeader'][] = $wgMemento;
+$wgHooks['BeforeParserFetchTemplateAndtitle'][] = $wgMemento;
+$wgHooks['ImageBeforeProduceHTML'][] = $wgMemento;

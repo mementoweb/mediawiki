@@ -37,17 +37,17 @@ class Memento {
 	/**
 	 * @var MementoResource $mementoResource: object that implements memento
 	 */
-	static private $mementoResource;
+	private $mementoResource;
 
 	/**
 	 * @var string $articleDatetime: datetime of the article loaded
 	 */
-	static private $articleDatetime;
+	private $articleDatetime;
 
 	/**
 	 * @var boolean $oldIDSet: flag to indicate if this is an oldid page
 	 */
-	static private $oldIDSet;
+	private $oldIDSet;
 
 	/**
 	 * The ImageBeforeProduce HTML hook, used here to provide datetime
@@ -64,16 +64,16 @@ class Memento {
 	 * @return boolean indicating whether caller should use $res instead of 
 	 * 		default HTML for image rendering
 	 */
-	public static function onImageBeforeProduceHTML(
+	public function onImageBeforeProduceHTML(
 		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res) {
 
 		$config = new MementoConfig();
 
 		if ( $config->get('TimeNegotiationForThumbnails') === true ) {
 
-			if ( self::$oldIDSet === true ) {
+			if ( $this->oldIDSet === true ) {
 				$history = $file->getHistory(
-					/* $limit = */ 1, /* $start = */ self::$articleDatetime); 
+					/* $limit = */ 1, /* $start = */ $this->articleDatetime); 
 				$file = $history[0];
 			}
 
@@ -96,13 +96,13 @@ class Memento {
 	 *
 	 * @return boolean indicating success to the caller
 	 */
-	public static function onBeforeParserFetchTemplateAndtitle(
+	public function onBeforeParserFetchTemplateAndtitle(
 		$parser, $title, &$skip, &$id ) {
 
 		// $mementoResource is only set if we are on an actual page
 		// as opposed to diff pages, edit pages, etc.
-		if ( self::$mementoResource ) {
-			self::$mementoResource->fixTemplate( $title, $parser, $id );
+		if ( $this->mementoResource ) {
+			$this->mementoResource->fixTemplate( $title, $parser, $id );
 		}
 
 		return true;
@@ -122,7 +122,7 @@ class Memento {
 	 *
 	 * @return boolean indicating success to the caller
 	 */
-	public static function onArticleViewHeader(
+	public function onArticleViewHeader(
 		&$article, &$outputDone, &$pcache
 		) {
 
@@ -131,7 +131,7 @@ class Memento {
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
 
-			self::$oldIDSet = ( $article->getOldID() != 0 );
+			$this->oldIDSet = ( $article->getOldID() != 0 );
 
 			$revision = $article->getRevisionFetched();
 
@@ -139,25 +139,25 @@ class Memento {
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
 
-				self::$articleDatetime = $revision->getTimestamp();
+				$this->articleDatetime = $revision->getTimestamp();
 
 				$config = new MementoConfig();
 				$db = wfGetDB( DB_SLAVE );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
 
-				self::$mementoResource =
+				$this->mementoResource =
 					MementoResource::mementoPageResourceFactory(
 						$config, $db, $article, $oldID, $request );
 
 				try {
-					self::$mementoResource->alterHeaders();
+					$this->mementoResource->alterHeaders();
 				} catch ( MementoResourceException $e ) {
 
 					$out = $article->getContext()->getOutput();
 
 					// unset for future hooks in the chain
-					self::$mementoResource = null;
+					$this->mementoResource = null;
 
 					MementoResource::renderError(
 						$out, $e, $config->get( 'ErrorPageType' ) );
