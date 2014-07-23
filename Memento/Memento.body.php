@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -61,19 +61,19 @@ class Memento {
 	 * @param $time: not really used by hook
 	 * @param $res: used to replace HTML for image rendering
 	 *
-	 * @return boolean indicating whether caller should use $res instead of 
+	 * @return boolean indicating whether caller should use $res instead of
 	 * 		default HTML for image rendering
 	 */
 	public function onImageBeforeProduceHTML(
-		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res) {
+		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res ) {
 
 		$config = new MementoConfig();
 
-		if ( $config->get('TimeNegotiationForThumbnails') === true ) {
+		if ( $config->get( 'TimeNegotiationForThumbnails' ) === true ) {
 
 			if ( $this->oldIDSet === true ) {
 				$history = $file->getHistory(
-					/* $limit = */ 1, /* $start = */ $this->articleDatetime); 
+					/* $limit = */ 1, /* $start = */ $this->articleDatetime );
 				$file = $history[0];
 			}
 
