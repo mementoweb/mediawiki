@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -64,20 +64,20 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 		// if we exclude this Namespace, don't show folks the Memento relations
 		// or conduct Time Negotiation
 		if ( in_array( $titleObj->getNamespace(),
-			$this->conf->get('ExcludeNamespaces') ) ) {
+			$this->conf->get( 'ExcludeNamespaces' ) ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;
 		} else {
 
-			$negotiator = new TimeNegotiator($this);
+			$negotiator = new TimeNegotiator( $this );
 
 			$linkEntries = $negotiator->getLinkRelationEntries();
 			$url = $negotiator->getLocationURI();
 
 			// this does not work for some reason, possibly because
 			// of the disable() below?
-			//$out->addVaryHeader( 'Accept-Datetime' );
+			// $out->addVaryHeader( 'Accept-Datetime' );
 
 			// workaround for addVaryHeader
 			$varyEntries = explode( ':', $out->getVaryHeader() );
@@ -85,7 +85,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 			$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 
 			// Tried this, but it didn't generate a 302 response
-			//$out->redirect($url, 302);
+			// $out->redirect($url, 302);
 			// the following two lines are a workaround
 			$response->header( "Location: $url", true );
 			$out->setStatusCode( 302 );

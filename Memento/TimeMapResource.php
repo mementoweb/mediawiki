@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -57,7 +57,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * Return true if the URL matches the pivot pattern.
 	 *
 	 */
-	public static function containsPivot($urlparam) {
+	public static function containsPivot( $urlparam ) {
 		return (
 			preg_match( '/' .  TimeMapResource::PIVOTURLPATTERN .
 				'/', $urlparam ) == 1 );
@@ -69,7 +69,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * Return true if the URL is for a TimeMap ascending from a pivot.
 	 *
 	 */
-	public static function isPivotAscending($urlparam) {
+	public static function isPivotAscending( $urlparam ) {
 		return (
 			preg_match( '/' . TimeMapResource::ASCENDINGURLPATTERN .
 				'/', $urlparam ) == 1 );
@@ -81,7 +81,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * Return true if the URL is for a TimeMap descending from a pivot.
 	 *
 	 */
-	public static function isPivotDescending($urlparam) {
+	public static function isPivotDescending( $urlparam ) {
 		return (
 			preg_match( '/' . TimeMapResource::DESCENDINGURLPATTERN .
 				'/', $urlparam ) == 1 );
@@ -158,15 +158,15 @@ abstract class TimeMapResource extends MementoResource {
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getDescendingTimeMapData($pgID, $timestamp) {
+	public function getDescendingTimeMapData( $pgID, $timestamp ) {
 
-		$limit = $this->conf->get('NumberOfMementos');
+		$limit = $this->conf->get( 'NumberOfMementos' );
 
 		$data = array();
 
 		$results = $this->db->select(
 			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+			array( 'rev_id', 'rev_timestamp' ),
 			array(
 				'rev_page' => $pgID,
 				'rev_timestamp<' . $this->db->addQuotes( $timestamp )
@@ -178,7 +178,7 @@ abstract class TimeMapResource extends MementoResource {
 				)
 			);
 
-		while($result = $results->fetchRow()) {
+		while ( $result = $results->fetchRow() ) {
 			$datum = array();
 			$datum['rev_id'] = $result['rev_id'];
 			$datum['rev_timestamp'] = wfTimestamp(
@@ -201,15 +201,15 @@ abstract class TimeMapResource extends MementoResource {
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	public function getAscendingTimeMapData($pgID, $timestamp) {
+	public function getAscendingTimeMapData( $pgID, $timestamp ) {
 
-		$limit = $this->conf->get('NumberOfMementos');
+		$limit = $this->conf->get( 'NumberOfMementos' );
 
 		$data = array();
 
 		$results = $this->db->select(
 			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+			array( 'rev_id', 'rev_timestamp' ),
 			array(
 				'rev_page' => $pgID,
 				'rev_timestamp>' . $this->db->addQuotes( $timestamp )
@@ -233,13 +233,13 @@ abstract class TimeMapResource extends MementoResource {
 
 		$interim = array();
 
-		while ($result = $results->fetchRow()) {
+		while ( $result = $results->fetchRow() ) {
 			$interim[$result['rev_timestamp']] = $result['rev_id'];
 		}
 
-		if ( krsort($interim) )  {
+		if ( krsort( $interim ) )  {
 
-			foreach ($interim as $timestamp => $id ) {
+			foreach ( $interim as $timestamp => $id ) {
 				$datum = array();
 				$datum['rev_id'] = $id;
 				$datum['rev_timestamp'] = wfTimestamp(
@@ -277,8 +277,8 @@ abstract class TimeMapResource extends MementoResource {
 		$timeMapPage = array();
 
 		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
-		$earliestItem = end($paginatedResults);
-		reset($paginatedResults);
+		$earliestItem = end( $paginatedResults );
+		reset( $paginatedResults );
 		$timeMapPage['from'] = $earliestItem['rev_timestamp'];
 
 		$timeMapPage['uri'] =
@@ -315,8 +315,8 @@ abstract class TimeMapResource extends MementoResource {
 		$timeMapPage = array();
 
 		$timeMapPage['until'] = $paginatedResults[0]['rev_timestamp'];
-		$earliestItem = end($paginatedResults);
-		reset($paginatedResults);
+		$earliestItem = end( $paginatedResults );
+		reset( $paginatedResults );
 		$timeMapPage['from'] = $earliestItem['rev_timestamp'];
 
 		$timeMapPage['uri'] =
@@ -341,13 +341,13 @@ abstract class TimeMapResource extends MementoResource {
 
 		$prefix = SpecialPage::getTitleFor( 'TimeMap' )->getLocalURL() . '/';
 
-		$urlparam = str_replace($prefix, '', $urlparam);
+		$urlparam = str_replace( $prefix, '', $urlparam );
 
 		$pattern = "/^([0-9]{14})\/.*/";
 
-		preg_match($pattern, $urlparam, $matches);
+		preg_match( $pattern, $urlparam, $matches );
 
-		if ( count($matches) == 2 ) {
+		if ( count( $matches ) == 2 ) {
 			$pivot = $matches[1];
 		} else {
 			$pivot = null;
@@ -359,7 +359,7 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * formatTimestamp
 	 *
-	 * Wrapper for wfTimestamp that catches exceptions so the caller can issue 
+	 * Wrapper for wfTimestamp that catches exceptions so the caller can issue
 	 * its own error statements instead.
 	 *
 	 * @see http://www.mediawiki.org/wiki/Manual:WfTimestamp
@@ -418,7 +418,7 @@ abstract class TimeMapResource extends MementoResource {
 		$timegateEntry = $this->constructLinkRelationHeader(
 			$timegateuri, 'timegate' );
 
-		$from = $data[count($data) - 1]['rev_timestamp'];
+		$from = $data[count( $data ) - 1]['rev_timestamp'];
 		$until = $data[0]['rev_timestamp'];
 
 		// we can't really use $this->constructTimeMapLinkHeaderWithBounds
@@ -445,7 +445,7 @@ abstract class TimeMapResource extends MementoResource {
 		$outputArray[] = $timegateEntry;
 		$outputArray[] = $latestEntry;
 
-		for ($i = count($data) - 1; $i >= 0; $i--) {
+		for ( $i = count( $data ) - 1; $i >= 0; $i-- ) {
 			$output = "";
 			$datum = $data[$i];
 
@@ -459,7 +459,7 @@ abstract class TimeMapResource extends MementoResource {
 
 		// the original implementation of TimeMap for Mediawiki used ,<SP><LF>
 		// to separate the entries and added a \n at the end
-		$timemap = implode(",\n", $outputArray);
+		$timemap = implode( ",\n", $outputArray );
 
 		return $timemap;
 	}
@@ -474,13 +474,13 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @return array $data - containing keys 'rev_id' and 'rev_timestamp'
 	 */
-	public function getFullTimeMapData($pgID, $limit) {
+	public function getFullTimeMapData( $pgID, $limit ) {
 
 		$data = array();
 
 		$results = $this->db->select(
 			'revision',
-			array( 'rev_id', 'rev_timestamp'),
+			array( 'rev_id', 'rev_timestamp' ),
 			array( 'rev_page' => $pgID ),
 			__METHOD__,
 			array(
@@ -489,7 +489,7 @@ abstract class TimeMapResource extends MementoResource {
 				)
 			);
 
-		while($result = $results->fetchRow()) {
+		while ( $result = $results->fetchRow() ) {
 			$datum = array();
 			$datum['rev_id'] = $result['rev_id'];
 			$datum['rev_timestamp'] = wfTimestamp(
@@ -524,7 +524,7 @@ abstract class TimeMapResource extends MementoResource {
 		if ( $pgID > 0 ) {
 
 			$results = $this->getFullTimeMapData(
-				$pgID, $this->conf->get('NumberOfMementos')
+				$pgID, $this->conf->get( 'NumberOfMementos' )
 				);
 
 			// get the first revision ID
@@ -535,7 +535,7 @@ abstract class TimeMapResource extends MementoResource {
 
 			// calculate the difference
 			// this counts the revisions BETWEEN, non-inclusive
-			$revCount = $titleObj->countRevisionsBetween($firstId, $lastId);
+			$revCount = $titleObj->countRevisionsBetween( $firstId, $lastId );
 			$revCount = $revCount + 2; # for first and last
 
 			// if it is greater than limit then get the revision ID prior
@@ -545,9 +545,9 @@ abstract class TimeMapResource extends MementoResource {
 
 			$title = $titleObj->getPrefixedURL();
 
-			if ( $revCount > $this->conf->get('NumberOfMementos') ) {
-				$earliestItem = end($results);
-				reset($results);
+			if ( $revCount > $this->conf->get( 'NumberOfMementos' ) ) {
+				$earliestItem = end( $results );
+				reset( $results );
 
 				$pivotTimestamp =
 					$this->formatTimestampForDatabase(
@@ -559,7 +559,7 @@ abstract class TimeMapResource extends MementoResource {
 
 			}
 
-			$response->header("Content-Type: application/link-format", true);
+			$response->header( "Content-Type: application/link-format", true );
 
 			// use that revision ID + limit revisions to calculate the from
 			// 	and until for the next timemap
@@ -606,7 +606,7 @@ abstract class TimeMapResource extends MementoResource {
 
 			$timestamp = $this->extractTimestampPivot( $requestURL );
 
-			if (!$timestamp) {
+			if ( !$timestamp ) {
 				// we can't trust what came back, and we don't know the pivot
 				// so the parameter array is empty below
 				throw new MementoResourceException(
@@ -625,13 +625,13 @@ abstract class TimeMapResource extends MementoResource {
 			// if we get no results back, then the timestamp is likely outside
 			// the range offered by the resource, so return a Full Time Map
 			// instead
-			if (!$results) {
+			if ( !$results ) {
 				$this->renderFullTimeMap();
 			} else {
 
 				$latestItem = $results[0];
-				$earliestItem = end($results);
-				reset($results);
+				$earliestItem = end( $results );
+				reset( $results );
 
 				$firstId = $titleObj->getFirstRevision()->getId();
 				$lastId = $titleObj->getLatestRevId();
@@ -646,7 +646,7 @@ abstract class TimeMapResource extends MementoResource {
 				$title = $titleObj->getPrefixedURL();
 
 				# if $revCount is higher, then we've gone over the limit
-				if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+				if ( $revCount > $this->conf->get( 'NumberOfMementos' ) ) {
 
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$earliestItem['rev_timestamp'] );
@@ -662,7 +662,7 @@ abstract class TimeMapResource extends MementoResource {
 				$revCount = $revCount + 2; # for first and last
 
 				# if $revCount is higher, then we've gone over the limit
-				if ( $revCount > $this->conf->get('NumberOfMementos') ) {
+				if ( $revCount > $this->conf->get( 'NumberOfMementos' ) ) {
 
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$latestItem['rev_timestamp'] );
@@ -673,7 +673,7 @@ abstract class TimeMapResource extends MementoResource {
 				}
 
 				$response->header(
-					"Content-Type: application/link-format", true);
+					"Content-Type: application/link-format", true );
 
 				echo $this->generateTimeMapText(
 					$results, $timeMapURI, $titleObj, $timeMapPages

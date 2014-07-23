@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -60,7 +60,7 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 
 		// if we exclude this Namespace, don't show folks the Memento relations
 		if ( in_array( $titleObj->getNamespace(),
-			$this->conf->get('ExcludeNamespaces') ) ) {
+			$this->conf->get( 'ExcludeNamespaces' ) ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;
@@ -84,21 +84,21 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 				$linkEntries[] = $entry;
 			}
 
-			if ( $this->conf->get('RecommendedRelations') ) {
+			if ( $this->conf->get( 'RecommendedRelations' ) ) {
 
 				// for performance, these database calls only occur
 				// when $wgMementoRecommendedRelations is true
-				$first = $this->getFirstMemento($titleObj);
+				$first = $this->getFirstMemento( $titleObj );
 				$last = $this->getLastMemento( $titleObj );
 
-				// TODO: Throw a 400-status error message if 
+				// TODO: Throw a 400-status error message if
 				// getFirstMemento/getLastMemento is null?
 				// how would we have gotten here if titleObj was bad?
 
 				$entries = $this->generateRecommendedLinkHeaderRelations(
 					$titleObj, $first, $last );
 
-				$linkEntries = array_merge( $linkEntries, $entries);
+				$linkEntries = array_merge( $linkEntries, $entries );
 
 			} else {
 				$entry = $this->constructTimeMapLinkHeader( $title );

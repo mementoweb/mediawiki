@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -107,13 +107,13 @@ class TimeNegotiator {
 		$first = $mr->getFirstMemento( $titleObj );
 		$last = $mr->getLastMemento( $titleObj );
 
-		// TODO: Throw a 400-status error message if 
+		// TODO: Throw a 400-status error message if
 		// getFirstMemento/getLastMemento is null?
 		// how would we have gotten here if titleObj was bad?
 
 		$title = $mr->getFullNamespacePageTitle( $titleObj );
 
-		if ( $conf->get('RecommendedRelations') ) {
+		if ( $conf->get( 'RecommendedRelations' ) ) {
 
 			$entries = $mr->generateRecommendedLinkHeaderRelations(
 				$titleObj, $first, $last );
@@ -124,7 +124,7 @@ class TimeNegotiator {
 		}
 
 		$this->linkRelations = array_merge(
-			$this->linkRelations, $entries);
+			$this->linkRelations, $entries );
 
 		if ( $mwMementoTimestamp ) {
 

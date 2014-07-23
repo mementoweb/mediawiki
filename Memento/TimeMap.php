@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * @file
  */
 
@@ -60,7 +60,7 @@ class TimeMap extends SpecialPage {
 	 * @param $urlpar: string; the title parameter returned by Mediawiki
 	 *				which, in this case, is the URI for which we want TimeMaps
 	 */
-	public function execute($urlparam) {
+	public function execute( $urlparam ) {
 
 		$out = $this->getOutput();
 		$this->setHeaders();
@@ -72,15 +72,15 @@ class TimeMap extends SpecialPage {
 			// so we can use the same framework as the rest of the
 			// MementoResource classes, we need an Article class
 			$title = TimeMapResource::deriveTitleObject( $urlparam );
-			$article = new Article($title);
-			$article->setContext($this->getContext());
+			$article = new Article( $title );
+			$article->setContext( $this->getContext() );
 
 			$config = new MementoConfig();
 			$db = wfGetDB( DB_SLAVE );
 
 			try {
 
-				if (!$title->exists()) {
+				if ( !$title->exists() ) {
 					$titleMessage = 'timemap-title';
 					$textMessage = 'timemap-404-title';
 					$response = $this->getOutput()->getRequest()->response();
@@ -92,7 +92,7 @@ class TimeMap extends SpecialPage {
 				}
 
 				if ( in_array( $title->getNamespace(),
-					$config->get('ExcludeNamespaces') ) ) {
+					$config->get( 'ExcludeNamespaces' ) ) ) {
 					$titleMessage = 'timemap-title';
 					$textMessage = 'timemap-403-inaccessible';
 					$response = $this->getOutput()->getRequest()->response();
@@ -107,9 +107,9 @@ class TimeMap extends SpecialPage {
 					$config, $db, $article, $urlparam );
 
 				$page->alterEntity();
-			} catch (MementoResourceException $e) {
+			} catch ( MementoResourceException $e ) {
 				MementoResource::renderError(
-					$out, $e, $config->get('ErrorPageType') );
+					$out, $e, $config->get( 'ErrorPageType' ) );
 			}
 
 		}
