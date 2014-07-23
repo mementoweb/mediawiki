@@ -57,23 +57,29 @@ $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 $wgAutoloadClasses['MementoResourceException'] = __DIR__ . '/MementoResourceException.php';
 
 // Set up the Memento (URI-M) Classes
-$wgAutoloadClasses['MementoResourceDirectlyAccessed'] = __DIR__ . '/MementoResourceDirectlyAccessed.php';
+$wgAutoloadClasses['MementoResourceDirectlyAccessed'] =
+	__DIR__ . '/MementoResourceDirectlyAccessed.php';
 
 // Set up the Original page (URI-R) Classes
-$wgAutoloadClasses['OriginalResourceDirectlyAccessed'] = __DIR__ . '/OriginalResourceDirectlyAccessed.php';
+$wgAutoloadClasses['OriginalResourceDirectlyAccessed'] =
+	__DIR__ . '/OriginalResourceDirectlyAccessed.php';
 
 // set up the Time Map (URI-T) classes
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
 $wgAutoloadClasses['TimeMapFullResource'] = __DIR__ . '/TimeMapFullResource.php';
-$wgAutoloadClasses['TimeMapPivotAscendingResource'] = __DIR__ . '/TimeMapPivotAscendingResource.php';
-$wgAutoloadClasses['TimeMapPivotDescendingResource'] = __DIR__ . '/TimeMapPivotDescendingResource.php';
+$wgAutoloadClasses['TimeMapPivotAscendingResource'] =
+	__DIR__ . '/TimeMapPivotAscendingResource.php';
+$wgAutoloadClasses['TimeMapPivotDescendingResource'] =
+	__DIR__ . '/TimeMapPivotDescendingResource.php';
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
 
 // set up the Time Gate (URI-G) classes
-$wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] = __DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
-$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] = __DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
+$wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
+	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
+$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
+	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
 $wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
