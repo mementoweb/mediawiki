@@ -28,8 +28,6 @@ To install this package within Mediawiki perform the following:
 * add the following to the LocalSettings.php file in your Mediawiki installation:
 ```
     require_once("$IP/extensions/Memento/Memento.php");
-    $wgArticlePath = "$wgScriptPath/index.php/$1";
-    $wgUsePathInfo = true;
 ```
 
 # Configuration
@@ -37,10 +35,6 @@ To install this package within Mediawiki perform the following:
 This extension has sensible defaults, but also allows the following settings to be added to LocalSettings.php in order to alter its behavior:
 
 * $wgMementoTimemapNumberOfMementos - (default is 500) allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
-
-* $wgMementoErrorPageType - has two values for the type of error page sent to the client:
-    * 'friendly' - (default) display Mediawiki-style error pages for error conditions along with a 200 OK status code returned to the client
-    * 'traditional' - display bare text error pages for error conditions along with the appropriate 400, 404, etc. status code returned to the client
 
 * $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
@@ -91,15 +85,9 @@ Because of all of the possible combinations of configuration options, the follow
 
 * defaults-integration-test - test an installation with the default settings
 
-* 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install ($wgMementoTimeNegotiation = "302", $wgmementoRecommendedRelations = false)
+* 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install
 
-* friendly-error-integration-test - test the 200-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'friendly')
-
-* traditional-error-integration-test - test the 200-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "200", $wgMementoErrorPageType = 'traditional')
-
-* friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'friendly')
-
-* traditional-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with traditional output ($wgMementoTimeNegotiation = "302", $wgMementoErrorPageType = 'traditional')
+* friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output
 
 Of course, the fastest development process is:
 

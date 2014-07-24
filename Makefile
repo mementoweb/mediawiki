@@ -120,56 +120,9 @@ deploy-default: check-deploy-env ${BUILDDIR}/${BINFILE}
 	@echo "Deploying Memento extension"
 	${UNZIPCMD} ${BUILDDIR}/${BINFILE} 
 	echo 'require_once "$$IP/extensions/Memento/Memento.php";' >> ${MWCONF}
-	echo '$$wgArticlePath="$$wgScriptPath/index.php/$$1";' >> ${MWCONF}
-	echo '$$wgUsePathInfo = true;' >> ${MWCONF}
 	find ${DEPLOYDIR}/Memento -type d -exec chmod 0755 {} \; 
 	find ${DEPLOYDIR}/Memento -type f -exec chmod 0644 {} \; 
 	@echo "Deployment complete"
-	@echo "#########################"
-	@echo ""
-
-alter-installation-traditional-errors:
-	@echo ""
-	@echo "#########################"
-	@echo "Setting Traditional Error Page Type"
-	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}	
-	echo '$$wgMementoErrorPageType = "traditional";' >> ${MWCONF}
-	@echo "#########################"
-	@echo ""
-
-alter-installation-friendly-errors:
-	@echo ""
-	@echo "#########################"
-	@echo "Setting Friendly Error Page Type"
-	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}	
-	echo '$$wgMementoErrorPageType = "friendly";' >> ${MWCONF}
-	@echo "#########################"
-	@echo ""
-
-alter-installation-302-negotiation:
-	@echo ""
-	@echo "#########################"
-	@echo "Setting 302-style Time Negotiation"
-	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
-	echo '$$wgMementoTimeNegotiation = false;' >> ${MWCONF}
-	@echo "#########################"
-	@echo ""
-
-alter-installation-200-negotiation:
-	@echo ""
-	@echo "#########################"
-	@echo "Setting 200-style Time Negotiation"
-	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
-	echo '$$wgMementoTimeNegotiation = true;' >> ${MWCONF}
-	@echo "#########################"
-	@echo ""
-
-alter-installation-recommended-headers:
-	@echo ""
-	@echo "#########################"
-	@echo "Setting Recommended Relations"
-	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
-	echo '$$wgRecommendedRelations = true;' >> ${MWCONF}
 	@echo "#########################"
 	@echo ""
 
@@ -180,11 +133,7 @@ undeploy: check-deploy-env ${DEPLOYDIR}/Memento
 	@echo "Removing deployed Memento extension"
 	${RM} -rf ${DEPLOYDIR}/Memento
 	sed -i "" -e '/require_once "$$IP\/extensions\/Memento\/Memento.php";/d' ${MWCONF}
-	sed -i "" -e '/$$wgArticlePath="$$wgScriptPath\/index.php\/$$1";/d' ${MWCONF}
-	sed -i "" -e '/$$wgUsePathInfo = true;/d' ${MWCONF}
 	sed -i "" -e '/$$wgMementoTimemapNumberOfMementos = 3;/d' ${MWCONF}
-	sed -i "" -e '/$$wgMementoErrorPageType =.*;/d' ${MWCONF}
-	sed -i "" -e '/$$wgMementoTimeNegotiation =.*;/d' ${MWCONF}
 	@echo "Removal complete"
 	@echo "#########################"
 	@echo ""
@@ -200,7 +149,7 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-defaults-integration-test: standard-integration-test 302-style-time-negotiation-integration-test friendly-error-integration-test
+defaults-integration-test: standard-integration-test 302-style-time-negotiation-recommended-headers-integration-test friendly-error-integration-test
 
 # run tests on all non-configurable items
 standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
@@ -209,38 +158,6 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
 	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group all ${STARTINGDIR}/../../tests/integration
-	@echo "Done with integration tests"
-	@echo "#########################"
-	@echo ""
-
-# run all of the tests using 200-style time negotiation
-200-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
-	@echo "200-style-time-negotiation-integration-test"
-	@echo ""
-	@echo "#########################"
-	@echo "Running 200-style time negotiation integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 200-style ${STARTINGDIR}/../../tests/integration
-	@echo "Done with integration tests"
-	@echo "#########################"
-	@echo ""
-
-# run all of the tests using 302-style time negotiation
-302-style-time-negotiation-integration-test: check-integration-env ${TESTOUTPUTDIR}
-	@echo "302-style-time-negotiation-integration-test"
-	@echo ""
-	@echo "#########################"
-	@echo "Running 302-style time negotiation integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style ${STARTINGDIR}/../../tests/integration
-	@echo "Done with integration tests"
-	@echo "#########################"
-	@echo ""
-
-# run all of the tests using 200-style time negotiation and recommended headers
-200-style-time-negotiation-recommended-headers-integration-test: check-integration-env ${TESTOUTPUTDIR}
-	@echo ""
-	@echo "#########################"
-	@echo "Running 200-style time negotiation integration with recommended headers tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 200-style-recommended-headers ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -263,17 +180,6 @@ friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
 	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages ${STARTINGDIR}/../../tests/integration
-	@echo "Done with integration tests"
-	@echo "#########################"
-	@echo ""
-
-# run all of the traditional error integration tests
-traditional-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
-	@echo "traditional-error-integration-test"
-	@echo ""
-	@echo "#########################"
-	@echo "Running traditional error integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group traditionalErrorPages ${STARTINGDIR}/../../tests/integration
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
