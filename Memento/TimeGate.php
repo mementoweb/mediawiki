@@ -79,38 +79,21 @@ class TimeGate extends SpecialPage {
 			$config = new MementoConfig();
 			$db = wfGetDB( DB_SLAVE );
 
-			try {
+			if ( !$title->exists() ) {
 
-				if ( !$title->exists() ) {
-					$titleMessage = 'timegate-title';
-					$textMessage = 'timegate-404-title';
-					$response = $this->getOutput()->getRequest()->response();
+				throw new ErrorPageError( 'timegate-title', 'timegate-404-title', array( $urlparam ) );
 
-					throw new MementoResourceException(
-						$textMessage, $titleMessage,
-						$out, $response, 404, array( $urlparam )
-					);
-				}
-
-				if ( in_array( $title->getNamespace(),
-					$config->get( 'ExcludeNamespaces' ) ) ) {
-					$titleMessage = 'timegate-title';
-					$textMessage = 'timegate-403-inaccessible';
-					$response = $this->getOutput()->getRequest()->response();
-
-					throw new MementoResourceException(
-						$textMessage, $titleMessage,
-						$out, $response, 403, array( $title )
-					);
-				}
-
-				$page = new TimeGateResourceFrom302TimeNegotiation( $config, $db, $article );
-
-				$page->alterHeaders();
-			} catch ( MementoResourceException $e ) {
-				MementoResource::renderError(
-					$out, $e, $config->get( 'ErrorPageType' ) );
 			}
+
+			if ( in_array( $title->getNamespace(), $config->get( 'ExcludeNamespaces' ) ) ) {
+
+				throw new ErrorPageError( 'timegate-title', 'timegate-403-inaccessible', array( $title ) );
+
+			}
+
+			$page = new TimeGateResourceFrom302TimeNegotiation( $config, $db, $article );
+
+			$page->alterHeaders();
 
 		}
 

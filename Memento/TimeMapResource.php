@@ -107,13 +107,9 @@ abstract class TimeMapResource extends MementoResource {
 			} else {
 				$titleMessage = 'timemap-title';
 				$textMessage = 'timemap-400-date';
-				$out = $article->getContext()->getOutput();
-				$response = $out->getRequest()->response();
 
-				throw new MementoResourceException(
-					$textMessage, $titleMessage,
-					$out, $response, 400, array( '' )
-				);
+				throw new ErrorPageError( $titleMessage, $textMessage, array( '' ) );
+
 			}
 		} else {
 			$tm = new TimeMapFullResource( $config, $db, $article );
@@ -569,14 +565,11 @@ abstract class TimeMapResource extends MementoResource {
 
 			$out->disable();
 		} else {
-			$titleMessage = 'timemap-title';
-			$textMessage = 'timemap-404-title';
+
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 
-			throw new MementoResourceException(
-				$textMessage, $titleMessage,
-				$out, $response, 404, array( $title )
-			);
+			ErrorPageError( 'timemap-title', 'timemap-404-title', array( $title ) );
+
 		}
 
 	}
@@ -609,10 +602,7 @@ abstract class TimeMapResource extends MementoResource {
 			if ( !$timestamp ) {
 				// we can't trust what came back, and we don't know the pivot
 				// so the parameter array is empty below
-				throw new MementoResourceException(
-					'timemap-400-date', 'timemap-title',
-					$out, $response, 400,
-					array( '' ) );
+				ErrorPageError( 'timemap-title', 'timemap-400-date', array( '' ) );
 			}
 
 			$formattedTimestamp =
@@ -682,14 +672,9 @@ abstract class TimeMapResource extends MementoResource {
 				$out->disable();
 			}
 		} else {
-			$titleMessage = 'timemap-title';
-			$textMessage = 'timemap-404-title';
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 
-			throw new MementoResourceException(
-				$textMessage, $titleMessage,
-				$out, $response, 404, array( $title )
-			);
+			ErrorPageError( 'timemap-title', 'timemap-404-title', array( $title ) );
 		}
 	}
 
@@ -704,6 +689,5 @@ abstract class TimeMapResource extends MementoResource {
 	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
-	abstract public function getPivotTimeMapData(
-		$pageID, $formattedTimestamp );
+	abstract public function getPivotTimeMapData( $pageID, $formattedTimestamp );
 }

@@ -500,44 +500,6 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * renderError
-	 *
-	 * Render error page.  This is only used for 40* and 50* HTTP statuses.
-	 * This function is static so it can be called in cases where we have
-	 * no MementoResource object.
-	 *
-	 * @param OutputPage $out
-	 * @param MementoResourceException $error
-	 * @param string $errorPageType - the error page type 'traditional' or 'friendly'
-	 *
-	 */
-	public static function renderError(
-		OutputPage $out, MementoResourceException $error, $errorPageType
-		) {
-
-		if ( $errorPageType == 'traditional' ) {
-
-			$msg = wfMessage(
-				$error->getTextMessage(), $error->getParams()
-				)->text();
-
-			$error->getResponse()->header(
-				"HTTP", true, $error->getStatusCode() );
-
-			echo $msg;
-
-			$out->disable();
-		} else {
-
-			$out->showErrorPage(
-				$error->getTitleMessage(),
-				$error->getTextMessage(),
-				$error->getParams()
-				);
-		}
-	}
-
-	/**
 	 * mementoPageResourceFactory
 	 *
 	 * A factory for creating the correct MementoPageResource type.

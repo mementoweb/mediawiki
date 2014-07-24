@@ -65,10 +65,6 @@ class MementoConfig {
 			$this->setDefault(
 				$wgMementoTimemapNumberOfMementos, 500 );
 
-		$this->settings['ErrorPageType'] =
-			$this->setDefault(
-				$wgMementoErrorPageType, 'friendly' );
-
 		$excludeNamespaceDefault = array_diff(
 			MWNamespace::getValidNamespaces(),
 			MWNamespace::getContentNamespaces()

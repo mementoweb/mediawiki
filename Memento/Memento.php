@@ -54,7 +54,6 @@ $wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
 $wgAutoloadClasses['Memento'] = __DIR__ . '/Memento.body.php';
 $wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
-$wgAutoloadClasses['MementoResourceException'] = __DIR__ . '/MementoResourceException.php';
 
 // Set up the Memento (URI-M) Classes
 $wgAutoloadClasses['MementoResourceDirectlyAccessed'] =

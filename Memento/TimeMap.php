@@ -78,39 +78,21 @@ class TimeMap extends SpecialPage {
 			$config = new MementoConfig();
 			$db = wfGetDB( DB_SLAVE );
 
-			try {
+			if ( !$title->exists() ) {
 
-				if ( !$title->exists() ) {
-					$titleMessage = 'timemap-title';
-					$textMessage = 'timemap-404-title';
-					$response = $this->getOutput()->getRequest()->response();
+				throw new ErrorPageError( 'timemap-title', 'timemap-404-title', array( $urlparam ) );
 
-					throw new MementoResourceException(
-						$textMessage, $titleMessage,
-						$out, $response, 404, array( $urlparam )
-					);
-				}
-
-				if ( in_array( $title->getNamespace(),
-					$config->get( 'ExcludeNamespaces' ) ) ) {
-					$titleMessage = 'timemap-title';
-					$textMessage = 'timemap-403-inaccessible';
-					$response = $this->getOutput()->getRequest()->response();
-
-					throw new MementoResourceException(
-						$textMessage, $titleMessage,
-						$out, $response, 403, array( $title )
-					);
-				}
-
-				$page = TimeMapResource::timeMapFactory(
-					$config, $db, $article, $urlparam );
-
-				$page->alterEntity();
-			} catch ( MementoResourceException $e ) {
-				MementoResource::renderError(
-					$out, $e, $config->get( 'ErrorPageType' ) );
 			}
+
+			if ( in_array( $title->getNamespace(), $config->get( 'ExcludeNamespaces' ) ) ) {
+
+				throw new ErrorPageError( 'timemap-title', 'timemap-403-inaccessible', array( $title ) );
+
+			}
+
+			$page = TimeMapResource::timeMapFactory( $config, $db, $article, $urlparam );
+
+			$page->alterEntity();
 
 		}
 

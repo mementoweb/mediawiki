@@ -150,22 +150,11 @@ class Memento {
 					MementoResource::mementoPageResourceFactory(
 						$config, $db, $article, $oldID, $request );
 
-				try {
-					$this->mementoResource->alterHeaders();
-				} catch ( MementoResourceException $e ) {
-
-					$out = $article->getContext()->getOutput();
-
-					// unset for future hooks in the chain
-					$this->mementoResource = null;
-
-					MementoResource::renderError(
-						$out, $e, $config->get( 'ErrorPageType' ) );
-				}
+				$this->mementoResource->alterHeaders();
 			}
 		}
 
-		return true; // TODO: return false if exception thrown?
+		return true;
 	}
 
 }
