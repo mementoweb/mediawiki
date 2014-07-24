@@ -42,59 +42,36 @@ abstract class MementoResource {
 	/**
 	 * Constructor for MementoResource and its children
 	 *
-	 * @param $conf - configuration object
-	 * @param $db - database object
-	 * @param $article - article object
+	 * @param DatabaseBase $db
+	 * @param Article $article
 	 *
 	 */
-	public function __construct( $conf, $db, $article ) {
+	public function __construct( DatabaseBase $db, Article $article ) {
 
-		$this->conf = $conf;
 		$this->db = $db;
 		$this->article = $article;
 
 	}
 
 	/**
-	 * @var object $conf: configuration object for Memento Extension
-	 */
-	protected $conf;
-
-	/**
-	 * @var object $db: DatabaseBase object for Memento Extension
+	 * @var DatabaseBase $db DatabaseBase object for Memento Extension
 	 */
 	protected $db;
 
 	/**
-	 * @var $article - Article Object of this Resource
+	 * @var Article $article Article Object of this Resource
 	 */
 	protected $article;
-
-	/**
-	 * @var $mementoOldID - timestamp of the Memento
-	 */
-	protected $mementoOldID;
 
 	/**
 	 * getArticleObject
 	 *
 	 * Getter for Article Object used in constructor.
 	 *
-	 * @return Article $article
+	 * @return Article
 	 */
 	public function getArticleObject() {
 		return $this->article;
-	}
-
-	/**
-	 * getConfig
-	 *
-	 * Getter for MementoConfig object used in constructor.
-	 *
-	 * @return MementoConfig $config
-	 */
-	public function getConfig() {
-		return $this->conf;
 	}
 
 	/**
@@ -102,10 +79,10 @@ abstract class MementoResource {
 	 *
 	 * Make the actual database call.
 	 *
-	 * @param $sqlCondition - the conditional statement
-	 * @param $sqlOrder - order of the data returned (e.g. ASC, DESC)
+	 * @param string $sqlCondition the conditional statement
+	 * @param string $sqlOrder order of the data returned (e.g. ASC, DESC)
 	 *
-	 * @return $revision - associative array with id and timestamp keys
+	 * @return array associative array with id and timestamp keys
 	 */
 	public function fetchMementoFromDatabase( $sqlCondition, $sqlOrder ) {
 
@@ -140,11 +117,11 @@ abstract class MementoResource {
 	 *
 	 * Extract the first memento from the database.
 	 *
-	 * @param $title - title object
+	 * @param Title $title
 	 *
-	 * @return $revision - associative array with id and timestamp keys
+	 * @return array associative array with id and timestamp keys
 	 */
-	public function getFirstMemento( $title ) {
+	public function getFirstMemento( Title $title ) {
 		$revision = array();
 
 		$firstRevision = $title->getFirstRevision();
@@ -165,9 +142,9 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param $title - title object
+	 * @param Title $title
 	 *
-	 * @return $revision - associative array with id and timestamp keys
+	 * @return array associative array with id and timestamp keys
 	 */
 	public function getLastMemento( Title $title ) {
 
@@ -191,10 +168,10 @@ abstract class MementoResource {
 	 *
 	 * Extract the memento that best matches from the database.
 	 *
-	 * @param $pageID - page identifier
-	 * @param $pageTimestamp - timestamp used for finding the best memento
+	 * @param integer $pageID page identifier
+	 * @param string $pageTimestamp timestamp used for finding the best memento
 	 *
-	 * @return $revision - associative array with id and timestamp keys
+	 * @return array associative array with id and timestamp keys
 	 */
 	public function getCurrentMemento( $pageID, $pageTimestamp ) {
 
@@ -214,10 +191,10 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param $pageID - page identifier
-	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 * @param integer $pageID page identifier
+	 * @param string $pageTimestamp timestamp used for finding the last memento
 	 *
-	 * @return $revision - associative array with id and timestamp keys
+	 * @return array associative array with id and timestamp keys
 	 */
 	public function getNextMemento( $pageID, $pageTimestamp ) {
 
@@ -237,10 +214,10 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param $pageID - page identifier
-	 * @param $pageTimestamp - timestamp used for finding the last memento
+	 * @param integer $pageID page identifier
+	 * @param string $pageTimestamp timestamp used for finding the last memento
 	 *
-	 * @return $revision - associative array with id and timestamp keys
+	 * @return array associative array with id and timestamp keys
 	 */
 	public function getPrevMemento( $pageID, $pageTimestamp ) {
 
@@ -261,9 +238,9 @@ abstract class MementoResource {
 	 * Take in the RFC2822 datetime and convert it to the format used by
 	 * Mediawiki.
 	 *
-	 * @param $requestDateTime
+	 * @param string $requestDateTime
 	 *
-	 * @return $dt - datetime in mediawiki database format
+	 * @return string $dt datetime in mediawiki database format
 	 */
 	public function parseRequestDateTime( $requestDateTime ) {
 
@@ -282,14 +259,14 @@ abstract class MementoResource {
 	 * Otherwise, go with the one we've got because the future database call
 	 * will get the nearest memento.
 	 *
-	 * @param $firstTimestamp - the first timestamp for which we have a memento
+	 * @param string $firstTimestamp the first timestamp for which we have a memento
 	 *				formatted in the TS_MW format
-	 * @param $lastTimestamp - the last timestamp for which we have a memento
+	 * @param string $lastTimestamp the last timestamp for which we have a memento
 	 *				formatted in the TS_MW format
-	 * @param $givenTimestamp - the timestamp given by the request header
+	 * @param string $givenTimestamp the timestamp given by the request header
 	 *				formatted in the TS_MW format
 	 *
-	 * @return $chosenTimestamp - the timestamp to use
+	 * @return string $chosenTimestamp the timestamp to use
 	 */
 	public function chooseBestTimestamp(
 		$firstTimestamp, $lastTimestamp, $givenTimestamp ) {
@@ -314,12 +291,11 @@ abstract class MementoResource {
 	 * communication with a Memento client.
 	 * This is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param string $url - the URL of the given page
-	 * @param string $timestamp - the timestamp of this Memento,
-	 *							in RFC 1123 format
-	 * @param string $relation - the relation type of this Memento
+	 * @param string $url the URL of the given page
+	 * @param string $timestamp the timestamp of this Memento, in RFC 1123 format
+	 * @param string $relation the relation type of this Memento
 	 *
-	 * @return $entry - full Memento Link header entry
+	 * @return string full Memento Link header entry
 	 */
 	public function constructMementoLinkHeaderRelationEntry(
 		$url, $timestamp, $relation ) {
@@ -339,13 +315,11 @@ abstract class MementoResource {
 	 * relations for use in the HTTP Link Header.
 	 * This is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param string $title - the title string of the given page
-	 * @param string $from - the from timestamp for the TimeMap,
-	 *							in RFC 1123 format
-	 * @param string $until - the until timestamp for the TimeMap,
-	 *							in RFC 1123 format
+	 * @param string $title the title string of the given page
+	 * @param string $from the from timestamp for the TimeMap, in RFC 1123 format
+	 * @param string $until the until timestamp for the TimeMap, in RFC 1123 format
 	 *
-	 * @return $entry - full Memento TimeMap relation with from and until
+	 * @return string full Memento TimeMap relation with from and until
 	 */
 	public function constructTimeMapLinkHeaderWithBounds(
 		$title, $from, $until ) {
@@ -364,9 +338,9 @@ abstract class MementoResource {
 	 * communication with a Memento client.
 	 * This is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param $title - the title string of the given page
+	 * @param string $title the title string of the given page
 	 *
-	 * @return $entry - Memento TimeMap relation
+	 * @return string Memento TimeMap relation
 	 */
 	public function constructTimeMapLinkHeader( $title ) {
 
@@ -384,9 +358,9 @@ abstract class MementoResource {
 	 * corresponding to this resource.  It is meant to be the URI version,
 	 * without spaces, hence we cannot use Title::getPrefixedText.
 	 *
-	 * @param $titleObj - title object corresponding to this resource
+	 * @param Title $titleObj title object corresponding to this resource
 	 *
-	 * @return $title - the namespace:title string for the given page
+	 * @return string $title the URL-like (without spaces) namespace:title string for the given page
 	 */
 	public function getFullNamespacePageTitle( Title $titleObj ) {
 		$title = $titleObj->getDBkey();
@@ -408,10 +382,10 @@ abstract class MementoResource {
 	 * communication with a Memento client.
 	 * It is not intended to be used for HTML or any HTTP entity format.
 	 *
-	 * @param string $url - the URL of the relation
-	 * @param string $relation - the relation type for this Link header entry
+	 * @param string $url the URL of the relation
+	 * @param string $relation the relation type for this Link header entry
 	 *
-	 * @return relation string
+	 * @return string relation 
 	 */
 	public function constructLinkRelationHeader( $url, $relation ) {
 		return '<' . $url . '>; rel="' . $relation . '"';
@@ -424,13 +398,13 @@ abstract class MementoResource {
 	 * handling cases such as 'first memento' and 'last memento' vs.
 	 * 'first last memento', etc.
 	 *
-	 * @param $titleObj - the article title object
-	 * @param $first - associative array containing info on the first memento
+	 * @param Title $titleObj - the article title object
+	 * @param array $first associative array containing info on the first memento
 	 * 					with the keys 'timestamp' and 'id'
-	 * @param $last	- associative array containing info on the last memento
+	 * @param array $last associative array containing info on the last memento
 	 * 					with the keys 'timestamp' and 'id'
 	 *
-	 * @return $linkRelations - array of link relations
+	 * @return array array of link relations
 	 */
 	public function generateRecommendedLinkHeaderRelations(
 		Title $titleObj, $first, $last ) {
@@ -463,35 +437,13 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * setMementoTimestamp
-	 *
-	 * Set the Memento Timestamp for future calls.
-	 *
-	 * @param $timestamp - the timestamp to set
-	 */
-	public function setMementoOldID( $id ) {
-		$this->mementoOldID = $id;
-	}
-
-	/**
-	 * getMementoTimestamp
-	 *
-	 * Get the Memento Timestamp
-	 *
-	 * @return $this->mementoOldID - the OldID stored previously
-	 */
-	public function getMementoOldID() {
-		return $this->mementoOldID;
-	}
-
-	/**
 	 * getTimeGateURI
 	 *
 	 * Get the URI for the TimeGate.
 	 *
-	 * @param $title - wiki page title text
+	 * @param string $title wiki page title text
 	 *
-	 * @return $uri
+	 * @return string
 	 */
 	public function getTimeGateURI( $title ) {
 
@@ -504,29 +456,24 @@ abstract class MementoResource {
 	 *
 	 * A factory for creating the correct MementoPageResource type.
 	 *
-	 * @param $conf - MementoConfig object, passed to constructor
-	 * @param $db - DatabaseBase object, passed to constructor
-	 * @param $oldID - string indicating revision ID
-	 *		used in decision
+	 * @param DatabaseBase $db passed to constructor
+	 * @param Article $article passed to constructor
+	 * @param integer $oldID revision ID used in decision
 	 *
-	 * @return $resource - the correct instance of MementoResource based
-	 *						on current conditions
+	 * @return MementoResource the correct instance of MementoResource base	on $oldID
 	 */
-	public static function mementoPageResourceFactory(
-		$conf, DatabaseBase $db, $article, $oldID, $request ) {
+	public static function mementoPageResourceFactory( DatabaseBase $db, $article, $oldID ) {
 
 		$resource = null;
 
 		if ( $oldID == 0 ) {
 
-			$resource = new OriginalResourceDirectlyAccessed(
-						$conf, $db, $article );
+			$resource = new OriginalResourceDirectlyAccessed( $db, $article );
 
 		} else {
 
 			// we are requesting a Memento directly (an oldID URI)
-			$resource = new MementoResourceDirectlyAccessed(
-				$conf, $db, $article );
+			$resource = new MementoResourceDirectlyAccessed( $db, $article );
 
 		}
 
@@ -543,7 +490,7 @@ abstract class MementoResource {
 	 * @fixme make this compatible with parser cache
 	 * @param Title $title
 	 * @param Parser $parser
-	 * @param int $id
+	 * @param integer $id
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */

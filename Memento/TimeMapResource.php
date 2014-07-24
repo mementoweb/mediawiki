@@ -94,16 +94,13 @@ abstract class TimeMapResource extends MementoResource {
 	 * based on the input.
 	 *
 	 */
-	public static function timeMapFactory(
-		$config, $db, $article, $urlparam ) {
+	public static function timeMapFactory( $db, $article, $urlparam ) {
 
 		if ( TimeMapResource::containsPivot( $urlparam ) ) {
 			if ( TimeMapResource::isPivotAscending( $urlparam ) ) {
-				$tm = new TimeMapPivotAscendingResource(
-					$config, $db, $article );
+				$tm = new TimeMapPivotAscendingResource( $db, $article );
 			} elseif ( TimeMapResource::isPivotDescending( $urlparam ) ) {
-				$tm = new TimeMapPivotDescendingResource(
-					$config, $db, $article );
+				$tm = new TimeMapPivotDescendingResource( $db, $article );
 			} else {
 				$titleMessage = 'timemap-title';
 				$textMessage = 'timemap-400-date';
@@ -112,7 +109,7 @@ abstract class TimeMapResource extends MementoResource {
 
 			}
 		} else {
-			$tm = new TimeMapFullResource( $config, $db, $article );
+			$tm = new TimeMapFullResource( $db, $article );
 		}
 
 		return $tm;
@@ -156,7 +153,7 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public function getDescendingTimeMapData( $pgID, $timestamp ) {
 
-		$limit = $this->conf->get( 'NumberOfMementos' );
+		global $wgMementoTimemapNumberOfMementos;
 
 		$data = array();
 
@@ -170,7 +167,7 @@ abstract class TimeMapResource extends MementoResource {
 			__METHOD__,
 			array(
 				'ORDER BY' => 'rev_timestamp DESC',
-				'LIMIT' => $limit
+				'LIMIT' => $wgMementoTimemapNumberOfMementos
 				)
 			);
 
@@ -199,7 +196,7 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public function getAscendingTimeMapData( $pgID, $timestamp ) {
 
-		$limit = $this->conf->get( 'NumberOfMementos' );
+		global $wgMementoTimemapNumberOfMementos;
 
 		$data = array();
 
@@ -213,7 +210,7 @@ abstract class TimeMapResource extends MementoResource {
 			__METHOD__,
 			array(
 				'ORDER BY' => 'rev_timestamp ASC',
-				'LIMIT' => $limit
+				'LIMIT' => $wgMementoTimemapNumberOfMementos
 				)
 			);
 
@@ -507,6 +504,8 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public function renderFullTimeMap() {
 
+		global $wgMementoTimemapNumberOfMementos;
+
 		$article = $this->article;
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
@@ -519,9 +518,7 @@ abstract class TimeMapResource extends MementoResource {
 
 		if ( $pgID > 0 ) {
 
-			$results = $this->getFullTimeMapData(
-				$pgID, $this->conf->get( 'NumberOfMementos' )
-				);
+			$results = $this->getFullTimeMapData( $pgID, $wgMementoTimemapNumberOfMementos );
 
 			// get the first revision ID
 			$firstId = $titleObj->getFirstRevision()->getId();
@@ -541,7 +538,7 @@ abstract class TimeMapResource extends MementoResource {
 
 			$title = $titleObj->getPrefixedURL();
 
-			if ( $revCount > $this->conf->get( 'NumberOfMementos' ) ) {
+			if ( $revCount > $wgMementoTimemapNumberOfMementos ) {
 				$earliestItem = end( $results );
 				reset( $results );
 
@@ -584,6 +581,9 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 */
 	public function renderPivotTimeMap() {
+
+		global $wgMementoTimemapNumberOfMementos;
+
 		$article = $this->article;
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
@@ -636,7 +636,7 @@ abstract class TimeMapResource extends MementoResource {
 				$title = $titleObj->getPrefixedURL();
 
 				# if $revCount is higher, then we've gone over the limit
-				if ( $revCount > $this->conf->get( 'NumberOfMementos' ) ) {
+				if ( $revCount > $wgTimemapNumberOfMementos ) {
 
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$earliestItem['rev_timestamp'] );
@@ -652,7 +652,7 @@ abstract class TimeMapResource extends MementoResource {
 				$revCount = $revCount + 2; # for first and last
 
 				# if $revCount is higher, then we've gone over the limit
-				if ( $revCount > $this->conf->get( 'NumberOfMementos' ) ) {
+				if ( $revCount > $wgTimemapNumberOfMementos ) {
 
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$latestItem['rev_timestamp'] );

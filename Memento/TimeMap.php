@@ -62,12 +62,16 @@ class TimeMap extends SpecialPage {
 	 */
 	public function execute( $urlparam ) {
 
+		global $wgMementoExcludeNamespaces;
+
 		$out = $this->getOutput();
 		$this->setHeaders();
 
 		if ( !$urlparam ) {
+
 			$out->addHTML( wfMessage( 'timemap-welcome-message' )->parse() );
 			return;
+
 		} else {
 			// so we can use the same framework as the rest of the
 			// MementoResource classes, we need an Article class
@@ -75,7 +79,6 @@ class TimeMap extends SpecialPage {
 			$article = new Article( $title );
 			$article->setContext( $this->getContext() );
 
-			$config = new MementoConfig();
 			$db = wfGetDB( DB_SLAVE );
 
 			if ( !$title->exists() ) {
@@ -84,13 +87,13 @@ class TimeMap extends SpecialPage {
 
 			}
 
-			if ( in_array( $title->getNamespace(), $config->get( 'ExcludeNamespaces' ) ) ) {
+			if ( in_array( $title->getNamespace(), $wgMementoExcludeNamespaces ) ) {
 
 				throw new ErrorPageError( 'timemap-title', 'timemap-403-inaccessible', array( $title ) );
 
 			}
 
-			$page = TimeMapResource::timeMapFactory( $config, $db, $article, $urlparam );
+			$page = TimeMapResource::timeMapFactory( $db, $article, $urlparam );
 
 			$page->alterEntity();
 

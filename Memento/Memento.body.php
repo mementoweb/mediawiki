@@ -53,13 +53,13 @@ class Memento {
 	 * The ImageBeforeProduce HTML hook, used here to provide datetime
 	 * negotiation for embedded images.
 	 *
-	 * @param Skin $skin: Skin object for this page
-	 * @param Title $title: Title object for this image
-	 * @param File $file: File object for this image
-	 * @param $frameParams: frame parameters
-	 * @param $handlerParams: handler parameters
-	 * @param $time: not really used by hook
-	 * @param $res: used to replace HTML for image rendering
+	 * @param Skin $skin Skin object for this page
+	 * @param Title $title Title object for this image
+	 * @param File $file File object for this image
+	 * @param array $frameParams frame parameters
+	 * @param array $handlerParams handler parameters
+	 * @param string $time not really used by hook
+	 * @param string $res used to replace HTML for image rendering
 	 *
 	 * @return boolean indicating whether caller should use $res instead of
 	 * 		default HTML for image rendering
@@ -67,9 +67,9 @@ class Memento {
 	public function onImageBeforeProduceHTML(
 		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res ) {
 
-		$config = new MementoConfig();
+		global $wgMementoTimeNegotiationForThumbnails;
 
-		if ( $config->get( 'TimeNegotiationForThumbnails' ) === true ) {
+		if ( $wgTimeNegotiationForThumbnails === true ) {
 
 			if ( $this->oldIDSet === true ) {
 				$history = $file->getHistory(
@@ -88,11 +88,10 @@ class Memento {
 	 * Template pages loaded so that their revision is closer in date/time to
 	 * that of the rest of the page.
 	 *
-	 * @param Parser $parser: Parser object for this page
-	 * @param Title $title: Title object for this page
-	 * @param $skip: boolean flag allowing the caller to skip the rest of
-	 *					statelessFetchTemplate
-	 * @param $id: revision id of this page
+	 * @param Parser $parser Parser object for this page
+	 * @param Title $title Title object for this page
+	 * @param boolean $skip boolean flag allowing the caller to skip the rest of statelessFetchTemplate
+	 * @param integer $id revision id of this page
 	 *
 	 * @return boolean indicating success to the caller
 	 */
@@ -114,10 +113,10 @@ class Memento {
 	 *
 	 * Note: this is not called when the Edit, Diff or History pages are loaded.
 	 *
-	 * @param Article $article: pointer to the Article Object from the hook
-	 * @param bool $outputDone pointer to variable that indicates that
+	 * @param Article $article pointer to the Article Object from the hook
+	 * @param boolean $outputDone pointer to variable that indicates that
 	 *                         the output should be terminated
-	 * @param $pcache: pointer to variable that indicates whether the parser
+	 * @param boolean $pcache pointer to variable that indicates whether the parser
 	 * 			cache should try retrieving the cached results
 	 *
 	 * @return boolean indicating success to the caller
@@ -141,14 +140,12 @@ class Memento {
 
 				$this->articleDatetime = $revision->getTimestamp();
 
-				$config = new MementoConfig();
 				$db = wfGetDB( DB_SLAVE );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
 
 				$this->mementoResource =
-					MementoResource::mementoPageResourceFactory(
-						$config, $db, $article, $oldID, $request );
+					MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
 
 				$this->mementoResource->alterHeaders();
 			}

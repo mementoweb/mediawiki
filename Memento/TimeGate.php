@@ -63,12 +63,16 @@ class TimeGate extends SpecialPage {
 	 */
 	public function execute( $urlparam ) {
 
+		global $wgMementoExcludeNamespaces;
+
 		$out = $this->getOutput();
 		$this->setHeaders();
 
 		if ( !$urlparam ) {
+
 			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 			return;
+
 		} else {
 			// so we can use the same framework as the rest of the
 			// MementoResource classes, we need an Article class
@@ -76,7 +80,6 @@ class TimeGate extends SpecialPage {
 			$article = new Article( $title );
 			$article->setContext( $this->getContext() );
 
-			$config = new MementoConfig();
 			$db = wfGetDB( DB_SLAVE );
 
 			if ( !$title->exists() ) {
@@ -85,13 +88,13 @@ class TimeGate extends SpecialPage {
 
 			}
 
-			if ( in_array( $title->getNamespace(), $config->get( 'ExcludeNamespaces' ) ) ) {
+			if ( in_array( $title->getNamespace(), $wgMementoExcludeNamespaces ) ) {
 
 				throw new ErrorPageError( 'timegate-title', 'timegate-403-inaccessible', array( $title ) );
 
 			}
 
-			$page = new TimeGateResourceFrom302TimeNegotiation( $config, $db, $article );
+			$page = new TimeGateResourceFrom302TimeNegotiation( $db, $article );
 
 			$page->alterHeaders();
 

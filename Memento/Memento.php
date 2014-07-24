@@ -52,7 +52,6 @@ $wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
 
 // Set up the core classes used by Memento
 $wgAutoloadClasses['Memento'] = __DIR__ . '/Memento.body.php';
-$wgAutoloadClasses['MementoConfig'] = __DIR__ . '/MementoConfig.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
 
 // Set up the Memento (URI-M) Classes
@@ -82,6 +81,12 @@ $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
 $wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
+
+// default settings values
+$wgMementoExcludeNamespaces = array();
+#	array_diff( MWNamespace::getValidNamespaces(), MWNamespace::getContentNamespaces() );
+$wgMementoTimemapNumberOfMementos = 500;
+$wgMementoTimeNegotiationForThumbnails = false;
 
 // instantiate entry point
 $wgMemento = new Memento();

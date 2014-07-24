@@ -54,6 +54,8 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 	 */
 	public function alterHeaders() {
 
+		global $wgMementoExcludeNamespaces;
+
 		$out = $this->article->getContext()->getOutput();
 		$request = $out->getRequest();
 		$response = $request->response();
@@ -63,8 +65,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 		// if we exclude this Namespace, don't show folks the Memento relations
 		// or conduct Time Negotiation
-		if ( in_array( $titleObj->getNamespace(),
-			$this->conf->get( 'ExcludeNamespaces' ) ) ) {
+		if ( in_array( $titleObj->getNamespace(), $wgMementoExcludeNamespaces ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;

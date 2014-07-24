@@ -94,7 +94,6 @@ class TimeNegotiator {
 		$request = $out->getRequest();
 		$response = $request->response();
 		$titleObj = $article->getTitle();
-		$conf = $mr->getConfig();
 
 		$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
