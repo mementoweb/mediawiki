@@ -162,10 +162,10 @@ class TimeNegotiator {
 			$out->addVaryHeader( 'Accept-Datetime' );
 
 			// workaround for addVaryHeader for traditional errors
-			//$varyEntries = explode( ':', $out->getVaryHeader() );
-			//$varyEntries = $varyEntries[1];
-			//$response->header( "Vary: $varyEntries,Accept-Datetime", true );
-			//$response->header( 'Link: ' . $linkEntries, true );
+			// $varyEntries = explode( ':', $out->getVaryHeader() );
+			// $varyEntries = $varyEntries[1];
+			// $response->header( "Vary: $varyEntries,Accept-Datetime", true );
+			// $response->header( 'Link: ' . $linkEntries, true );
 
 			throw new ErrorPageError( 'timegate-title', 'timegate-400-date',
 				array( $requestDatetime, $firsturi, $lasturi ) );

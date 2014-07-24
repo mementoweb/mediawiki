@@ -385,7 +385,7 @@ abstract class MementoResource {
 	 * @param string $url the URL of the relation
 	 * @param string $relation the relation type for this Link header entry
 	 *
-	 * @return string relation 
+	 * @return string relation
 	 */
 	public function constructLinkRelationHeader( $url, $relation ) {
 		return '<' . $url . '>; rel="' . $relation . '"';
