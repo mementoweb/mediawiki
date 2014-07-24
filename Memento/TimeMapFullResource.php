@@ -46,8 +46,8 @@ class TimeMapFullResource extends TimeMapResource {
 	 * TimeMap data, because Full Time Maps aren't generated based on
 	 * a pivot date.
 	 *
-	 * @param $pageID
-	 * @param $formattedTimestamp
+	 * @param integer $pageID
+	 * @param string $formattedTimestamp
 	 *
 	 * @return null
 	 */

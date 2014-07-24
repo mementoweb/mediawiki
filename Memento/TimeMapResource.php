@@ -56,6 +56,10 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Return true if the URL matches the pivot pattern.
 	 *
+	 * @param string $urlparam the data passed into a SpecialPage
+	 *
+	 * @return boolean true if contains pivot pattern (e.g. /2011010100/-1/)
+	 *
 	 */
 	public static function containsPivot( $urlparam ) {
 		return (
@@ -66,7 +70,9 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * isPivotAscending
 	 *
-	 * Return true if the URL is for a TimeMap ascending from a pivot.
+	 * @param string $urlparam the data passed into a SpecialPage
+	 *
+	 * @return boolean true if pivot is ascending (e.g. /20100424130000/1/)
 	 *
 	 */
 	public static function isPivotAscending( $urlparam ) {
@@ -78,7 +84,9 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * isPivotDescending
 	 *
-	 * Return true if the URL is for a TimeMap descending from a pivot.
+	 * @param string $urlparam the data passed into a SpecialPage
+	 *
+	 * @return boolean true if pivot is descending (e.g. /20100424130000/-1/)
 	 *
 	 */
 	public static function isPivotDescending( $urlparam ) {
@@ -93,8 +101,14 @@ abstract class TimeMapResource extends MementoResource {
 	 * This function determines which TimeMap object behavior we will get
 	 * based on the input.
 	 *
+	 * @param DatabaseBase $db database connection object
+	 * @param Article $article article object for TimeMap
+	 * @param string $urlparam the data passed into a SpecialPage
+	 *
+	 * @return TimeMapResource
+	 *
 	 */
-	public static function timeMapFactory( $db, $article, $urlparam ) {
+	public static function timeMapFactory( DatabaseBase $db, Article $article, $urlparam ) {
 
 		if ( TimeMapResource::containsPivot( $urlparam ) ) {
 			if ( TimeMapResource::isPivotAscending( $urlparam ) ) {
@@ -119,6 +133,10 @@ abstract class TimeMapResource extends MementoResource {
 	 * getTitle
 	 *
 	 * This function extracts the Title from the URL
+	 *
+	 * @param string $urlparam the data passed into a SpecialPage
+	 *
+	 * @return Title title object created from URL parsing
 	 */
 
 	public static function deriveTitleObject( $urlparam ) {
@@ -145,10 +163,10 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Extract the full time map data from the database.
 	 *
-	 * @param $pgID - identifier of the requested page
-	 * @param $timestamp - the timestamp to query for
+	 * @param integer $pgID identifier of the requested page
+	 * @param string $timestamp the timestamp to query for
 	 *
-	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
+	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
 	public function getDescendingTimeMapData( $pgID, $timestamp ) {
@@ -188,10 +206,10 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Extract the full time map data from the database.
 	 *
-	 * @param $pgID - identifier of the requested page
-	 * @param $timestamp - the timestamp to query for
+	 * @param integer $pgID identifier of the requested page
+	 * @param string $timestamp the timestamp to query for
 	 *
-	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
+	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
 	public function getAscendingTimeMapData( $pgID, $timestamp ) {
@@ -249,12 +267,12 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * generateAscendingTimeMapPaginationData
 	 *
-	 * @param $pgID - the ID of the page, not the oldid
-	 * @param $pivotTimestamp - the pivotTimestamp in TS_MW format
-	 * @param $timeMapPages - array passed by reference to hold TimeMap pages
-	 * @param $title - the title of the page
+	 * @param integer $pgID the ID of the page, not the oldid
+	 * @param string $pivotTimestamp the pivotTimestamp in TS_MW format
+	 * @param array $timeMapPages array passed by reference to hold TimeMap pages
+	 * @param Title $title the title of the page
 	 *
-	 * @return $timeMapPages - same array that was passed by reference
+	 * @return array $timeMapPages - same array that was passed by reference
 	 *			and altered, but now contains an entry that is an array with
 	 *			keys of uri, from, and until representing the next Time Map,
 	 *			its starting time and ending time
@@ -287,12 +305,12 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * generateDescendingTimeMapPaginationData
 	 *
-	 * @param $pgID - the ID of the page, not the oldid
-	 * @param $pivotTimestamp - the pivotTimestamp in TS_MW format
-	 * @param $timeMapPages - array passed by reference to hold TimeMap pages
-	 * @param $title - the title of the page
+	 * @param integer $pgID the ID of the page, not the oldid
+	 * @param string $pivotTimestamp the pivotTimestamp in TS_MW format
+	 * @param array $timeMapPages array passed by reference to hold TimeMap pages
+	 * @param Title $title the title of the page
 	 *
-	 * @return $timeMapPages - same array that was passed by reference
+	 * @return array $timeMapPages same array that was passed by reference
 	 *			and altered, but now contains an entry that is an array with
 	 *			keys of uri, from, and until representing the next Time Map,
 	 *			its starting time and ending time
@@ -325,9 +343,9 @@ abstract class TimeMapResource extends MementoResource {
 	/**
 	 * extractTimestampPivot
 	 *
-	 * @param $urlparam - the parameter passed to execute() in this SpecialPage
+	 * @param string $urlparam the data passed into a SpecialPage
 	 *
-	 * @returns timestamp, if found; null otherwise
+	 * @returns string timestamp if found; null otherwise
 	 */
 	public function extractTimestampPivot( $urlparam ) {
 		$pivot = null;
@@ -357,7 +375,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @see http://www.mediawiki.org/wiki/Manual:WfTimestamp
 	 *
-	 * @param $timestamp
+	 * @param string $timestamp
 	 *
 	 * @returns formatted timestamp; null if error
 	 */
@@ -374,6 +392,7 @@ abstract class TimeMapResource extends MementoResource {
 			}
 
 		} catch ( MWException $e ) {
+			// TODO: use ErrorPageError instead?
 			// it all went wrong, we passed in bad data
 			$formattedTimestamp = null;
 		}
@@ -387,16 +406,14 @@ abstract class TimeMapResource extends MementoResource {
 	 * Generates Time Map text as per examples in Memento TimeMap RFC
 	 * @see http://www.mementoweb.org/guide/rfc/ID/
 	 *
-	 * @param $data - array with entries containing the keys
-	 *					rev_id and rev_timestamp
-	 * @param $timeMapURI - used to construct self TimeMap URI relation
-	 * @param $titleObj - the Title Object associated with
-	 *					the page the TimeMap is for
-	 * @param $pagedTimeMapEntries - array of arrays, each entry containing
+	 * @param array $data array with entries containing the keys rev_id and rev_timestamp
+	 * @param string $timeMapURI used to construct self TimeMap URI relation
+	 * @param Title $titleObj the Title Object for this TimeMap
+	 * @param array $pagedTimeMapEntries array of arrays, each entry containing
 	 *			the keys 'uri', 'from', and 'until' referring to the URI of
 	 *			the TimeMap and its from and until dates
 	 *
-	 * @returns formatted timemap as a string
+	 * @returns string formatted timemap
 	 */
 	public function generateTimeMapText(
 		$data, $timeMapURI, Title $titleObj, $pagedTimeMapEntries = array() ) {
@@ -462,10 +479,10 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Extract the full time map data from the database.
 	 *
-	 * @param $pgID - identifier of the requested page
-	 * @param $limit - the greatest number of results
+	 * @param integer $pgID identifier of the requested page
+	 * @param integer $limit the greatest number of results
 	 *
-	 * @return array $data - containing keys 'rev_id' and 'rev_timestamp'
+	 * @return array $data containing keys 'rev_id' and 'rev_timestamp'
 	 */
 	public function getFullTimeMapData( $pgID, $limit ) {
 
@@ -683,10 +700,10 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * Method that acquires TimeMap data, based on a given formatted timestamp.
 	 *
-	 * @param $pageID
-	 * @param $formattedTimestamp
+	 * @param integer $pageID
+	 * @param string $formattedTimestamp
 	 *
-	 * @return $data - array with keys 'rev_id' and 'rev_timestamp' containing
+	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
 	abstract public function getPivotTimeMapData( $pageID, $formattedTimestamp );

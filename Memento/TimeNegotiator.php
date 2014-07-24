@@ -67,7 +67,7 @@ class TimeNegotiator {
 	/**
 	 * Constructor for TimeNegotiator
 	 *
-	 * @param $mementoResource - MementoResource object to work on
+	 * @param MementoResource $mementoResource object to work on
 	 *
 	 */
 	public function __construct( $mementoResource ) {
@@ -207,17 +207,6 @@ class TimeNegotiator {
 	 */
 	public function getMementoDateTime() {
 		return $this->mementoDatetime;
-	}
-
-	/**
-	 * getMementoID
-	 *
-	 * Retrieve the stored Memento ID, for use in constructing URIs.
-	 *
-	 * @return string $mementoID
-	 */
-	public function getMementoID() {
-		return $this->mementoId;
 	}
 
 }
