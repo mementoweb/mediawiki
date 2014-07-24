@@ -96,7 +96,6 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			$linkEntries = array_merge( $linkEntries, $entries );
 
-
 			$response->header( "Memento-Datetime:  $mementoDatetime", true );
 		}
 

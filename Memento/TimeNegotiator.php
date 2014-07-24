@@ -115,7 +115,6 @@ class TimeNegotiator {
 		$entries = $mr->generateRecommendedLinkHeaderRelations(
 			$titleObj, $first, $last );
 
-
 		$this->linkRelations = array_merge(
 			$this->linkRelations, $entries );
 
@@ -168,7 +167,7 @@ class TimeNegotiator {
 			//$response->header( "Vary: $varyEntries,Accept-Datetime", true );
 			//$response->header( 'Link: ' . $linkEntries, true );
 
-			throw new ErrorPageError( 'timegate-title', 'timegate-400-date', 
+			throw new ErrorPageError( 'timegate-title', 'timegate-400-date',
 				array( $requestDatetime, $firsturi, $lasturi ) );
 
 		}
