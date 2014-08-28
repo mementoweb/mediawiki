@@ -36,9 +36,9 @@ This extension has sensible defaults, but also allows the following settings to 
 
 * $wgMementoTimemapNumberOfMementos - (default is 500) allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
 
-* $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
+* $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an empty array); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
-* $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.  See http://arxiv.org/pdf/1402.0928.pdf for more information on this problem in web archives.
+* $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, an oldid (URI-M) page will not contain the version of the image that existed when that page was created.  See http://arxiv.org/pdf/1402.0928.pdf for more information on this problem in web archives.
     * false - (default) do not attempt to match the old version of the image to the requested oldid page
     * true - attempt to match the old version of the image to the requested oldid page
 
