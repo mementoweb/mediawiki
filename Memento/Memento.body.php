@@ -101,7 +101,7 @@ class Memento {
 		// $mementoResource is only set if we are on an actual page
 		// as opposed to diff pages, edit pages, etc.
 		if ( $this->mementoResource ) {
-			$this->mementoResource->fixTemplate( $title, $parser, &$skip, &$id );
+			$this->mementoResource->fixTemplate( $title, $parser, $skip, $id );
 		}
 
 		return true;
@@ -120,7 +120,7 @@ class Memento {
 		$linkcolour_ids, &$colours ) {
 
 		if ( $this->mementoResource ) {
-			$this->mementoResource->fixLinkColours( $linkcolour_ids, &$colours /*, $parser*/ );
+			$this->mementoResource->fixLinkColours( $linkcolour_ids, $colours /*, $parser*/ );
 		}
 
 		return true;

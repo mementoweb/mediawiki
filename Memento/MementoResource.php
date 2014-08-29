@@ -553,7 +553,7 @@ abstract class MementoResource {
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */
-	public function fixLinkColours( $titles, $colours /*, Parser $parser*/ ) {
+	public function fixLinkColours( $titles, &$colours /*, Parser $parser*/ ) {
 
 		//$parser->disableCache();
 
