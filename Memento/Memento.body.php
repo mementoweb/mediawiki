@@ -101,7 +101,26 @@ class Memento {
 		// $mementoResource is only set if we are on an actual page
 		// as opposed to diff pages, edit pages, etc.
 		if ( $this->mementoResource ) {
-			$this->mementoResource->fixTemplate( $title, $parser, $id );
+			$this->mementoResource->fixTemplate( $title, $parser, &$skip, &$id );
+		}
+
+		return true;
+	}
+	
+	/**
+	 * The GetLinkColours hook, used here to verify the colour of the
+	 * links at the Memento date
+	 *
+	 * @param array $linkcolour_ids Titles (DB keys) of all links to be checked
+	 * @param array $colours Corresponding colours of the links ('', 'new', 'mw-redirect', 'stub')
+	 *
+	 * @return boolean indicating success to the caller
+	 */
+	public function onGetLinkColours(
+		$linkcolour_ids, &$colours ) {
+
+		if ( $this->mementoResource ) {
+			$this->mementoResource->fixLinkColours( $linkcolour_ids, &$colours /*, $parser*/ );
 		}
 
 		return true;
