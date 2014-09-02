@@ -95,3 +95,4 @@ $wgMemento = new Memento();
 $wgHooks['ArticleViewHeader'][] = $wgMemento;
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = $wgMemento;
 $wgHooks['ImageBeforeProduceHTML'][] = $wgMemento;
+$wgHooks['GetLinkColours'][] = $wgMemento;

@@ -494,7 +494,7 @@ abstract class MementoResource {
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */
-	public function fixTemplate( Title $title, Parser $parser, &$id ) {
+	public function fixTemplate( Title $title, Parser $parser, &$skip, &$id ) {
 
 		$parser->disableCache();
 
@@ -534,11 +534,51 @@ abstract class MementoResource {
 			} else {
 				// if we get something prior to the first memento, just
 				// go with the first one
-				$id = $firstRev->getId();
+				$skip = true;
 			}
 		}
 	}
 
+	/**
+	 * fixLinkColour
+	 *
+	 * This code ensures that the links have the colour they had at the
+	 * Memento time.
+	 *
+	 * @fixme make this compatible with parser cache
+	 * @fixme manage the case where an article was created then deleted, and the datetime is after the deletion
+	 * @fixme check if the link is a redirect or a stub (small article lesser than a threshold)
+	 * @param array $titles
+	 * @param array $colours
+	 *
+	 * @return array containing the text, finalTitle, and deps
+	 */
+	public function fixLinkColours( $titles, &$colours /*, Parser $parser*/ ) {
+
+		//$parser->disableCache();
+
+		$request = $this->article->getContext()->getRequest();
+
+		if ( $request->getHeader( 'ACCEPT-DATETIME' ) ) {
+
+			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
+
+			$mwMementoTimestamp = $this->parseRequestDateTime(
+				$requestDatetime );
+
+			foreach ( $titles as $id => $s ) {
+
+				$title = Title::newFromID( $id );
+				$pdbk = $title->getPrefixedDBkey();
+				$firstRev = $title->getFirstRevision();
+				if ( is_null($firstRev) || $firstRev->getTimestamp() > $mwMementoTimestamp ) {
+					$colours[$pdbk] = 'new';
+				} else {
+					$colours[$pdbk] = '';
+				}
+			}
+		}
+	}
 
 	/**
 	 * alterHeaders
