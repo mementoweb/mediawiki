@@ -83,8 +83,7 @@ $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 
 // default settings values
-$wgMementoExcludeNamespaces = array();
-#	array_diff( MWNamespace::getValidNamespaces(), MWNamespace::getContentNamespaces() );
+$wgMementoIncludeNamespaces = array( 0 );
 $wgMementoTimemapNumberOfMementos = 500;
 $wgMementoTimeNegotiationForThumbnails = false;
 

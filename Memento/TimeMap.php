@@ -62,7 +62,7 @@ class TimeMap extends SpecialPage {
 	 */
 	public function execute( $urlparam ) {
 
-		global $wgMementoExcludeNamespaces;
+		global $wgMementoIncludeNamespaces;
 
 		$out = $this->getOutput();
 		$this->setHeaders();
@@ -87,7 +87,7 @@ class TimeMap extends SpecialPage {
 
 			}
 
-			if ( in_array( $title->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+			if ( ! in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 
 				throw new ErrorPageError( 'timemap-title', 'timemap-403-inaccessible', array( $title ) );
 

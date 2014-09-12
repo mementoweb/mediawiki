@@ -49,7 +49,7 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 	 */
 	public function alterHeaders() {
 
-		global $wgMementoExcludeNamespaces;
+		global $wgMementoIncludeNamespaces;
 
 		$out = $this->article->getContext()->getOutput();
 		$request = $out->getRequest();
@@ -58,15 +58,19 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 
 		$title = $this->getFullNamespacePageTitle( $titleObj );
 
+		$response->header( 'X-Debug: this is a test', true );
+
 		$linkEntries = array();
 
 		// if we exclude this Namespace, don't show folks the Memento relations
-		if ( in_array( $titleObj->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+		if ( ! in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;
+			$response->header( 'X-Debug1: if, namespace:  ' . $titleObj->getNamespace(), true );
 
 		} else {
+			$response->header( 'X-Debug2: else', true );
 
 			$uri = $titleObj->getFullURL();
 

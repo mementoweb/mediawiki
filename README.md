@@ -36,7 +36,7 @@ This extension has sensible defaults, but also allows the following settings to 
 
 * $wgMementoTimemapNumberOfMementos - (default is 500) allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
 
-* $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
+* $wgMementoIncludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to include for Mementofication, default is an array containing just 0 (Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
 
 * $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.  See http://arxiv.org/pdf/1402.0928.pdf for more information on this problem in web archives.
     * false - (default) do not attempt to match the old version of the image to the requested oldid page
@@ -70,7 +70,7 @@ To remove the software from a Mediawiki instance, type:
 
 Once the code is deployed, the integration tests can be run.
 
-Running the unit and integration tests requires phpunit.
+Running the integration tests requires phpunit.
 
 You will need to change the test data inside tests/integration/data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from site to site, it was decided not to come up with a "one size fits all" integration test set.  Example test data exists for our demo site in the 'demo-wiki' directory.
 
@@ -92,7 +92,7 @@ Because of all of the possible combinations of configuration options, the follow
 Of course, the fastest development process is:
 
 1. edit tests or change code, if necessary
-2. make undeploy && make clean unit-test package deploy
+2. make undeploy && make clean package deploy
 3. run the integration test battery matching your deployment
 
 # Code compliance verification

@@ -63,7 +63,7 @@ class TimeGate extends SpecialPage {
 	 */
 	public function execute( $urlparam ) {
 
-		global $wgMementoExcludeNamespaces;
+		global $wgMementoIncludeNamespaces;
 
 		$out = $this->getOutput();
 		$this->setHeaders();
@@ -88,7 +88,7 @@ class TimeGate extends SpecialPage {
 
 			}
 
-			if ( in_array( $title->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+			if ( ! in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 
 				throw new ErrorPageError( 'timegate-title', 'timegate-403-inaccessible', array( $title ) );
 

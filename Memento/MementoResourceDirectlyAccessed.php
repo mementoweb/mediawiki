@@ -47,7 +47,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 	 */
 	public function alterHeaders() {
 
-		global $wgMementoExcludeNamespaces;
+		global $wgMementoIncludeNamespaces;
 
 		$out = $this->article->getContext()->getOutput();
 		$request = $out->getRequest();
@@ -57,7 +57,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 		$linkEntries = array();
 
 		// if we exclude this Namespace, don't show folks Memento relations
-		if ( in_array( $titleObj->getNamespace(), $wgMementoExcludeNamespaces ) ) {
+		if ( ! in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;

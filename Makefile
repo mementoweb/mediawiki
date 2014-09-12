@@ -94,12 +94,13 @@ clean:
 
 # run the unit tests
 # Note:  requires that phpunit be installed
-unit-test:
-	@echo ""
-	@echo "#########################"
-	phpunit --include-path "${TESTINCLUDEPATH}" tests/unit
-	@echo "#########################"
-	@echo ""
+# Unit tests fell out of use in favor of integration tests
+#unit-test:
+#	@echo ""
+#	@echo "#########################"
+#	phpunit --include-path "${TESTINCLUDEPATH}" tests/unit
+#	@echo "#########################"
+#	@echo ""
 
 
 # DEPLOY AND INTEGRATION TEST SECTION
