@@ -496,6 +496,8 @@ abstract class MementoResource {
 	 */
 	public function fixTemplate( Title $title, Parser $parser, &$id ) {
 
+		// stopgap measure until we can find a better way
+		// to work with parser cache
 		$parser->disableCache();
 
 		$request = $parser->getUser()->getRequest();
@@ -509,32 +511,36 @@ abstract class MementoResource {
 
 			$firstRev = $title->getFirstRevision();
 
-			if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
+			// if the template no longer exists, return gracefully
+			if ( $firstRev != null ) {
 
-				$pgID = $title->getArticleID();
-
-				$this->db->begin();
-
-				$res = $this->db->selectRow(
-					'revision',
-					array( 'rev_id' ),
-					array(
-						'rev_page' => $pgID,
-						'rev_timestamp <=' .
-							$this->db->addQuotes( $mwMementoTimestamp )
-						),
-					__METHOD__,
-					array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
-				);
-
-				if ( $res ) {
-					$row = $this->db->fetchObject( $res );
-					$id = $row->rev_id;
+				if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
+	
+					$pgID = $title->getArticleID();
+	
+					$this->db->begin();
+	
+					$res = $this->db->selectRow(
+						'revision',
+						array( 'rev_id' ),
+						array(
+							'rev_page' => $pgID,
+							'rev_timestamp <=' .
+								$this->db->addQuotes( $mwMementoTimestamp )
+							),
+						__METHOD__,
+						array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
+					);
+	
+					if ( $res ) {
+						$row = $this->db->fetchObject( $res );
+						$id = $row->rev_id;
+					}
+				} else {
+					// if we get something prior to the first memento, just
+					// go with the first one
+					$id = $firstRev->getId();
 				}
-			} else {
-				// if we get something prior to the first memento, just
-				// go with the first one
-				$id = $firstRev->getId();
 			}
 		}
 	}
