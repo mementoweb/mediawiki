@@ -27,10 +27,6 @@
  *
 
  */
-if ( ! defined( 'MEDIAWIKI' ) ) {
-	echo "Not a valid entry point";
-	exit( 1 );
-}
 
 /**
  * This class centralizes Time Negotiation.  It uses a Memento Resource as
