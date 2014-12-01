@@ -69,7 +69,7 @@ class Memento {
 
 		global $wgMementoTimeNegotiationForThumbnails;
 
-		if ( $wgTimeNegotiationForThumbnails === true ) {
+		if ( $wgMementoTimeNegotiationForThumbnails === true ) {
 
 			if ( $this->oldIDSet === true ) {
 				$history = $file->getHistory(
