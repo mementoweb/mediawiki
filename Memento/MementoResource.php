@@ -527,11 +527,9 @@ abstract class MementoResource {
 						__METHOD__,
 						array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
 					);
-	
-					if ( $res ) {
-						$row = $this->db->fetchObject( $res );
-						$id = $row->rev_id;
-					}
+
+					$id = $res->rev_id;
+
 				} else {
 					// if we get something prior to the first memento, just
 					// go with the first one
