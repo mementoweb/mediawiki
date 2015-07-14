@@ -124,7 +124,7 @@ abstract class MementoResource {
 
 		if ( $firstRevision != null ) {
 
-			$revision['timestamp'] = 
+			$revision['timestamp'] =
 				wfTimestamp( TS_RFC2822, $firstRevision->getTimestamp() );
 			$revision['id'] = $firstRevision->getId();
 
@@ -150,7 +150,7 @@ abstract class MementoResource {
 
 		if ( $lastRevision != null ) {
 
-			$revision['timestamp'] = 
+			$revision['timestamp'] =
 				wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp() );
 			$revision['id'] = $lastRevision->getId();
 
@@ -171,7 +171,7 @@ abstract class MementoResource {
 	 */
 	public function getCurrentMemento( $pageID, $pageTimestamp ) {
 
-		$sqlCondition = 
+		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
 				'rev_timestamp<=' . $this->db->addQuotes( $pageTimestamp )
@@ -194,7 +194,7 @@ abstract class MementoResource {
 	 */
 	public function getNextMemento( $pageID, $pageTimestamp ) {
 
-		$sqlCondition = 
+		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
 				'rev_timestamp>' . $this->db->addQuotes( $pageTimestamp )
@@ -217,7 +217,7 @@ abstract class MementoResource {
 	 */
 	public function getPrevMemento( $pageID, $pageTimestamp ) {
 
-		$sqlCondition = 
+		$sqlCondition =
 			array(
 				'rev_page' => $pageID,
 				'rev_timestamp<' . $this->db->addQuotes( $pageTimestamp )
