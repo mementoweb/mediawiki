@@ -288,8 +288,7 @@ abstract class TimeMapResource extends MementoResource {
 		reset( $paginatedResults );
 		$timeMapPage['from'] = $earliestItem['rev_timestamp'];
 
-		$timeMapPage['uri'] =
-			SpecialPage::getTitleFor(
+		$timeMapPage['uri'] = SpecialPage::getTitleFor(
 				'TimeMap', $pivotTimestamp . '/1/' . $title
 			)->getFullURL();
 
@@ -326,8 +325,7 @@ abstract class TimeMapResource extends MementoResource {
 		reset( $paginatedResults );
 		$timeMapPage['from'] = $earliestItem['rev_timestamp'];
 
-		$timeMapPage['uri'] =
-			SpecialPage::getTitleFor(
+		$timeMapPage['uri'] = SpecialPage::getTitleFor(
 				'TimeMap', $pivotTimestamp . '/-1/' . $title
 			)->getFullURL();
 
@@ -555,8 +553,7 @@ abstract class TimeMapResource extends MementoResource {
 				$earliestItem = end( $results );
 				reset( $results );
 
-				$pivotTimestamp =
-					$this->formatTimestampForDatabase(
+				$pivotTimestamp = $this->formatTimestampForDatabase(
 						$earliestItem['rev_timestamp'] );
 
 				# this function operates on $timeMapPages in place
@@ -618,8 +615,7 @@ abstract class TimeMapResource extends MementoResource {
 				ErrorPageError( 'timemap-title', 'timemap-400-date', array( '' ) );
 			}
 
-			$formattedTimestamp =
-				$this->formatTimestampForDatabase( $timestamp );
+			$formattedTimestamp = $this->formatTimestampForDatabase( $timestamp );
 
 			$results = $this->getPivotTimeMapData(
 				$pgID, $formattedTimestamp
