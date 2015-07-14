@@ -47,7 +47,7 @@ class TimeMapPivotDescendingResource extends TimeMapResource {
 	 * @param integer $pageID
 	 * @param string $formattedTimestamp
 	 *
- 	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
+	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
 	 *		the revision ID and the revision timestamp respectively
 	 */
 	public function getPivotTimeMapData( $pageID, $formattedTimestamp ) {
