@@ -62,8 +62,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			$title = $this->getFullNamespacePageTitle( $titleObj );
 
-			$mementoTimestamp =
-				$this->article->getRevisionFetched()->getTimestamp();
+			$mementoTimestamp = $this->article->getRevisionFetched()->getTimestamp();
 
 			// convert for display
 			$mementoDatetime = wfTimestamp( TS_RFC2822, $mementoTimestamp );

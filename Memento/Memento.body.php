@@ -144,8 +144,7 @@ class Memento {
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
 
-				$this->mementoResource =
-					MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
+				$this->mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
 
 				$this->mementoResource->alterHeaders();
 			}
