@@ -74,7 +74,7 @@ Running the integration tests requires phpunit and the curl command.
 
 You will need to change the test data inside tests/integration/data to reflect your MediaWiki installation URIs and appropriate expected data.  Seeing as Mementos vary from site to site, it was decided not to come up with a "one size fits all" integration test set.  
 
-Example test data exists for our demo site in the 'demo-wiki' directory.  To use that test set, the XML dump within tests/data/demo-wiki-data can be imported into a test MediaWiki installation using mwdumper, as described at http://www.mediawiki.org/wiki/Manual:MWDumper.  DO NOT USE Special:Import if you are going to use this dataset as it is, because mwdumper preserves the oldid values, which are the bulk of the value found in this data set.
+Example test data exists for our demo site in the 'demo-wiki' directory.  To use that test set, the XML dump within tests/data/demo-wiki-data can be imported into a test MediaWiki installation using mwdumper, as described at http://www.mediawiki.org/wiki/Manual:MWDumper.  DO NOT USE Special:Import or  if you are going to use this dataset as it is, because mwdumper preserves the oldid values, which are the bulk of the value found in this data set.
 
 **For more information on the integration tests and the test data format, consult the tests/integration/integration-test-description.html and tests/integration/how-to-read-output.txt files.  Detailed test output is generated in the build/test-output directory once the integration tests are run.**
 
