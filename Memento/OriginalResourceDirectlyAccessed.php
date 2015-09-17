@@ -54,8 +54,6 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 
 		$title = $this->getFullNamespacePageTitle( $titleObj );
 
-		$response->header( 'X-Debug: this is a test', true );
-
 		$linkEntries = array();
 
 		// if we exclude this Namespace, don't show folks the Memento relations
@@ -63,10 +61,8 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;
-			$response->header( 'X-Debug1: if, namespace:  ' . $titleObj->getNamespace(), true );
 
 		} else {
-			$response->header( 'X-Debug2: else', true );
 
 			$uri = $titleObj->getFullURL();
 
