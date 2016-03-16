@@ -71,10 +71,15 @@ class Memento {
 
 		if ( $wgMementoTimeNegotiationForThumbnails === true ) {
 
-			if ( $this->oldIDSet === true ) {
-				$history = $file->getHistory(
-					/* $limit = */ 1, /* $start = */ $this->articleDatetime );
-				$file = $history[0];
+			if ( $file != false ) {
+
+				if ( $this->oldIDSet === true ) {
+					$history = $file->getHistory(
+						/* $limit = */ 1,
+						/* $start = */
+						$this->articleDatetime );
+					$file = $history[0];
+				}
 			}
 
 		}
