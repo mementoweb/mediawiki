@@ -43,7 +43,7 @@ $wgExtensionCredits['specialpage'][] = array(
 		'Robert Sanderson',
 		'Shawn M. Jones'
 	),
-	'version' => '2.1.4'
+	'version' => '2.1.4post1'
 );
 
 // Set up the messages file
@@ -74,8 +74,6 @@ $wgSpecialPages['TimeMap'] = 'TimeMap';
 
 
 // set up the Time Gate (URI-G) classes
-$wgAutoloadClasses['MementoResourceFrom200TimeNegotiation'] =
-	__DIR__ . '/MementoResourceFrom200TimeNegotiation.php';
 $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
 	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
 $wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
