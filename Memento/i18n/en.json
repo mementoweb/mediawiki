@@ -1,4 +1,5 @@
 {
+	"@metadata": {},
 	"memento" : "Memento",
 	"memento-desc" : "The Memento extension implements support for the Accept-Datetime HTTP header to perform content negotiation in the date-time dimension. It will retrieve the revision of a given article by matching a specified datetime. Please visit http://mementoweb.org for more information.",
 	"timegate" : "Memento TimeGate",
