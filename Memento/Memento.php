@@ -47,8 +47,7 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 // Set up the messages file
-$wgMessagesDirs['MementoHeaders'] = __DIR__ . '/i18n';
-$wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
+$wgMessagesDirs['Memento'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['MementoAlias'] = __DIR__ . '/Memento.alias.php';
 
 // Set up the core classes used by Memento
