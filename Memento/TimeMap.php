@@ -57,14 +57,12 @@ class TimeMap extends SpecialPage {
 	 *				which, in this case, is the URI for which we want TimeMaps
 	 */
 	public function execute( $urlparam ) {
-
 		global $wgMementoIncludeNamespaces;
 
 		$out = $this->getOutput();
 		$this->setHeaders();
 
 		if ( !$urlparam ) {
-
 			$out->addHTML( wfMessage( 'timemap-welcome-message' )->parse() );
 			return;
 
@@ -78,14 +76,12 @@ class TimeMap extends SpecialPage {
 			$db = wfGetDB( DB_SLAVE );
 
 			if ( !$title->exists() ) {
-
-				throw new ErrorPageError( 'timemap-title', 'timemap-404-title', array( $urlparam ) );
+				throw new ErrorPageError( 'timemap-title', 'timemap-404-title', [ $urlparam ] );
 
 			}
 
 			if ( ! in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
-
-				throw new ErrorPageError( 'timemap-title', 'timemap-403-inaccessible', array( $title ) );
+				throw new ErrorPageError( 'timemap-title', 'timemap-403-inaccessible', [ $title ] );
 
 			}
 
@@ -94,7 +90,6 @@ class TimeMap extends SpecialPage {
 			$page->alterEntity();
 
 		}
-
 	}
 
 }

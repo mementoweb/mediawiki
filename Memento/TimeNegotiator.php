@@ -67,10 +67,9 @@ class TimeNegotiator {
 	 *
 	 */
 	public function __construct( $mementoResource ) {
-
 		$this->mementoResource = $mementoResource;
 
-		$this->linkRelations = array();
+		$this->linkRelations = [];
 
 		$this->negotiate();
 	}
@@ -83,7 +82,6 @@ class TimeNegotiator {
 	 *
 	 */
 	private function negotiate() {
-
 		$mr = $this->mementoResource;
 		$article = $mr->getArticleObject();
 		$out = $article->getContext()->getOutput();
@@ -115,7 +113,6 @@ class TimeNegotiator {
 			$this->linkRelations, $entries );
 
 		if ( $mwMementoTimestamp ) {
-
 			$bestTimestamp = $mr->chooseBestTimestamp(
 				wfTimestamp( TS_MW, $first['timestamp'] ),
 				wfTimestamp( TS_MW, $last['timestamp'] ),
@@ -143,12 +140,12 @@ class TimeNegotiator {
 
 			// storage for caller
 			$this->mementoDatetime = wfTimestamp( TS_RFC2822, $bestTimestamp );
-			$this->locationURI = $titleObj->getFullURL( array( "oldid" => $id ) );
+			$this->locationURI = $titleObj->getFullURL( [ "oldid" => $id ] );
 			$this->mementoId = $memento['id'];
 
 		} else {
-			$firsturi = $titleObj->getFullURL( array( "oldid" => $first['id'] ) );
-			$lasturi = $titleObj->getFullURL( array( "oldid" => $last['id'] ) );
+			$firsturi = $titleObj->getFullURL( [ "oldid" => $first['id'] ] );
+			$lasturi = $titleObj->getFullURL( [ "oldid" => $last['id'] ] );
 
 			$linkEntries = implode( ',', $this->linkRelations );
 
@@ -164,7 +161,7 @@ class TimeNegotiator {
 			// $response->header( 'Link: ' . $linkEntries, true );
 
 			throw new ErrorPageError( 'timegate-title', 'timegate-400-date',
-				array( $requestDatetime, $firsturi, $lasturi ) );
+				[ $requestDatetime, $firsturi, $lasturi ] );
 
 		}
 	}

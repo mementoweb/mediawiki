@@ -33,18 +33,18 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 }
 
 // Set up the extension
-$wgExtensionCredits['specialpage'][] = array(
+$wgExtensionCredits['specialpage'][] = [
 	'name' => 'Memento',
 	'descriptionmsg' => 'memento-desc',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:Memento',
-	'author' => array(
+	'author' => [
 		'Harihar Shankar',
 		'Herbert Van de Sompel',
 		'Robert Sanderson',
 		'Shawn M. Jones'
-	),
+	],
 	'version' => '2.1.4'
-);
+];
 
 // Set up the messages file
 $wgMessagesDirs['Memento'] = __DIR__ . '/i18n';
@@ -72,7 +72,6 @@ $wgAutoloadClasses['TimeMapPivotDescendingResource'] =
 $wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
 $wgSpecialPages['TimeMap'] = 'TimeMap';
 
-
 // set up the Time Gate (URI-G) classes
 $wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
 	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
@@ -81,7 +80,7 @@ $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 
 // default settings values
-$wgMementoIncludeNamespaces = array( 0 );
+$wgMementoIncludeNamespaces = [ 0 ];
 $wgMementoTimemapNumberOfMementos = 500;
 $wgMementoTimeNegotiationForThumbnails = false;
 

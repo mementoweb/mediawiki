@@ -58,14 +58,12 @@ class TimeGate extends SpecialPage {
 	 *              to perform datetime negotiation
 	 */
 	public function execute( $urlparam ) {
-
 		global $wgMementoIncludeNamespaces;
 
 		$out = $this->getOutput();
 		$this->setHeaders();
 
 		if ( !$urlparam ) {
-
 			$out->addHTML( wfMessage( 'timegate-welcome-message' )->parse() );
 			return;
 
@@ -79,14 +77,12 @@ class TimeGate extends SpecialPage {
 			$db = wfGetDB( DB_SLAVE );
 
 			if ( !$title->exists() ) {
-
-				throw new ErrorPageError( 'timegate-title', 'timegate-404-title', array( $urlparam ) );
+				throw new ErrorPageError( 'timegate-title', 'timegate-404-title', [ $urlparam ] );
 
 			}
 
 			if ( ! in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
-
-				throw new ErrorPageError( 'timegate-title', 'timegate-403-inaccessible', array( $title ) );
+				throw new ErrorPageError( 'timegate-title', 'timegate-403-inaccessible', [ $title ] );
 
 			}
 
@@ -95,7 +91,6 @@ class TimeGate extends SpecialPage {
 			$page->alterHeaders();
 
 		}
-
 	}
 
 }

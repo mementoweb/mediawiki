@@ -43,10 +43,8 @@ abstract class MementoResource {
 	 *
 	 */
 	public function __construct( DatabaseBase $db, Article $article ) {
-
 		$this->db = $db;
 		$this->article = $article;
-
 	}
 
 	/**
@@ -81,22 +79,21 @@ abstract class MementoResource {
 	 * @return array associative array with id and timestamp keys
 	 */
 	public function fetchMementoFromDatabase( $sqlCondition, $sqlOrder ) {
-
 		$db = $this->db;
 
 		// TODO: use selectRow instead
 		// tried selectRow here, but it returned nothing
 		$results = $db->select(
 			'revision',
-			array( 'rev_id', 'rev_timestamp' ),
+			[ 'rev_id', 'rev_timestamp' ],
 			$sqlCondition,
 			__METHOD__,
-			array( 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' )
+			[ 'ORDER BY' => $sqlOrder, 'LIMIT' => '1' ]
 			);
 
 		$row = $db->fetchObject( $results );
 
-		$revision = array();
+		$revision = [];
 
 		if ( $row ) {
 			$revision['id'] = $row->rev_id;
@@ -105,7 +102,6 @@ abstract class MementoResource {
 		}
 
 		return $revision;
-
 	}
 
 	/**
@@ -118,12 +114,11 @@ abstract class MementoResource {
 	 * @return array associative array with id and timestamp keys
 	 */
 	public function getFirstMemento( Title $title ) {
-		$revision = array();
+		$revision = [];
 
 		$firstRevision = $title->getFirstRevision();
 
 		if ( $firstRevision != null ) {
-
 			$revision['timestamp'] = wfTimestamp( TS_RFC2822, $firstRevision->getTimestamp() );
 			$revision['id'] = $firstRevision->getId();
 
@@ -142,13 +137,11 @@ abstract class MementoResource {
 	 * @return array associative array with id and timestamp keys
 	 */
 	public function getLastMemento( Title $title ) {
-
-		$revision = array();
+		$revision = [];
 
 		$lastRevision = Revision::newFromTitle( $title );
 
 		if ( $lastRevision != null ) {
-
 			$revision['timestamp'] = wfTimestamp( TS_RFC2822, $lastRevision->getTimestamp() );
 			$revision['id'] = $lastRevision->getId();
 
@@ -162,17 +155,16 @@ abstract class MementoResource {
 	 *
 	 * Extract the memento that best matches from the database.
 	 *
-	 * @param integer $pageID page identifier
+	 * @param int $pageID page identifier
 	 * @param string $pageTimestamp timestamp used for finding the best memento
 	 *
 	 * @return array associative array with id and timestamp keys
 	 */
 	public function getCurrentMemento( $pageID, $pageTimestamp ) {
-
-		$sqlCondition = array(
+		$sqlCondition = [
 				'rev_page' => $pageID,
 				'rev_timestamp<=' . $this->db->addQuotes( $pageTimestamp )
-				);
+				];
 		$sqlOrder = 'rev_timestamp DESC';
 
 		return $this->fetchMementoFromDatabase(
@@ -184,17 +176,16 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param integer $pageID page identifier
+	 * @param int $pageID page identifier
 	 * @param string $pageTimestamp timestamp used for finding the last memento
 	 *
 	 * @return array associative array with id and timestamp keys
 	 */
 	public function getNextMemento( $pageID, $pageTimestamp ) {
-
-		$sqlCondition = array(
+		$sqlCondition = [
 				'rev_page' => $pageID,
 				'rev_timestamp>' . $this->db->addQuotes( $pageTimestamp )
-				);
+				];
 		$sqlOrder = 'rev_timestamp ASC';
 
 		return $this->fetchMementoFromDatabase(
@@ -206,17 +197,16 @@ abstract class MementoResource {
 	 *
 	 * Extract the last memento from the database.
 	 *
-	 * @param integer $pageID page identifier
+	 * @param int $pageID page identifier
 	 * @param string $pageTimestamp timestamp used for finding the last memento
 	 *
 	 * @return array associative array with id and timestamp keys
 	 */
 	public function getPrevMemento( $pageID, $pageTimestamp ) {
-
-		$sqlCondition = array(
+		$sqlCondition = [
 				'rev_page' => $pageID,
 				'rev_timestamp<' . $this->db->addQuotes( $pageTimestamp )
-				);
+				];
 		$sqlOrder = 'rev_timestamp DESC';
 
 		return $this->fetchMementoFromDatabase(
@@ -234,7 +224,6 @@ abstract class MementoResource {
 	 * @return string $dt datetime in mediawiki database format
 	 */
 	public function parseRequestDateTime( $requestDateTime ) {
-
 		$dt = wfTimestamp( TS_MW, $requestDateTime );
 
 		return $dt;
@@ -261,7 +250,6 @@ abstract class MementoResource {
 	 */
 	public function chooseBestTimestamp(
 		$firstTimestamp, $lastTimestamp, $givenTimestamp ) {
-
 		$chosenTimestamp = null;
 
 		if ( $givenTimestamp < $firstTimestamp ) {
@@ -290,7 +278,6 @@ abstract class MementoResource {
 	 */
 	public function constructMementoLinkHeaderRelationEntry(
 		$url, $timestamp, $relation ) {
-
 		$entry = '<' . $url . '>; rel="' . $relation . '"; datetime="' .
 			$timestamp . '"';
 
@@ -314,7 +301,6 @@ abstract class MementoResource {
 	 */
 	public function constructTimeMapLinkHeaderWithBounds(
 		$title, $from, $until ) {
-
 		$entry = $this->constructTimeMapLinkHeader( $title );
 
 		$entry .= "; from=\"$from\"; until=\"$until\"";
@@ -334,7 +320,6 @@ abstract class MementoResource {
 	 * @return string Memento TimeMap relation
 	 */
 	public function constructTimeMapLinkHeader( $title ) {
-
 		$uri = SpecialPage::getTitleFor( 'TimeMap', $title )->getFullURL();
 
 		$entry = '<' . $uri .  '>; rel="timemap"; type="application/link-format"';
@@ -399,8 +384,7 @@ abstract class MementoResource {
 	 */
 	public function generateRecommendedLinkHeaderRelations(
 		Title $titleObj, $first, $last ) {
-
-		$linkRelations = array();
+		$linkRelations = [];
 
 		$title = $this->getFullNamespacePageTitle( $titleObj );
 
@@ -408,8 +392,8 @@ abstract class MementoResource {
 			$title, $first['timestamp'], $last['timestamp'] );
 		$linkRelations[] = $entry;
 
-		$firsturi = $titleObj->getFullURL( array( "oldid" => $first['id'] ) );
-		$lasturi = $titleObj->getFullURL( array( "oldid" => $last['id'] ) );
+		$firsturi = $titleObj->getFullURL( [ "oldid" => $first['id'] ] );
+		$lasturi = $titleObj->getFullURL( [ "oldid" => $last['id'] ] );
 
 		if ( $first['id'] == $last['id'] ) {
 			$entry = $this->constructMementoLinkHeaderRelationEntry(
@@ -437,9 +421,7 @@ abstract class MementoResource {
 	 * @return string
 	 */
 	public function getTimeGateURI( $title ) {
-
 		return SpecialPage::getTitleFor( 'TimeGate', $title )->getFullURL();
-
 	}
 
 	/**
@@ -449,16 +431,14 @@ abstract class MementoResource {
 	 *
 	 * @param DatabaseBase $db passed to constructor
 	 * @param Article $article passed to constructor
-	 * @param integer $oldID revision ID used in decision
+	 * @param int $oldID revision ID used in decision
 	 *
 	 * @return MementoResource the correct instance of MementoResource base	on $oldID
 	 */
 	public static function mementoPageResourceFactory( DatabaseBase $db, $article, $oldID ) {
-
 		$resource = null;
 
 		if ( $oldID == 0 ) {
-
 			$resource = new OriginalResourceDirectlyAccessed( $db, $article );
 
 		} else {
@@ -481,12 +461,11 @@ abstract class MementoResource {
 	 * @fixme make this compatible with parser cache
 	 * @param Title $title
 	 * @param Parser $parser
-	 * @param integer $id
+	 * @param int $id
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */
 	public function fixTemplate( Title $title, Parser $parser, &$id ) {
-
 		// stopgap measure until we can find a better way
 		// to work with parser cache
 		$parser->disableCache();
@@ -494,7 +473,6 @@ abstract class MementoResource {
 		$request = $parser->getUser()->getRequest();
 
 		if ( $request->getHeader( 'ACCEPT-DATETIME' ) ) {
-
 			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
 
 			$mwMementoTimestamp = $this->parseRequestDateTime(
@@ -504,23 +482,21 @@ abstract class MementoResource {
 
 			// if the template no longer exists, return gracefully
 			if ( $firstRev != null ) {
-
 				if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
-
 					$pgID = $title->getArticleID();
 
 					$this->db->begin();
 
 					$res = $this->db->selectRow(
 						'revision',
-						array( 'rev_id' ),
-						array(
+						[ 'rev_id' ],
+						[
 							'rev_page' => $pgID,
 							'rev_timestamp <=' .
 								$this->db->addQuotes( $mwMementoTimestamp )
-							),
+							],
 						__METHOD__,
-						array( 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' )
+						[ 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' ]
 					);
 
 					$id = $res->rev_id;
@@ -534,7 +510,6 @@ abstract class MementoResource {
 			}
 		}
 	}
-
 
 	/**
 	 * alterHeaders

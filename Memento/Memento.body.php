@@ -33,7 +33,6 @@
  */
 class Memento {
 
-
 	/**
 	 * @var MementoResource $mementoResource: object that implements memento
 	 */
@@ -61,18 +60,15 @@ class Memento {
 	 * @param string $time not really used by hook
 	 * @param string $res used to replace HTML for image rendering
 	 *
-	 * @return boolean indicating whether caller should use $res instead of
+	 * @return bool indicating whether caller should use $res instead of
 	 * 		default HTML for image rendering
 	 */
 	public function onImageBeforeProduceHTML(
 		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res ) {
-
 		global $wgMementoTimeNegotiationForThumbnails;
 
 		if ( $wgMementoTimeNegotiationForThumbnails === true ) {
-
 			if ( $file != false ) {
-
 				if ( $this->oldIDSet === true ) {
 					$history = $file->getHistory(
 						/* $limit = */ 1,
@@ -87,7 +83,6 @@ class Memento {
 		return true;
 	}
 
-
 	/**
 	 * The BeforeParserFetchTemplateAndtitle hook, used here to change any
 	 * Template pages loaded so that their revision is closer in date/time to
@@ -95,14 +90,13 @@ class Memento {
 	 *
 	 * @param Parser $parser Parser object for this page
 	 * @param Title $title Title object for this page
-	 * @param boolean $skip boolean flag allowing the caller to skip the rest of statelessFetchTemplate
-	 * @param integer $id revision id of this page
+	 * @param bool $skip boolean flag allowing the caller to skip the rest of statelessFetchTemplate
+	 * @param int $id revision id of this page
 	 *
-	 * @return boolean indicating success to the caller
+	 * @return bool indicating success to the caller
 	 */
 	public function onBeforeParserFetchTemplateAndtitle(
 		$parser, $title, &$skip, &$id ) {
-
 		// $mementoResource is only set if we are on an actual page
 		// as opposed to diff pages, edit pages, etc.
 		if ( $this->mementoResource ) {
@@ -119,22 +113,20 @@ class Memento {
 	 * Note: this is not called when the Edit, Diff or History pages are loaded.
 	 *
 	 * @param Article $article pointer to the Article Object from the hook
-	 * @param boolean $outputDone pointer to variable that indicates that
+	 * @param bool $outputDone pointer to variable that indicates that
 	 *                         the output should be terminated
-	 * @param boolean $pcache pointer to variable that indicates whether the parser
+	 * @param bool $pcache pointer to variable that indicates whether the parser
 	 * 			cache should try retrieving the cached results
 	 *
-	 * @return boolean indicating success to the caller
+	 * @return bool indicating success to the caller
 	 */
 	public function onArticleViewHeader(
 		&$article, &$outputDone, &$pcache
 		) {
-
 		// avoid processing Mementos for nonexistent pages
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
-
 			$this->oldIDSet = ( $article->getOldID() != 0 );
 
 			$revision = $article->getRevisionFetched();
@@ -142,7 +134,6 @@ class Memento {
 			// avoid processing Mementos for bad revisions,
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
-
 				$this->articleDatetime = $revision->getTimestamp();
 
 				$db = wfGetDB( DB_SLAVE );

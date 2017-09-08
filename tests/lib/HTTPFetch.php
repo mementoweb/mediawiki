@@ -1,73 +1,70 @@
 <?php
 
-require_once(getenv('TESTDATADIR') . '/authentication-data.php');
+require_once getenv( 'TESTDATADIR' ) . '/authentication-data.php';
 
-/* 
+/*
  * Given an HTTP $response, extracts the headers into a more easy-to-use
  * key,value pair stored in an array.
  *
  */
-function extractHeadersFromResponse($response) {
+function extractHeadersFromResponse( $response ) {
+	$lines = preg_split( "/\r\n/", $response );
 
-    $lines = preg_split("/\r\n/", $response);
-    
-    $headers = array();
-    
-    foreach ($lines as $line) {
-    
-        if (strlen($line) == 0) {
-            break;
-        }
-    
-        if (strpos($line, "HTTP") !== false) {
-            list($version, $code, $message) = preg_split("/ /", $line);
-        } else {
-            if (strpos($line, ":") !== false) {
-                list($header, $value) = preg_split("/: /", $line, 2);
-                $headers[$header] = $value;
-            }
-        }
-    }
+		$headers = [];
 
-    return $headers;
+		foreach ( $lines as $line ) {
+			if ( strlen( $line ) == 0 ) {
+			break;
+		 }
+
+			if ( strpos( $line, "HTTP" ) !== false ) {
+			list( $version, $code, $message ) = preg_split( "/ /", $line );
+		 } else {
+			if ( strpos( $line, ":" ) !== false ) {
+				list( $header, $value ) = preg_split( "/: /", $line, 2 );
+				$headers[$header] = $value;
+			}
+		 }
+	 }
+
+	return $headers;
 }
 
 /*
  * Given an HTTP $response, extracts the status line into a more easy-to-use
  * key, value pair stored in an array.
  */
-function extractStatuslineFromResponse($response) {
-    $lines = preg_split("/\r\n/", $response);
+function extractStatuslineFromResponse( $response ) {
+	$lines = preg_split( "/\r\n/", $response );
 
-    $statusline = array();
+	$statusline = [];
 
-    foreach ($lines as $line) {
-    
-        if (strlen($line) == 0) {
-            break;
-        }
-    
-        if (strpos($line, "HTTP") !== false) {
-            list($version, $code, $message) = preg_split("/ /", $line);
-            break;
-        }
-    }
+	foreach ( $lines as $line ) {
+			if ( strlen( $line ) == 0 ) {
+			break;
+		 }
 
-    $statusline["version"] = $version;
-    $statusline["code"] = $code;
-    $statusline["message"] = $message;
+			if ( strpos( $line, "HTTP" ) !== false ) {
+			list( $version, $code, $message ) = preg_split( "/ /", $line );
+			break;
+		 }
+	}
 
-    return $statusline;
+	$statusline["version"] = $version;
+	$statusline["code"] = $code;
+	$statusline["message"] = $message;
+
+	return $statusline;
 }
 
 /*
  * Given an HTTP $response, extracts the entity from the response as $entity.
  *
  */
-function extractEntityFromResponse($response) {
-	$entity = NULL;
-	$entityStart = strpos($response, "\r\n\r\n") + 4;
-	$entity = substr($response, $entityStart);
+function extractEntityFromResponse( $response ) {
+	$entity = null;
+	$entityStart = strpos( $response, "\r\n\r\n" ) + 4;
+	$entity = substr( $response, $entityStart );
 	return $entity;
 }
 
@@ -75,23 +72,21 @@ function extractEntityFromResponse($response) {
  * Get the cookies set in the response
  *
  */
-function extractCookiesSetInResponse($response) {
+function extractCookiesSetInResponse( $response ) {
+	$lines = preg_split( "/\r\n/", $response );
 
-	$lines = preg_split("/\r\n/", $response);
+	$cookies = [];
 
-	$cookies = array();
-
-	foreach ($lines as $line) {
-
-		if (strlen($line) == 0) {
+	foreach ( $lines as $line ) {
+		if ( strlen( $line ) == 0 ) {
 			break;
 		}
 
-		if (strpos($line, ":") !== false) {
-			list($header, $value) = preg_split("/: /", $line, 2);
-			if ($header == "Set-Cookie") {
-				$cvalues = preg_split('/;/', $value);
-				list($cname, $cvalue) = preg_split("/=/", $cvalues[0]);
+		if ( strpos( $line, ":" ) !== false ) {
+			list( $header, $value ) = preg_split( "/: /", $line, 2 );
+			if ( $header == "Set-Cookie" ) {
+				$cvalues = preg_split( '/;/', $value );
+				list( $cname, $cvalue ) = preg_split( "/=/", $cvalues[0] );
 				$cookies[$cname] = $cvalue;
 			}
 		}
@@ -109,24 +104,19 @@ function authenticateWithMediawiki() {
 		global $mwLoginActionUrl;
 		global $wpName;
 		global $wpPassword;
-		global $wpRemember;
-		global $wpLoginAttempt;
 		global $wpLoginToken;
 		global $sessionCookieString;
-		global $mwDbName;
-
-		global $HOST;
 
 		$uagent = "Memento-Mediawiki-Plugin/Test";
 
 		$response = `curl -s -e '$uagent' -k -i --url '$mwLoginFormUrl'`;
 
-        $headers = extractHeadersFromResponse($response);
-        $statusline = extractStatuslineFromResponse($response);
-		$entity = extractEntityFromResponse($response);
-		$cookies = extractCookiesSetInResponse($response);
+		$headers = extractHeadersFromResponse( $response );
+		$statusline = extractStatuslineFromResponse( $response );
+		$entity = extractEntityFromResponse( $response );
+		$cookies = extractCookiesSetInResponse( $response );
 
-		$matches = array();
+		$matches = [];
 
 		$pattern = '/\<input type="hidden" name="wpLoginToken" value="([^"]*)" \/\>/';
 		preg_match( $pattern, $entity, $matches );
@@ -141,17 +131,17 @@ function authenticateWithMediawiki() {
 
 		$response = `curl -s -i -X POST -d '$requestEntity' -H 'Content-Type: application/x-www-form-urlencoded' -b '$cookies' --url '$mwLoginActionUrl'`;
 
-		$statusline = extractStatuslineFromResponse($response);
+		$statusline = extractStatuslineFromResponse( $response );
 
-		if ($statusline['code'] != "302") {
-			echo 'TESTUSERNAME = [' . getenv('TESTUSERNAME') . "]\n";
-			echo 'TESTPASSWORD = [' . getenv('TESTPASSWORD') . "]\n";
+		if ( $statusline['code'] != "302" ) {
+			echo 'TESTUSERNAME = [' . getenv( 'TESTUSERNAME' ) . "]\n";
+			echo 'TESTPASSWORD = [' . getenv( 'TESTPASSWORD' ) . "]\n";
 			echo 'wpName = [' . $wpName . "]\n";
 			echo 'wpPassword = [' . $wpPassword . "]\n";
-			trigger_error("Authentication failed, check that the TESTUSERNAME and TESTPASSWORD environment variables are set correctly.", E_USER_ERROR);
+			trigger_error( "Authentication failed, check that the TESTUSERNAME and TESTPASSWORD environment variables are set correctly.", E_USER_ERROR );
 		}
 
-		$cookies = extractCookiesSetInResponse($response);
+		$cookies = extractCookiesSetInResponse( $response );
 
 		$cookieUserID = $cookies["${mwDbName}UserID"];
 		$cookieUserName = $cookies["${mwDbName}UserName"];
@@ -179,23 +169,19 @@ function logOutOfMediawiki() {
 /*
  * only get the headers as a string, no processing
  */
-function extractHeadersStringFromResponse($response) {
-
-    $lines = preg_split("/\r\n/", $response);
+function extractHeadersStringFromResponse( $response ) {
+	$lines = preg_split( "/\r\n/", $response );
 
 	$headers = '';
-    
-    foreach ($lines as $line) {
-    
-        if (strlen($line) == 0) {
-            break;
-        }
+
+		foreach ( $lines as $line ) {
+			if ( strlen( $line ) == 0 ) {
+			break;
+		 }
 
 		$headers .= $line . "\r\n";
-    
-    }
 
-    return $headers;
+		}
+
+	return $headers;
 }
-
-?>
