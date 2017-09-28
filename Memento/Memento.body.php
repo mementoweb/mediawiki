@@ -127,8 +127,10 @@ class Memento {
 	 * @return boolean indicating success to the caller
 	 */
 	public function onArticleViewHeader(
-		&$article, &$outputDone, &$pcache
+		$article, &$outputDone, &$pcache
 		) {
+
+		//headers("X-Test-OnArticleViewHeader: $article");
 
 		// avoid processing Mementos for nonexistent pages
 		// if we're an article, do memento processing, otherwise don't worry
