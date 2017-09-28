@@ -56,8 +56,8 @@ This serves to run everything needed to verify the code and package the zip for 
 To deploy the Memento MediaWiki Extension locally for testing, one must first indicate to the shell where MediaWiki is installed, then run the appropriate make target.
 
 ```
-    export MWDIR=<where your MediaWiki is installed>
-    make deploy
+    export MWDIR=<absolute path to where your MediaWiki is installed>
+    make package deploy
 ```
 
 To remove the software from a MediaWiki instance, type:
@@ -70,34 +70,35 @@ To remove the software from a MediaWiki instance, type:
 
 Once the code is deployed, the integration tests can be run.
 
-Running the integration tests requires phpunit and the curl command.
+Running the integration tests requires:
+* phpunit
+* curl
 
-You will need to change the test data inside tests/integration/data to reflect your MediaWiki installation URIs and appropriate expected data.  Seeing as Mementos vary from site to site, it was decided not to come up with a "one size fits all" integration test set.  
+To get set up (assuming you have cloned this repository):
+1. Start with a new MediaWiki installation, with an empty database, and all default settings
+2. Log in as the administrative user created during the installation
+3. Go to Special:Import
+4. Click "Choose File"
+5. Select the file Kevan_Lannister.xml in the tests/data/demo-wiki-data directory of this repository
+6. Choose "Import to default locations"
+7. Click "Upload file"
 
-Example test data exists for our demo site in the 'demo-wiki' directory.  To use that test set, the XML dump within tests/data/demo-wiki-data can be imported into a test MediaWiki installation using mwdumper, as described at http://www.mediawiki.org/wiki/Manual:MWDumper.  DO NOT USE Special:Import or  if you are going to use this dataset as it is, because mwdumper preserves the oldid values, which are the bulk of the value found in this data set.
+You will need to change the test data inside tests/integration/data/local-demo-wiki to reflect your MediaWiki installation URIs and appropriate expected data.
 
 **For more information on the integration tests and the test data format, consult the tests/integration/integration-test-description.html and tests/integration/how-to-read-output.txt files.  Detailed test output is generated in the build/test-output directory once the integration tests are run.**
 
-Before running the tests you will need to set the following environment variables:
-* TESTDATADIR - the data directory containing the datasets for your test run
-* TESTUSERNAME - the username for logging into your MediaWiki instance, set to NOAUTH if no authentication needed
-* TESTPASSWORD - the password that goes with TESTUSERNAME, set to NOAUTH if no authentication needed
+Then execute:
+
+````
+    ./run_default_tests.sh <absolute path to where your MediaWiki is installed>
+```
 
 Test output is saved to build/test-output.
-
-Because of all of the possible combinations of configuration options, the following Make targets are intended to test the following capabilities:
-
-* defaults-integration-test - test an installation with the default settings
-
-* 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install
-
-* friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output
 
 Of course, the fastest development process is:
 
 1. edit tests or change code, if necessary
-2. make undeploy && make clean package deploy
-3. run the integration test battery matching your deployment
+2. execute ./run_default_tests.sh as above
 
 # Code compliance verification
 
