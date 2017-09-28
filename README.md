@@ -91,7 +91,7 @@ Then execute:
 
 ````
     ./run_default_tests.sh <absolute path to where your MediaWiki is installed>
-```
+````
 
 Test output is saved to build/test-output.
 
