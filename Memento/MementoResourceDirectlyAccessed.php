@@ -96,7 +96,8 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 		$linkEntries = implode( ',', $linkEntries );
 
-		$response->header( "Link: $linkEntries", true );
+		//$response->header( "Link: $linkEntries", true );
+		$out->addLinkHeader( $linkEntries );
 	}
 
 }

@@ -32,6 +32,7 @@ if ( ! defined( 'MEDIAWIKI' ) ) {
 	exit( 1 );
 }
 
+
 // Set up the extension
 $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'Memento',
@@ -50,17 +51,21 @@ $wgExtensionCredits['specialpage'][] = array(
 $wgMessagesDirs['MementoHeaders'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
 
+
 // Set up the core classes used by Memento
 $wgAutoloadClasses['Memento'] = __DIR__ . '/Memento.body.php';
 $wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
+
 
 // Set up the Memento (URI-M) Classes
 $wgAutoloadClasses['MementoResourceDirectlyAccessed'] =
 	__DIR__ . '/MementoResourceDirectlyAccessed.php';
 
+
 // Set up the Original page (URI-R) Classes
 $wgAutoloadClasses['OriginalResourceDirectlyAccessed'] =
 	__DIR__ . '/OriginalResourceDirectlyAccessed.php';
+
 
 // set up the Time Map (URI-T) classes
 $wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
@@ -80,15 +85,19 @@ $wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
 $wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
 $wgSpecialPages['TimeGate'] = 'TimeGate';
 
+
 // default settings values
 $wgMementoIncludeNamespaces = array( 0 );
 $wgMementoTimemapNumberOfMementos = 500;
 $wgMementoTimeNegotiationForThumbnails = false;
 
+
 // instantiate entry point
 $wgMemento = new Memento();
+
 
 // Set up the hooks for this class
 $wgHooks['ArticleViewHeader'][] = $wgMemento;
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = $wgMemento;
 $wgHooks['ImageBeforeProduceHTML'][] = $wgMemento;
+

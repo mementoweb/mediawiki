@@ -45,16 +45,16 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 	 */
 	public function alterHeaders() {
 
+
 		global $wgMementoIncludeNamespaces;
 
 		$out = $this->article->getContext()->getOutput();
-		$request = $out->getRequest();
-		$response = $request->response();
 		$titleObj = $this->article->getTitle();
 
 		$title = $this->getFullNamespacePageTitle( $titleObj );
 
 		$linkEntries = array();
+
 
 		// if we exclude this Namespace, don't show folks the Memento relations
 		if ( ! in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
@@ -91,7 +91,9 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 			$linkEntries = implode( ',', $linkEntries );
 		}
 
-		$response->header( 'Link: ' . $linkEntries, true );
+
+		//$response->header( 'Link: ' . $linkEntries, true );
+		$out->addLinkHeader( $linkEntries );
 	}
 
 }

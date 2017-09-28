@@ -49,6 +49,7 @@ class Memento {
 	 */
 	private $oldIDSet;
 
+
 	/**
 	 * The ImageBeforeProduce HTML hook, used here to provide datetime
 	 * negotiation for embedded images.
@@ -130,12 +131,14 @@ class Memento {
 		$article, &$outputDone, &$pcache
 		) {
 
+
 		//headers("X-Test-OnArticleViewHeader: $article");
 
 		// avoid processing Mementos for nonexistent pages
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
+
 
 			$this->oldIDSet = ( $article->getOldID() != 0 );
 
@@ -145,11 +148,15 @@ class Memento {
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
 
+
 				$this->articleDatetime = $revision->getTimestamp();
+
 
 				$db = wfGetDB( DB_SLAVE );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
+
+
 
 				$this->mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
 
