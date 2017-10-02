@@ -73,7 +73,7 @@ class TimeMap extends SpecialPage {
 			$article = new Article( $title );
 			$article->setContext( $this->getContext() );
 
-			$db = wfGetDB( DB_SLAVE );
+			$db = wfGetDB( DB_REPLICA );
 
 			if ( !$title->exists() ) {
 				throw new ErrorPageError( 'timemap-title', 'timemap-404-title', [ $urlparam ] );

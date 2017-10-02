@@ -136,7 +136,7 @@ class Memento {
 			if ( is_object( $revision ) ) {
 				$this->articleDatetime = $revision->getTimestamp();
 
-				$db = wfGetDB( DB_SLAVE );
+				$db = wfGetDB( DB_REPLICA );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
 

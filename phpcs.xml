@@ -20,7 +20,8 @@
 		<exclude name="MediaWiki.Commenting.FunctionComment.WrongStyle" />
 	</rule>
 	<file>.</file>
-	<arg name="bootstrap" value="vendor/mediawiki/mediawiki-codesniffer/utils/bootstrap-ci.php"/>
+	<arg name="bootstrap" value="./vendor/mediawiki/mediawiki-codesniffer/utils/bootstrap-ci.php"/>
 	<arg name="extensions" value="php,php5,inc"/>
 	<arg name="encoding" value="UTF-8"/>
+	<exclude-pattern type="relative">^Memento\.php</exclude-pattern>
 </ruleset>

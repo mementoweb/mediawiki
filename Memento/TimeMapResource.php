@@ -332,7 +332,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param string $urlparam the data passed into a SpecialPage
 	 *
-	 * @returns string timestamp if found; null otherwise
+	 * @return string timestamp if found; null otherwise
 	 */
 	public function extractTimestampPivot( $urlparam ) {
 		$pivot = null;
@@ -364,7 +364,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param string $timestamp
 	 *
-	 * @returns formatted timestamp; null if error
+	 * @return formatted timestamp; null if error
 	 */
 	public function formatTimestampForDatabase( $timestamp ) {
 		$formattedTimestamp = null;
@@ -399,7 +399,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *			the keys 'uri', 'from', and 'until' referring to the URI of
 	 *			the TimeMap and its from and until dates
 	 *
-	 * @returns string formatted timemap
+	 * @return string formatted timemap
 	 */
 	public function generateTimeMapText(
 		$data, $timeMapURI, Title $titleObj, $pagedTimeMapEntries = [] ) {
