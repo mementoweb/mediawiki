@@ -161,7 +161,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param string $timestamp the timestamp to query for
 	 *
 	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
-	 *		the revision ID and the revision timestamp respectively
+	 * 		the revision ID and the revision timestamp respectively
 	 */
 	public function getDescendingTimeMapData( $pgID, $timestamp ) {
 		global $wgMementoTimemapNumberOfMementos;
@@ -203,7 +203,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param string $timestamp the timestamp to query for
 	 *
 	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
-	 *		the revision ID and the revision timestamp respectively
+	 * 		the revision ID and the revision timestamp respectively
 	 */
 	public function getAscendingTimeMapData( $pgID, $timestamp ) {
 		global $wgMementoTimemapNumberOfMementos;
@@ -264,9 +264,9 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param Title $title the title of the page
 	 *
 	 * @return array $timeMapPages - same array that was passed by reference
-	 *			and altered, but now contains an entry that is an array with
-	 *			keys of uri, from, and until representing the next Time Map,
-	 *			its starting time and ending time
+	 * 			and altered, but now contains an entry that is an array with
+	 * 			keys of uri, from, and until representing the next Time Map,
+	 * 			its starting time and ending time
 	 *
 	 */
 	public function generateAscendingTimeMapPaginationData(
@@ -300,9 +300,9 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param Title $title the title of the page
 	 *
 	 * @return array $timeMapPages same array that was passed by reference
-	 *			and altered, but now contains an entry that is an array with
-	 *			keys of uri, from, and until representing the next Time Map,
-	 *			its starting time and ending time
+	 * 			and altered, but now contains an entry that is an array with
+	 * 			keys of uri, from, and until representing the next Time Map,
+	 * 			its starting time and ending time
 	 *
 	 */
 	public function generateDescendingTimeMapPaginationData(
@@ -396,8 +396,8 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param string $timeMapURI used to construct self TimeMap URI relation
 	 * @param Title $titleObj the Title Object for this TimeMap
 	 * @param array $pagedTimeMapEntries array of arrays, each entry containing
-	 *			the keys 'uri', 'from', and 'until' referring to the URI of
-	 *			the TimeMap and its from and until dates
+	 * 			the keys 'uri', 'from', and 'until' referring to the URI of
+	 * 			the TimeMap and its from and until dates
 	 *
 	 * @return string formatted timemap
 	 */
@@ -675,7 +675,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * @param string $formattedTimestamp
 	 *
 	 * @return array $data array with keys 'rev_id' and 'rev_timestamp' containing
-	 *		the revision ID and the revision timestamp respectively
+	 * 		the revision ID and the revision timestamp respectively
 	 */
 	abstract public function getPivotTimeMapData( $pageID, $formattedTimestamp );
 }

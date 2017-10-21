@@ -240,11 +240,11 @@ abstract class MementoResource {
 	 * will get the nearest memento.
 	 *
 	 * @param string $firstTimestamp the first timestamp for which we have a memento
-	 *				formatted in the TS_MW format
+	 * 				formatted in the TS_MW format
 	 * @param string $lastTimestamp the last timestamp for which we have a memento
-	 *				formatted in the TS_MW format
+	 * 				formatted in the TS_MW format
 	 * @param string $givenTimestamp the timestamp given by the request header
-	 *				formatted in the TS_MW format
+	 * 				formatted in the TS_MW format
 	 *
 	 * @return string $chosenTimestamp the timestamp to use
 	 */

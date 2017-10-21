@@ -54,7 +54,7 @@ class TimeMap extends SpecialPage {
 	 * SpecialPage.
 	 *
 	 * @param string $urlpar the title parameter returned by Mediawiki
-	 *				which, in this case, is the URI for which we want TimeMaps
+	 * 				which, in this case, is the URI for which we want TimeMaps
 	 */
 	public function execute( $urlparam ) {
 		global $wgMementoIncludeNamespaces;

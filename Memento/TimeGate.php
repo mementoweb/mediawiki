@@ -54,7 +54,7 @@ class TimeGate extends SpecialPage {
 	 * SpecialPage.
 	 *
 	 * @param string $urlparam the title parameter returned by Mediawiki
-	 *				which, in this case, is the page for which we want
+	 * 				which, in this case, is the page for which we want
 	 *              to perform datetime negotiation
 	 */
 	public function execute( $urlparam ) {
