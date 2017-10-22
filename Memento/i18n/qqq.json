@@ -1,0 +1,19 @@
+{
+	"@metadata": {},
+	"memento": "{{name}}",
+	"memento-desc": "{{desc|name=Memento|url=https://www.mediawiki.org/wiki/Extension:Memento}}",
+	"timegate": "{{doc-special}}",
+	"timegate-title": "A page title",
+	"timegate-welcome-message": "A welcome message",
+	"timegate-404-title": "An http error message",
+	"timemap": "{{doc-special}}",
+	"timemap-title": "A page title",
+	"timemap-welcome-message": "A welcome message",
+	"timemap-404-title": "An error message",
+	"timemap-specialpage-listing": "A hint message",
+	"timegate-400-date": "An http error message",
+	"timemap-desc": "A description message",
+	"timemap-403-inaccessible": "An http error message",
+	"timemap-400-date": "An http error message",
+	"timegate-403-inaccessible": "An http error message"
+}
