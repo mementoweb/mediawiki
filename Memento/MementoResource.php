@@ -28,6 +28,8 @@
 
  */
 
+use Wikimedia\Rdbms\IDatabase;
+
 /**
  * This abstract class is the parent of all MementoResource types.
  * As such, it contains the methods used by all of the Memento Pages.
@@ -38,17 +40,17 @@ abstract class MementoResource {
 	/**
 	 * Constructor for MementoResource and its children
 	 *
-	 * @param DatabaseBase $db
+	 * @param IDatabase $db
 	 * @param Article $article
 	 *
 	 */
-	public function __construct( DatabaseBase $db, Article $article ) {
+	public function __construct( IDatabase $db, Article $article ) {
 		$this->db = $db;
 		$this->article = $article;
 	}
 
 	/**
-	 * @var DatabaseBase $db DatabaseBase object for Memento Extension
+	 * @var IDatabase $db Database object for Memento Extension
 	 */
 	protected $db;
 
@@ -429,13 +431,13 @@ abstract class MementoResource {
 	 *
 	 * A factory for creating the correct MementoPageResource type.
 	 *
-	 * @param DatabaseBase $db passed to constructor
+	 * @param IDatabase $db passed to constructor
 	 * @param Article $article passed to constructor
 	 * @param int $oldID revision ID used in decision
 	 *
 	 * @return MementoResource the correct instance of MementoResource base	on $oldID
 	 */
-	public static function mementoPageResourceFactory( DatabaseBase $db, $article, $oldID ) {
+	public static function mementoPageResourceFactory( IDatabase $db, $article, $oldID ) {
 		$resource = null;
 
 		if ( $oldID == 0 ) {

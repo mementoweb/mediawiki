@@ -28,6 +28,8 @@
 
  */
 
+use Wikimedia\Rdbms\IDatabase;
+
 /**
  * This class provides the base functions for all Memento TimeMap types
  */
@@ -97,14 +99,14 @@ abstract class TimeMapResource extends MementoResource {
 	 * This function determines which TimeMap object behavior we will get
 	 * based on the input.
 	 *
-	 * @param DatabaseBase $db database connection object
+	 * @param IDatabase $db database connection object
 	 * @param Article $article article object for TimeMap
 	 * @param string $urlparam the data passed into a SpecialPage
 	 *
 	 * @return TimeMapResource
 	 *
 	 */
-	public static function timeMapFactory( DatabaseBase $db, Article $article, $urlparam ) {
+	public static function timeMapFactory( IDatabase $db, Article $article, $urlparam ) {
 		if ( self::containsPivot( $urlparam ) ) {
 			if ( self::isPivotAscending( $urlparam ) ) {
 				$tm = new TimeMapPivotAscendingResource( $db, $article );
