@@ -53,7 +53,7 @@ class TimeMap extends SpecialPage {
 	 * The init function that is called by mediawiki when loading this
 	 * SpecialPage.
 	 *
-	 * @param string $urlpar the title parameter returned by Mediawiki
+	 * @param string $urlparam the title parameter returned by Mediawiki
 	 * 				which, in this case, is the URI for which we want TimeMaps
 	 */
 	public function execute( $urlparam ) {

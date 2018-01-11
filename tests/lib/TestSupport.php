@@ -44,11 +44,9 @@ function acquireCSVDataFromFile( $filename, $columns ) {
 	return $data;
 }
 
-/*
- shamelessly stolen from:
- http://www.if-not-true-then-false.com/2009/php-tip-convert-stdclass-object-to-multidimensional-array-and-convert-multidimensional-array-to-stdclass-object/
- */
 function objectToArray( $d ) {
+	// shamelessly stolen from:
+	// http://www.if-not-true-then-false.com/2009/php-tip-convert-stdclass-object-to-multidimensional-array-and-convert-multidimensional-array-to-stdclass-object/
 	if ( is_object( $d ) ) {
 		// Gets the properties of the given object
 		// with get_object_vars function

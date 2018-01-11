@@ -135,7 +135,6 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @return Title title object created from URL parsing
 	 */
-
 	public static function deriveTitleObject( $urlparam ) {
 		if ( self::isPivotAscending( $urlparam ) ) {
 			$title = preg_replace(
@@ -262,14 +261,13 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param int $pgID the ID of the page, not the oldid
 	 * @param string $pivotTimestamp the pivotTimestamp in TS_MW format
-	 * @param array $timeMapPages array passed by reference to hold TimeMap pages
+	 * @param array &$timeMapPages array passed by reference to hold TimeMap pages
 	 * @param Title $title the title of the page
 	 *
 	 * @return array $timeMapPages - same array that was passed by reference
 	 * 			and altered, but now contains an entry that is an array with
 	 * 			keys of uri, from, and until representing the next Time Map,
 	 * 			its starting time and ending time
-	 *
 	 */
 	public function generateAscendingTimeMapPaginationData(
 		$pgID, $pivotTimestamp, &$timeMapPages, $title ) {
@@ -298,7 +296,7 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 * @param int $pgID the ID of the page, not the oldid
 	 * @param string $pivotTimestamp the pivotTimestamp in TS_MW format
-	 * @param array $timeMapPages array passed by reference to hold TimeMap pages
+	 * @param array &$timeMapPages array passed by reference to hold TimeMap pages
 	 * @param Title $title the title of the page
 	 *
 	 * @return array $timeMapPages same array that was passed by reference

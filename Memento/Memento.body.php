@@ -34,17 +34,17 @@
 class Memento {
 
 	/**
-	 * @var MementoResource $mementoResource: object that implements memento
+	 * @var MementoResource $mementoResource object that implements memento
 	 */
 	private $mementoResource;
 
 	/**
-	 * @var string $articleDatetime: datetime of the article loaded
+	 * @var string $articleDatetime datetime of the article loaded
 	 */
 	private $articleDatetime;
 
 	/**
-	 * @var boolean $oldIDSet: flag to indicate if this is an oldid page
+	 * @var bool $oldIDSet flag to indicate if this is an oldid page
 	 */
 	private $oldIDSet;
 
@@ -52,13 +52,13 @@ class Memento {
 	 * The ImageBeforeProduce HTML hook, used here to provide datetime
 	 * negotiation for embedded images.
 	 *
-	 * @param Skin $skin Skin object for this page
-	 * @param Title $title Title object for this image
-	 * @param File $file File object for this image
-	 * @param array $frameParams frame parameters
-	 * @param array $handlerParams handler parameters
-	 * @param string $time not really used by hook
-	 * @param string $res used to replace HTML for image rendering
+	 * @param Skin &$skin Skin object for this page
+	 * @param Title &$title Title object for this image
+	 * @param File &$file File object for this image
+	 * @param array &$frameParams frame parameters
+	 * @param array &$handlerParams handler parameters
+	 * @param string &$time not really used by hook
+	 * @param string &$res used to replace HTML for image rendering
 	 *
 	 * @return bool indicating whether caller should use $res instead of
 	 * 		default HTML for image rendering
@@ -90,8 +90,8 @@ class Memento {
 	 *
 	 * @param Parser $parser Parser object for this page
 	 * @param Title $title Title object for this page
-	 * @param bool $skip boolean flag allowing the caller to skip the rest of statelessFetchTemplate
-	 * @param int $id revision id of this page
+	 * @param bool &$skip boolean flag allowing the caller to skip the rest of statelessFetchTemplate
+	 * @param int &$id revision id of this page
 	 *
 	 * @return bool indicating success to the caller
 	 */
@@ -112,10 +112,10 @@ class Memento {
 	 *
 	 * Note: this is not called when the Edit, Diff or History pages are loaded.
 	 *
-	 * @param Article $article pointer to the Article Object from the hook
-	 * @param bool $outputDone pointer to variable that indicates that
+	 * @param Article &$article pointer to the Article Object from the hook
+	 * @param bool &$outputDone pointer to variable that indicates that
 	 *                         the output should be terminated
-	 * @param bool $pcache pointer to variable that indicates whether the parser
+	 * @param bool &$pcache pointer to variable that indicates whether the parser
 	 * 			cache should try retrieving the cached results
 	 *
 	 * @return bool indicating success to the caller

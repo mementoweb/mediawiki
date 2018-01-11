@@ -463,7 +463,7 @@ abstract class MementoResource {
 	 * @fixme make this compatible with parser cache
 	 * @param Title $title
 	 * @param Parser $parser
-	 * @param int $id
+	 * @param int &$id
 	 *
 	 * @return array containing the text, finalTitle, and deps
 	 */

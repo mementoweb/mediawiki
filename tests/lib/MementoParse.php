@@ -1,19 +1,20 @@
 <?php
 
-/*
+/**
  * Given the string $linkvalues, which is the value part of the Link: header,
  * return an array of key-value pairs for easier access, but only the ones
  * that correspond to the Memento standard.
  *
- * Note:  str_getcsv doesn't work because the Link header isn't actually in
- *		the CSV format:
- *			<url>;rel="something";datetime="somethingwith ,",<url>...
- *		because datetime="something with ,"
- *		instead of "datetime=something with ,"
+ * Note: str_getcsv doesn't work because the Link header isn't actually in
+ *       the CSV format:
+ * 	       <url>;rel="something";datetime="somethingwith ,",<url>...
+ *       because datetime="something with ,"
+ *       instead of "datetime=something with ,"
  *
  * This function had to use regex instead, which limits it to just the memento
  * items.
- *
+ * @param string $linkvalues
+ * @return array
  */
 function extractItemsFromLink( $linkvalues ) {
 	$relations = [];

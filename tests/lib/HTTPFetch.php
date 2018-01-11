@@ -2,10 +2,11 @@
 
 require_once getenv( 'TESTDATADIR' ) . '/authentication-data.php';
 
-/*
+/**
  * Given an HTTP $response, extracts the headers into a more easy-to-use
  * key,value pair stored in an array.
- *
+ * @param string $response
+ * @return array
  */
 function extractHeadersFromResponse( $response ) {
 	$lines = preg_split( "/\r\n/", $response );
@@ -30,9 +31,11 @@ function extractHeadersFromResponse( $response ) {
 	return $headers;
 }
 
-/*
+/**
  * Given an HTTP $response, extracts the status line into a more easy-to-use
  * key, value pair stored in an array.
+ * @param string $response
+ * @return array
  */
 function extractStatuslineFromResponse( $response ) {
 	$lines = preg_split( "/\r\n/", $response );
@@ -57,9 +60,10 @@ function extractStatuslineFromResponse( $response ) {
 	return $statusline;
 }
 
-/*
+/**
  * Given an HTTP $response, extracts the entity from the response as $entity.
- *
+ * @param string $response
+ * @return string
  */
 function extractEntityFromResponse( $response ) {
 	$entity = null;
@@ -68,9 +72,10 @@ function extractEntityFromResponse( $response ) {
 	return $entity;
 }
 
-/*
+/**
  * Get the cookies set in the response
- *
+ * @param string $response
+ * @return array
  */
 function extractCookiesSetInResponse( $response ) {
 	$lines = preg_split( "/\r\n/", $response );
@@ -96,8 +101,9 @@ function extractCookiesSetInResponse( $response ) {
 	return $cookies;
 }
 
-/*
+/**
  * Authenticate!!!
+ * @return string
  */
 function authenticateWithMediawiki() {
 		global $mwLoginFormUrl;
@@ -153,10 +159,9 @@ function authenticateWithMediawiki() {
 		return $sessionCookieString;
 }
 
-/*
+/**
  * Log out!!!
  */
-
 function logOutOfMediawiki() {
 		global $sessionCookieString;
 		global $mwLogoutActionUrl;
@@ -166,8 +171,10 @@ function logOutOfMediawiki() {
 		$response = `curl -s -e '$uagent' -b '$sessionCookieString' -k -i --url '$mwLogoutActionUrl'`;
 }
 
-/*
+/**
  * only get the headers as a string, no processing
+ * @param string $response
+ * @return array
  */
 function extractHeadersStringFromResponse( $response ) {
 	$lines = preg_split( "/\r\n/", $response );
