@@ -5,7 +5,7 @@ require_once "TestSupport.php";
 
 error_reporting( E_ALL | E_NOTICE | E_STRICT );
 
-class ErrorStateTest extends PHPUnit_Framework_TestCase {
+class ErrorStateTest extends PHPUnit\Framework\TestCase {
 
 	public static $instance = 0;
 
