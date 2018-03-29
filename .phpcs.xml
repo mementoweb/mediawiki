@@ -2,8 +2,8 @@
 <ruleset>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
 		<exclude name="Generic.Files.LineLength.TooLong" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamComment" />
 		<exclude name="MediaWiki.Commenting.MissingCovers.MissingCovers" />
+		<exclude name="MediaWiki.Commenting.PhpunitAnnotations.NotTestFunction" />
 		<exclude name="Generic.PHP.BacktickOperator.Found" />
 		<exclude name="MediaWiki.NamingConventions.ValidGlobalName.wgPrefix" />
 		<exclude name="MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName" />
