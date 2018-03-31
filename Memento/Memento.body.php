@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of the Memento Extension to MediaWiki
- * http://www.mediawiki.org/wiki/Extension:Memento
+ * https://www.mediawiki.org/wiki/Extension:Memento
  *
  * @section LICENSE
  * This program is free software; you can redistribute it and/or modify

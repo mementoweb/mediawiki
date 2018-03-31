@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of the Memento Extension to MediaWiki
- * http://www.mediawiki.org/wiki/Extension:Memento
+ * https://www.mediawiki.org/wiki/Extension:Memento
  *
  * @section LICENSE
  * This program is free software; you can redistribute it and/or modify
@@ -360,7 +360,7 @@ abstract class TimeMapResource extends MementoResource {
 	 * Wrapper for wfTimestamp that catches exceptions so the caller can issue
 	 * its own error statements instead.
 	 *
-	 * @see http://www.mediawiki.org/wiki/Manual:WfTimestamp
+	 * @see https://www.mediawiki.org/wiki/Manual:WfTimestamp
 	 *
 	 * @param string $timestamp
 	 *
