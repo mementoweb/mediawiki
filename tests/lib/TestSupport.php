@@ -110,7 +110,7 @@ function diffStrings( $string1, $string2 ) {
 			} else {
 				echo "at position $i: string1 has character " . $string1[$i] .
 					'(' . ord( $string1[$i] ) . "), and string2 has character " .
-					$string2[$i] .  '(' . ord( $string2[$i] ) . ")\n";
+					$string2[$i] . '(' . ord( $string2[$i] ) . ")\n";
 			}
 
 		} else {

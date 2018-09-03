@@ -61,7 +61,7 @@ abstract class TimeMapResource extends MementoResource {
 	 */
 	public static function containsPivot( $urlparam ) {
 		return (
-			preg_match( '/' .  self::PIVOTURLPATTERN .
+			preg_match( '/' . self::PIVOTURLPATTERN .
 				'/', $urlparam ) == 1 );
 	}
 
