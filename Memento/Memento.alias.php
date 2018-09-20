@@ -5,12 +5,11 @@
  * @file
  * @ingroup Extensions
  */
-// @codingStandardsIgnoreFile
 
-$specialPageAliases = array();
+$specialPageAliases = [];
 
 /** English (English) */
-$specialPageAliases['en'] = array(
-	'TimeMap' => array( 'TimeMap' ),
-	'TimeGate' => array( 'TimeGate' ),
-);
+$specialPageAliases['en'] = [
+	'TimeMap' => [ 'TimeMap' ],
+	'TimeGate' => [ 'TimeGate' ],
+];
