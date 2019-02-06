@@ -80,7 +80,7 @@ class TimeMap extends SpecialPage {
 
 			}
 
-			if ( ! in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
+			if ( !in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 				throw new ErrorPageError( 'timemap-title', 'timemap-403-inaccessible', [ $title ] );
 
 			}

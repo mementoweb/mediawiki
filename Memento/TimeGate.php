@@ -81,7 +81,7 @@ class TimeGate extends SpecialPage {
 
 			}
 
-			if ( ! in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
+			if ( !in_array( $title->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 				throw new ErrorPageError( 'timegate-title', 'timegate-403-inaccessible', [ $title ] );
 
 			}

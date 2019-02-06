@@ -60,7 +60,7 @@ class TimeGateResourceFrom302TimeNegotiation extends MementoResource {
 
 		// if we exclude this Namespace, don't show folks the Memento relations
 		// or conduct Time Negotiation
-		if ( ! in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
+		if ( !in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;
 		} else {

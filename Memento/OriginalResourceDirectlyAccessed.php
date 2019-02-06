@@ -56,7 +56,7 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 		$linkEntries = [];
 
 		// if we exclude this Namespace, don't show folks the Memento relations
-		if ( ! in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
+		if ( !in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
 			$linkEntries[] = $entry;
 
