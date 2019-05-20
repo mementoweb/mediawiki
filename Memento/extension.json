@@ -26,7 +26,7 @@
 		"MementoAlias": "Memento.alias.php"
 	},
 	"AutoloadClasses": {
-		"Memento": "Memento.body.php",
+		"Memento": "Memento.php",
 		"MementoResource": "MementoResource.php",
 		"MementoResourceDirectlyAccessed": "MementoResourceDirectlyAccessed.php",
 		"OriginalResourceDirectlyAccessed": "OriginalResourceDirectlyAccessed.php",

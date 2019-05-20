@@ -23,12 +23,55 @@
  */
 
 /**
- * Ensure that this file is only executed in the right context.
+ * Main Memento class, used by hooks.
  *
-
+ * This class handles the entry point from Mediawiki and performs
+ * the mediation over the real work.  The goal is to separate
+ * the Mediawiki setup code from the Memento code as much as possible
+ * for clarity, testing, maintainability, etc.
+ *
  */
-if ( ! defined( 'MEDIAWIKI' ) ) {
-	echo "Not a valid entry point";
-	exit( 1 );
-}
+class Memento {
 
+	/**
+	 * The ArticleViewHeader hook, used to alter the headers before the rest
+	 * of the data is loaded.
+	 *
+	 * Note: this is not called when the Edit, Diff or History pages are loaded.
+	 *
+	 * @param Article &$article pointer to the Article Object from the hook
+	 * @param bool &$outputDone pointer to variable that indicates that
+	 *                         the output should be terminated
+	 * @param bool &$pcache pointer to variable that indicates whether the parser
+	 * 			cache should try retrieving the cached results
+	 *
+	 * @return bool indicating success to the caller
+	 */
+	public static function onArticleViewHeader(
+		&$article, &$outputDone, &$pcache
+		) {
+		// avoid processing Mementos for nonexistent pages
+		// if we're an article, do memento processing, otherwise don't worry
+		// if we're a diff page, Memento doesn't make sense
+		if ( $article->getTitle()->isKnown() ) {
+
+			$revision = $article->getRevisionFetched();
+
+			// avoid processing Mementos for bad revisions,
+			// let MediaWiki handle that case instead
+			if ( is_object( $revision ) ) {
+
+				$db = wfGetDB( DB_REPLICA );
+				$oldID = $article->getOldID();
+				$request = $article->getContext()->getRequest();
+
+				$mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
+
+				$mementoResource->alterHeaders();
+			}
+		}
+
+		return true;
+	}
+
+}
