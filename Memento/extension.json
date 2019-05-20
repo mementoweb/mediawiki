@@ -1,6 +1,6 @@
 {
 	"name": "Memento",
-	"version": "2.1.5",
+	"version": "2.2a",
 	"author": [
 		"Harihar Shankar",
 		"Herbert Van de Sompel",
@@ -11,7 +11,7 @@
 	"descriptionmsg": "memento-desc",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.29.0"
+		"MediaWiki": ">= 1.31.1"
 	},
 	"SpecialPages": {
 		"TimeMap": "TimeMap",
