@@ -51,9 +51,6 @@
 		"MementoTimemapNumberOfMementos": {
 			"value": 500
 		},
-		"MementoTimeNegotiationForThumbnails": {
-			"value": false
-		},
 		"Memento": {
 			"value": {}
 		}

@@ -576,6 +576,9 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 */
 	public function renderPivotTimeMap() {
+
+		global $wgMementoTimemapNumberOfMementos;
+
 		$article = $this->article;
 		$out = $article->getContext()->getOutput();
 		$titleObj = $article->getTitle();
@@ -626,7 +629,7 @@ abstract class TimeMapResource extends MementoResource {
 				$title = $titleObj->getPrefixedURL();
 
 				# if $revCount is higher, then we've gone over the limit
-				if ( $revCount > $wgTimemapNumberOfMementos ) {
+				if ( $revCount > $wgMementoTimemapNumberOfMementos ) {
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$earliestItem['rev_timestamp'] );
 
@@ -641,7 +644,7 @@ abstract class TimeMapResource extends MementoResource {
 				$revCount = $revCount + 2; # for first and last
 
 				# if $revCount is higher, then we've gone over the limit
-				if ( $revCount > $wgTimemapNumberOfMementos ) {
+				if ( $revCount > $wgMementoTimemapNumberOfMementos ) {
 					$pivotTimestamp = $this->formatTimestampForDatabase(
 						$latestItem['rev_timestamp'] );
 

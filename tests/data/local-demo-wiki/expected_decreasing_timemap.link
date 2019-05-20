@@ -1,6 +1,4 @@
 <http://localhost:8080/index.php/Special:TimeMap/20130522211900/-1/Kevan_Lannister>; rel="self"; type="application/link-format"; from="Fri, 18 May 2007 02:25:50 GMT"; until="Wed, 10 Apr 2013 06:23:21 GMT",
-<http://localhost:8080/index.php/Special:TimeMap/20070518022550/-1/Kevan_Lannister>; rel="timemap"; type="application/link-format";from=""; until="",
-<http://localhost:8080/index.php/Special:TimeMap/20130410062321/1/Kevan_Lannister>; rel="timemap"; type="application/link-format";from="Wed, 22 May 2013 21:19:00 GMT"; until="Mon, 20 May 2019 18:24:19 GMT",
 <http://localhost:8080/index.php/Special:TimeGate/Kevan_Lannister>; rel="timegate",
 <http://localhost:8080/index.php/Kevan_Lannister>; rel="original latest-version",
 <http://localhost:8080/index.php?title=Kevan_Lannister&oldid=2>; rel="memento"; datetime="Fri, 18 May 2007 02:25:50 GMT",

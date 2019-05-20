@@ -132,5 +132,8 @@ $wgShowExceptionDetails = true;
 $wgShowDBErrorBacktrace = true;
 $wgShowSQLErrors = true;
 
+error_reporting( -1 );
+ini_set( 'display_errors', 1 );
+
 # load Memento MediaWiki Extension
 wfLoadExtension( 'Memento' );

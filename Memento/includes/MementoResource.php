@@ -392,6 +392,7 @@ abstract class MementoResource {
 
 		$entry = $this->constructTimeMapLinkHeaderWithBounds(
 			$title, $first['timestamp'], $last['timestamp'] );
+
 		$linkRelations[] = $entry;
 
 		$firsturi = $titleObj->getFullURL( [ "oldid" => $first['id'] ] );
@@ -441,6 +442,7 @@ abstract class MementoResource {
 		$resource = null;
 
 		if ( $oldID == 0 ) {
+
 			$resource = new OriginalResourceDirectlyAccessed( $db, $article );
 
 		} else {
