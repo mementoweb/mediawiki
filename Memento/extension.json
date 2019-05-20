@@ -1,0 +1,62 @@
+{
+	"name": "Memento",
+	"version": "2.2a",
+	"author": [
+		"Harihar Shankar",
+		"Herbert Van de Sompel",
+		"Robert Sanderson",
+		"Shawn M. Jones"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Memento",
+	"descriptionmsg": "memento-desc",
+	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.31.1"
+	},
+	"SpecialPages": {
+		"TimeMap": "TimeMap",
+		"TimeGate": "TimeGate"
+	},
+	"MessagesDirs": {
+		"Memento": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"MementoAlias": "includes/Memento.alias.php"
+	},
+	"AutoloadClasses": {
+		"Memento": "Memento.php",
+		"MementoResource": "includes/MementoResource.php",
+		"MementoResourceDirectlyAccessed": "includes/MementoResourceDirectlyAccessed.php",
+		"OriginalResourceDirectlyAccessed": "includes/OriginalResourceDirectlyAccessed.php",
+		"TimeMapResource": "includes/TimeMapResource.php",
+		"TimeMapFullResource": "includes/TimeMapFullResource.php",
+		"TimeMapPivotAscendingResource": "includes/TimeMapPivotAscendingResource.php",
+		"TimeMapPivotDescendingResource": "includes/TimeMapPivotDescendingResource.php",
+		"TimeMap": "includes/TimeMap.php",
+		"TimeGateResourceFrom302TimeNegotiation": "includes/TimeGateResourceFrom302TimeNegotiation.php",
+		"TimeNegotiator": "includes/TimeNegotiator.php",
+		"TimeGate": "includes/TimeGate.php"
+	},
+	"Hooks": {
+		"ArticleViewHeader": [ "Memento::onArticleViewHeader" ]
+	},
+	"config": {
+		"MementoIncludeNamespaces": {
+			"value": [
+				0
+			]
+		},
+		"MementoTimemapNumberOfMementos": {
+			"value": 500
+		},
+		"MementoTimeNegotiationForThumbnails": {
+			"value": false
+		},
+		"Memento": {
+			"value": {}
+		}
+	},
+	"manifest_version": 2
+}

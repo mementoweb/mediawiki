@@ -150,7 +150,7 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-defaults-integration-test: standard-integration-test 302-style-time-negotiation-recommended-headers-integration-test friendly-error-integration-test
+defaults-integration-test: standard-integration-test 302-style-time-negotiation-recommended-headers-integration-test friendly-error-integration-test timemap-integration-test
 
 # run tests on all non-configurable items
 standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
@@ -173,6 +173,18 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
+
+# run all of the tests on timemaps
+timemap-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "timemap-integration-test"
+	@echo ""
+	@echo "#########################"
+	@echo "Running timemap integration tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timemap ${STARTINGDIR}/../../tests/integration
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
 
 # run all of the friendly error integration tests
 friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
