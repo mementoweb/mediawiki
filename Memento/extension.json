@@ -27,17 +27,17 @@
 	},
 	"AutoloadClasses": {
 		"Memento": "Memento.php",
-		"MementoResource": "MementoResource.php",
-		"MementoResourceDirectlyAccessed": "MementoResourceDirectlyAccessed.php",
-		"OriginalResourceDirectlyAccessed": "OriginalResourceDirectlyAccessed.php",
-		"TimeMapResource": "TimeMapResource.php",
-		"TimeMapFullResource": "TimeMapFullResource.php",
-		"TimeMapPivotAscendingResource": "TimeMapPivotAscendingResource.php",
-		"TimeMapPivotDescendingResource": "TimeMapPivotDescendingResource.php",
-		"TimeMap": "TimeMap.php",
-		"TimeGateResourceFrom302TimeNegotiation": "TimeGateResourceFrom302TimeNegotiation.php",
-		"TimeNegotiator": "TimeNegotiator.php",
-		"TimeGate": "TimeGate.php"
+		"MementoResource": "includes/MementoResource.php",
+		"MementoResourceDirectlyAccessed": "includes/MementoResourceDirectlyAccessed.php",
+		"OriginalResourceDirectlyAccessed": "includes/OriginalResourceDirectlyAccessed.php",
+		"TimeMapResource": "includes/TimeMapResource.php",
+		"TimeMapFullResource": "includes/TimeMapFullResource.php",
+		"TimeMapPivotAscendingResource": "includes/TimeMapPivotAscendingResource.php",
+		"TimeMapPivotDescendingResource": "includes/TimeMapPivotDescendingResource.php",
+		"TimeMap": "includes/TimeMap.php",
+		"TimeGateResourceFrom302TimeNegotiation": "includes/TimeGateResourceFrom302TimeNegotiation.php",
+		"TimeNegotiator": "includes/TimeNegotiator.php",
+		"TimeGate": "includes/TimeGate.php"
 	},
 	"Hooks": {
 		"ArticleViewHeader": [ "Memento::onArticleViewHeader" ]
