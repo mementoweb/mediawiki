@@ -56,32 +56,21 @@ class Memento {
 		&$article, &$outputDone, &$pcache
 		) {
 
-		echo "what did we do here?<br />";
-
-		echo "article->getTitle()->isKnown() = " . $article->getTitle()->isKnown() . "<br />";
 
 		// avoid processing Mementos for nonexistent pages
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
 			
-			echo "we know the title<br />";
-
 			$revision = $article->getRevisionFetched();
-
-			echo "is_object(\$revision) = ". is_object( $revision ) . "<br />";
 
 			// avoid processing Mementos for bad revisions,
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
 
-				echo "we have a revision!!!<br />";
-
 				$db = wfGetDB( DB_REPLICA );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
-
-				echo "oldID = " . $oldID . "<br />";
 
 				$mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
 
