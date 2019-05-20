@@ -132,4 +132,5 @@ $wgShowExceptionDetails = true;
 $wgShowDBErrorBacktrace = true;
 $wgShowSQLErrors = true;
 
-require_once "$IP/extensions/Memento/Memento.php";
+# load Memento MediaWiki Extension
+wfLoadExtension( 'Memento' );
