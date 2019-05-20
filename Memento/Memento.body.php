@@ -33,56 +33,56 @@
  */
 class Memento {
 
-	/**
-	 * @var MementoResource $mementoResource object that implements memento
-	 */
-	private $mementoResource;
-
-	/**
-	 * @var string $articleDatetime datetime of the article loaded
-	 */
-	private $articleDatetime;
-
-	/**
-	 * @var bool $oldIDSet flag to indicate if this is an oldid page
-	 */
-	private $oldIDSet;
-
-	/**
-	 * The ImageBeforeProduce HTML hook, used here to provide datetime
-	 * negotiation for embedded images.
-	 *
-	 * @param Skin &$skin Skin object for this page
-	 * @param Title &$title Title object for this image
-	 * @param File &$file File object for this image
-	 * @param array &$frameParams frame parameters
-	 * @param array &$handlerParams handler parameters
-	 * @param string &$time not really used by hook
-	 * @param string &$res used to replace HTML for image rendering
-	 *
-	 * @return bool indicating whether caller should use $res instead of
-	 * 		default HTML for image rendering
-	 */
-	public function onImageBeforeProduceHTML(
-		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res ) {
-		global $wgMementoTimeNegotiationForThumbnails;
-
-		if ( $wgMementoTimeNegotiationForThumbnails === true ) {
-			if ( $file != false ) {
-				if ( $this->oldIDSet === true ) {
-					$history = $file->getHistory(
-						/* $limit = */ 1,
-						/* $start = */
-						$this->articleDatetime );
-					$file = $history[0];
-				}
-			}
-
-		}
-
-		return true;
-	}
-
+#	/**
+#	 * @var MementoResource $mementoResource object that implements memento
+#	 */
+#	private $mementoResource;
+#
+#	/**
+#	 * @var string $articleDatetime datetime of the article loaded
+#	 */
+#	private $articleDatetime;
+#
+#	/**
+#	 * @var bool $oldIDSet flag to indicate if this is an oldid page
+#	 */
+#	private $oldIDSet;
+#
+#	/**
+#	 * The ImageBeforeProduce HTML hook, used here to provide datetime
+#	 * negotiation for embedded images.
+#	 *
+#	 * @param Skin &$skin Skin object for this page
+#	 * @param Title &$title Title object for this image
+#	 * @param File &$file File object for this image
+#	 * @param array &$frameParams frame parameters
+#	 * @param array &$handlerParams handler parameters
+#	 * @param string &$time not really used by hook
+#	 * @param string &$res used to replace HTML for image rendering
+#	 *
+#	 * @return bool indicating whether caller should use $res instead of
+#	 * 		default HTML for image rendering
+#	 */
+#	public function onImageBeforeProduceHTML(
+#		&$skin, &$title, &$file, &$frameParams, &$handlerParams, &$time, &$res ) {
+#		global $wgMementoTimeNegotiationForThumbnails;
+#
+#		if ( $wgMementoTimeNegotiationForThumbnails === true ) {
+#			if ( $file != false ) {
+#				if ( $this->oldIDSet === true ) {
+#					$history = $file->getHistory(
+#						/* $limit = */ 1,
+#						/* $start = */
+#						$this->articleDatetime );
+#					$file = $history[0];
+#				}
+#			}
+#
+#		}
+#
+#		return true;
+#	}
+#
 	/**
 	 * The BeforeParserFetchTemplateAndtitle hook, used here to change any
 	 * Template pages loaded so that their revision is closer in date/time to
@@ -97,13 +97,33 @@ class Memento {
 	 */
 	public function onBeforeParserFetchTemplateAndtitle(
 		$parser, $title, &$skip, &$id ) {
-		// $mementoResource is only set if we are on an actual page
-		// as opposed to diff pages, edit pages, etc.
-		if ( $this->mementoResource ) {
-			$this->mementoResource->fixTemplate( $title, $parser, $id );
+
+#		// $mementoResource is only set if we are on an actual page
+#		// as opposed to diff pages, edit pages, etc.
+#		if ( $this->mementoResource ) {
+#			$this->mementoResource->fixTemplate( $title, $parser, $id );
+#		}
+#
+#		return true;
+
+		if ($title->isKnown()) {
+
+			$article = new Article($title);
+
+			$oldID = $article->getOldID();
+			$revision = $article->getRevisionFetched();
+
+			if  (is_object( $revision ) ) {
+			
+				$db = wfGetDB( DB_REPLICA );
+				
+				$mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
+				$mementoResource->alterHeaders();
+			}
+
+
 		}
 
-		return true;
 	}
 
 	/**
@@ -120,29 +140,31 @@ class Memento {
 	 *
 	 * @return bool indicating success to the caller
 	 */
-	public function onArticleViewHeader(
+	public static function onArticleViewHeader(
 		&$article, &$outputDone, &$pcache
 		) {
 		// avoid processing Mementos for nonexistent pages
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
-			$this->oldIDSet = ( $article->getOldID() != 0 );
+#			$this->oldIDSet = ( $article->getOldID() != 0 );
 
 			$revision = $article->getRevisionFetched();
 
 			// avoid processing Mementos for bad revisions,
 			// let MediaWiki handle that case instead
 			if ( is_object( $revision ) ) {
-				$this->articleDatetime = $revision->getTimestamp();
+#				$this->articleDatetime = $revision->getTimestamp();
 
 				$db = wfGetDB( DB_REPLICA );
 				$oldID = $article->getOldID();
 				$request = $article->getContext()->getRequest();
 
-				$this->mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
+#				$this->mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
+				$mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
 
-				$this->mementoResource->alterHeaders();
+#				$this->mementoResource->alterHeaders();
+				$mementoResource->alterHeaders();
 			}
 		}
 

@@ -86,8 +86,9 @@ class OriginalResourceDirectlyAccessed extends MementoResource {
 
 			$linkEntries = array_merge( $linkEntries, $entries );
 
-			$linkEntries = implode( ',', $linkEntries );
 		}
+
+		$linkEntries = implode( ',', $linkEntries );
 
 		$response->header( 'Link: ' . $linkEntries, true );
 	}

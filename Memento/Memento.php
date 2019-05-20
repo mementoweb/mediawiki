@@ -43,7 +43,7 @@ $wgExtensionCredits['specialpage'][] = [
 		'Robert Sanderson',
 		'Shawn M. Jones'
 	],
-	'version' => '2.1.4'
+	'version' => '2.1.5'
 ];
 
 // Set up the messages file
@@ -90,4 +90,4 @@ $wgMemento = new Memento();
 // Set up the hooks for this class
 $wgHooks['ArticleViewHeader'][] = $wgMemento;
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = $wgMemento;
-$wgHooks['ImageBeforeProduceHTML'][] = $wgMemento;
+//$wgHooks['ImageBeforeProduceHTML'][] = $wgMemento;
