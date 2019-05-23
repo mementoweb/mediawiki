@@ -1,0 +1,12 @@
+<http://localhost:8099/index.php/Special:TimeMap/20130522211900/1/Kevan_Lannister>; rel="self"; type="application/link-format"; from="Thu, 23 May 2013 04:12:37 GMT"; until="Mon, 20 May 2019 18:24:19 GMT",
+<http://localhost:8099/index.php/Special:TimeGate/Kevan_Lannister>; rel="timegate",
+<http://localhost:8099/index.php/Kevan_Lannister>; rel="original latest-version",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=119>; rel="memento"; datetime="Thu, 23 May 2013 04:12:37 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=120>; rel="memento"; datetime="Thu, 23 May 2013 22:01:24 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=121>; rel="memento"; datetime="Sat, 15 Jun 2013 11:04:28 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=122>; rel="memento"; datetime="Sun, 16 Jun 2013 21:28:35 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=123>; rel="memento"; datetime="Fri, 09 Aug 2013 22:20:35 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=124>; rel="memento"; datetime="Sun, 01 Sep 2013 20:00:44 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=125>; rel="memento"; datetime="Mon, 02 Sep 2013 09:22:42 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=126>; rel="memento"; datetime="Mon, 02 Sep 2013 09:23:04 GMT",
+<http://localhost:8099/index.php?title=Kevan_Lannister&oldid=127>; rel="memento"; datetime="Mon, 20 May 2019 18:24:19 GMT"

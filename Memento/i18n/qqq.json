@@ -1,0 +1,18 @@
+{
+	"@metadata": {},
+	"memento": "{{name}}",
+	"memento-desc": "{{desc|name=Memento|url=https://www.mediawiki.org/wiki/Extension:Memento}}",
+	"timegate": "{{doc-special|TimeGate}}",
+	"timegate-title": "The page title for the Memento TimeGate page, in English it is 'Memento timeGate'",
+	"timegate-welcome-message": "A welcome message describing how users interact with the TimeGate Special Page",
+	"timegate-404-title": "A message for the TimeGate Special Page indicating that the requested wiki page could not be found.",
+	"timemap": "{{doc-special|TimeMap}}",
+	"timemap-title": "The page title for the Memento TimeMap page, in English it is 'Memento TimeMap'",
+	"timemap-welcome-message": "A welcome message for the TimeMap page describing how users interact with the TimeMap Special Page",
+	"timemap-404-title": "A message that a TimeMap does not exist for the given resource",
+	"timegate-400-date": "A message for the TimeGate special page indicating that the requested date could not be parsed.",
+	"timemap-desc": "A message describing what a Memento TimeMap is and how end users can employ them. See http://mementoweb.org for more information.",
+	"timemap-403-inaccessible": "An error message to print if the resource is not accessible due to permissions or some other reason within the wiki, thus we cannot return a TimeMap.",
+	"timemap-400-date": "An error message indicating that the pivot datetime appears to exist, but cannot be parsed or extracted from the URI supplied to MediaWiki, thus we cannot supply a TimeMap.",
+	"timegate-403-inaccessible": "An error message indicating that the resource is not accessible due to permissions or some other reason within the wiki, thus we cannot provide a TimeGate."
+}

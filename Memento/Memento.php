@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of the Memento Extension to MediaWiki
- * http://www.mediawiki.org/wiki/Extension:Memento
+ * https://www.mediawiki.org/wiki/Extension:Memento
  *
  * @section LICENSE
  * This program is free software; you can redistribute it and/or modify
@@ -23,81 +23,63 @@
  */
 
 /**
- * Ensure that this file is only executed in the right context.
+ * Main Memento class, used by hooks.
  *
-
+ * This class handles the entry point from Mediawiki and performs
+ * the mediation over the real work.  The goal is to separate
+ * the Mediawiki setup code from the Memento code as much as possible
+ * for clarity, testing, maintainability, etc.
+ *
  */
 if ( ! defined( 'MEDIAWIKI' ) ) {
 	echo "Not a valid entry point";
 	exit( 1 );
 }
 
+class Memento {
 
-// Set up the extension
-$wgExtensionCredits['specialpage'][] = array(
-	'name' => 'Memento',
-	'descriptionmsg' => 'memento-desc',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:Memento',
-	'author' => array(
-		'Harihar Shankar',
-		'Herbert Van de Sompel',
-		'Robert Sanderson',
-		'Shawn M. Jones'
-	),
-	'version' => '2.1.5'
-);
-
-// Set up the messages file
-$wgMessagesDirs['MementoHeaders'] = __DIR__ . '/i18n';
-$wgExtensionMessagesFiles['Memento'] = __DIR__ . '/Memento.i18n.php';
-
-
-// Set up the core classes used by Memento
-$wgAutoloadClasses['Memento'] = __DIR__ . '/Memento.body.php';
-$wgAutoloadClasses['MementoResource'] = __DIR__ . '/MementoResource.php';
+	/**
+	 * The ArticleViewHeader hook, used to alter the headers before the rest
+	 * of the data is loaded.
+	 *
+	 * Note: this is not called when the Edit, Diff or History pages are loaded.
+	 *
+	 * @param Article &$article pointer to the Article Object from the hook
+	 * @param bool &$outputDone pointer to variable that indicates that
+	 *                         the output should be terminated
+	 * @param bool &$pcache pointer to variable that indicates whether the parser
+	 * 			cache should try retrieving the cached results
+	 *
+	 * @return bool indicating success to the caller
+	 */
+	public static function onArticleViewHeader(
+		&$article, &$outputDone, &$pcache
+		) {
 
 
-// Set up the Memento (URI-M) Classes
-$wgAutoloadClasses['MementoResourceDirectlyAccessed'] =
-	__DIR__ . '/MementoResourceDirectlyAccessed.php';
+		// avoid processing Mementos for nonexistent pages
+		// if we're an article, do memento processing, otherwise don't worry
+		// if we're a diff page, Memento doesn't make sense
+		if ( $article->getTitle()->isKnown() ) {
+			
+			$revision = $article->getRevisionFetched();
+
+			// avoid processing Mementos for bad revisions,
+			// let MediaWiki handle that case instead
+			if ( is_object( $revision ) ) {
+
+				$db = wfGetDB( DB_REPLICA );
+				$oldID = $article->getOldID();
+				$request = $article->getContext()->getRequest();
+
+				$mementoResource = MementoResource::mementoPageResourceFactory( $db, $article, $oldID );
+
+				$mementoResource->alterHeaders();
+			}
+		}
 
 
-// Set up the Original page (URI-R) Classes
-$wgAutoloadClasses['OriginalResourceDirectlyAccessed'] =
-	__DIR__ . '/OriginalResourceDirectlyAccessed.php';
+		return true;
+	}
 
-
-// set up the Time Map (URI-T) classes
-$wgAutoloadClasses['TimeMapResource'] = __DIR__ . '/TimeMapResource.php';
-$wgAutoloadClasses['TimeMapFullResource'] = __DIR__ . '/TimeMapFullResource.php';
-$wgAutoloadClasses['TimeMapPivotAscendingResource'] =
-	__DIR__ . '/TimeMapPivotAscendingResource.php';
-$wgAutoloadClasses['TimeMapPivotDescendingResource'] =
-	__DIR__ . '/TimeMapPivotDescendingResource.php';
-$wgAutoloadClasses['TimeMap'] = __DIR__ . '/TimeMap.php';
-$wgSpecialPages['TimeMap'] = 'TimeMap';
-
-
-// set up the Time Gate (URI-G) classes
-$wgAutoloadClasses['TimeGateResourceFrom302TimeNegotiation'] =
-	__DIR__ . '/TimegateResourceFrom302TimeNegotiation.php';
-$wgAutoloadClasses['TimeNegotiator'] = __DIR__ . '/TimeNegotiator.php';
-$wgAutoloadClasses['TimeGate'] = __DIR__ . '/TimeGate.php';
-$wgSpecialPages['TimeGate'] = 'TimeGate';
-
-
-// default settings values
-$wgMementoIncludeNamespaces = array( 0 );
-$wgMementoTimemapNumberOfMementos = 500;
-$wgMementoTimeNegotiationForThumbnails = false;
-
-
-// instantiate entry point
-$wgMemento = new Memento();
-
-
-// Set up the hooks for this class
-$wgHooks['ArticleViewHeader'][] = $wgMemento;
-$wgHooks['BeforeParserFetchTemplateAndtitle'][] = $wgMemento;
-$wgHooks['ImageBeforeProduceHTML'][] = $wgMemento;
-
+}
