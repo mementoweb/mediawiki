@@ -1,6 +1,6 @@
 # MediaWiki with MariaDB
 #
-# Access via "http://localhost:8080"
+# Access via "http://localhost:8099"
 #   (or "http://$(docker-machine ip):8080" if using docker-machine)
 version: '3.7'
 services:
@@ -8,14 +8,11 @@ services:
     image: mediawiki:1.31.1
     restart: always
     ports:
-      - 8080:80
+      - 8099:80
     links:
       - database
     volumes:
       - /var/www/html/images
-      # After initial setup, download LocalSettings.php to the same directory as
-      # this yaml and uncomment the following line and use compose to restart
-      # the mediawiki service
       - ./LocalSettings.php:/var/www/html/LocalSettings.php
       - ../../Memento:/var/www/html/extensions/Memento
   database:

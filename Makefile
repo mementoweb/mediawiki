@@ -158,7 +158,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group all ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group all "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -169,7 +169,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running 302-style time negotiation integration with recommended headers tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style-recommended-headers ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style-recommended-headers "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -180,7 +180,7 @@ timemap-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running timemap integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timemap ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timemap "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -192,7 +192,7 @@ friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""

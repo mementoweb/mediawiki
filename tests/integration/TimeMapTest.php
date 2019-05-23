@@ -43,7 +43,7 @@ class TimeMapTest extends PHPUnit\Framework\TestCase {
 		$expected_timemap_data = fread($myfile, filesize($expected_timemap_file));
 		fclose($myfile);
 
-		$urit = "http://localhost:8080/index.php/Special:TimeMap/Kevan_Lannister";
+		$urit = "http://localhost:8099/index.php/Special:TimeMap/Kevan_Lannister";
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url \"$urit\"";
 
@@ -78,7 +78,7 @@ class TimeMapTest extends PHPUnit\Framework\TestCase {
 		$expected_timemap_data = fread($myfile, filesize($expected_timemap_file));
 		fclose($myfile);
 
-		$urit = "http://localhost:8080/index.php/Special:TimeMap/20130522211900/1/Kevan_Lannister";
+		$urit = "http://localhost:8099/index.php/Special:TimeMap/20130522211900/1/Kevan_Lannister";
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url \"$urit\"";
 
@@ -113,7 +113,7 @@ class TimeMapTest extends PHPUnit\Framework\TestCase {
 		$expected_timemap_data = fread($myfile, filesize($expected_timemap_file));
 		fclose($myfile);
 
-		$urit = "http://localhost:8080/index.php/Special:TimeMap/20130522211900/-1/Kevan_Lannister";
+		$urit = "http://localhost:8099/index.php/Special:TimeMap/20130522211900/-1/Kevan_Lannister";
 
 		$curlCmd = "curl -v -s -A '$uagent' -b '$sessionCookieString' -k -i --url \"$urit\"";
 
