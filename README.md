@@ -72,7 +72,7 @@ cd ../../
 Run the tests as stated in the **Integration Testing** section.
 
 
-## The hard way
+## Using your own MediaWiki Installation
 
 To deploy the Memento MediaWiki Extension locally for testing, one must first indicate to the shell where MediaWiki is installed, then run the appropriate make target.
 
