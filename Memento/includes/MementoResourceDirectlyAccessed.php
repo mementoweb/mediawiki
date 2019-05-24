@@ -52,7 +52,7 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 		// if we exclude this Namespace, don't show folks Memento relations
 		if ( !in_array( $titleObj->getNamespace(), $wgMementoIncludeNamespaces ) ) {
 			$entry = '<http://mementoweb.org/terms/donotnegotiate>; rel="type"';
-			$out->addLinkHeader($entry);
+			$out->addLinkHeader( $entry );
 
 		} else {
 
@@ -69,11 +69,11 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 
 			$entry = $this->constructLinkRelationHeader( $uri,
 				'original latest-version' );
-			$out->addLinkHeader($entry);
+			$out->addLinkHeader( $entry );
 
 			$entry = $this->constructLinkRelationHeader( $tguri,
 				'timegate' );
-			$out->addLinkHeader($entry);
+			$out->addLinkHeader( $entry );
 
 			$first = $this->getFirstMemento( $titleObj );
 			$last = $this->getLastMemento( $titleObj );
@@ -85,13 +85,12 @@ class MementoResourceDirectlyAccessed extends MementoResource {
 			$entries = $this->generateRecommendedLinkHeaderRelations(
 				$titleObj, $first, $last );
 
-			foreach ($entries as $value) {
-				$out->addLinkHeader($value);
+			foreach ( $entries as $value ) {
+				$out->addLinkHeader( $value );
 			}
 
 			$response->header( "Memento-Datetime:  $mementoDatetime", true );
 		}
-
 	}
 
 }

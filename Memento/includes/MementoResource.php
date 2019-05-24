@@ -456,66 +456,6 @@ abstract class MementoResource {
 	}
 
 	/**
-	 * fixTemplate
-	 *
-	 * This code ensures that the version of the Template that was in existence
-	 * at the same time as the Memento gets loaded and displayed with the
-	 * Memento.
-	 *
-	 * @fixme make this compatible with parser cache
-	 * @param Title $title
-	 * @param Parser $parser
-	 * @param int &$id
-	 *
-	 * @return array containing the text, finalTitle, and deps
-	 */
-	public function fixTemplate( Title $title, Parser $parser, &$id ) {
-		// stopgap measure until we can find a better way
-		// to work with parser cache
-		$parser->disableCache();
-
-		$request = $parser->getUser()->getRequest();
-
-		if ( $request->getHeader( 'ACCEPT-DATETIME' ) ) {
-			$requestDatetime = $request->getHeader( 'ACCEPT-DATETIME' );
-
-			$mwMementoTimestamp = $this->parseRequestDateTime(
-				$requestDatetime );
-
-			$firstRev = $title->getFirstRevision();
-
-			// if the template no longer exists, return gracefully
-			if ( $firstRev != null ) {
-				if ( $firstRev->getTimestamp() < $mwMementoTimestamp ) {
-					$pgID = $title->getArticleID();
-
-					$this->db->begin();
-
-					$res = $this->db->selectRow(
-						'revision',
-						[ 'rev_id' ],
-						[
-							'rev_page' => $pgID,
-							'rev_timestamp <=' .
-								$this->db->addQuotes( $mwMementoTimestamp )
-							],
-						__METHOD__,
-						[ 'ORDER BY' => 'rev_id DESC', 'LIMIT' => '1' ]
-					);
-
-					$id = $res->rev_id;
-
-				} else {
-
-					// if we get something prior to the first memento, just
-					// go with the first one
-					$id = $firstRev->getId();
-				}
-			}
-		}
-	}
-
-	/**
 	 * alterHeaders
 	 *
 	 * This function is used to alter the headers of the outgoing response,

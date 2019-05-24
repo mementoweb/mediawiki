@@ -183,13 +183,16 @@ abstract class TimeMapResource extends MementoResource {
 				]
 			);
 
-		while ( $result = $results->fetchRow() ) {
+		$result = $results->fetchRow();
+
+		while ( $result != null ) {
 			$datum = [];
 			$datum['rev_id'] = $result['rev_id'];
 			$datum['rev_timestamp'] = wfTimestamp(
 				TS_RFC2822, $result['rev_timestamp']
 				);
 			$data[] = $datum;
+			$result = $results->fetchRow();
 		}
 
 		return $data;
@@ -237,8 +240,11 @@ abstract class TimeMapResource extends MementoResource {
 
 		$interim = [];
 
-		while ( $result = $results->fetchRow() ) {
+		$result = $results->fetchRow();
+
+		while ( $result != null ) {
 			$interim[$result['rev_timestamp']] = $result['rev_id'];
+			$result = $results->fetchRow();
 		}
 
 		if ( krsort( $interim ) ) {
@@ -482,13 +488,16 @@ abstract class TimeMapResource extends MementoResource {
 				]
 			);
 
-		while ( $result = $results->fetchRow() ) {
+		$result = $results->fetchRow();
+
+		while ( $result != null ) {
 			$datum = [];
 			$datum['rev_id'] = $result['rev_id'];
 			$datum['rev_timestamp'] = wfTimestamp(
 				TS_RFC2822, $result['rev_timestamp']
 				);
 			$data[] = $datum;
+			$result = $results->fetchRow();
 		}
 
 		return $data;

@@ -44,7 +44,7 @@ class TimeGate extends SpecialPage {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		parent::__construct( $name = "TimeGate", $restriction = '', $listed = true, $function = false,
 			$file = 'default', $includable = false );
 	}
