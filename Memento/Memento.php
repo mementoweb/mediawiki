@@ -31,7 +31,7 @@
  * for clarity, testing, maintainability, etc.
  *
  */
-if ( ! defined( 'MEDIAWIKI' ) ) {
+if ( !defined( 'MEDIAWIKI' ) ) {
 	echo "Not a valid entry point";
 	exit( 1 );
 }
@@ -55,13 +55,11 @@ class Memento {
 	public static function onArticleViewHeader(
 		&$article, &$outputDone, &$pcache
 		) {
-
-
 		// avoid processing Mementos for nonexistent pages
 		// if we're an article, do memento processing, otherwise don't worry
 		// if we're a diff page, Memento doesn't make sense
 		if ( $article->getTitle()->isKnown() ) {
-			
+
 			$revision = $article->getRevisionFetched();
 
 			// avoid processing Mementos for bad revisions,
@@ -77,7 +75,6 @@ class Memento {
 				$mementoResource->alterHeaders();
 			}
 		}
-
 
 		return true;
 	}
