@@ -44,7 +44,7 @@ class TimeMap extends SpecialPage {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		parent::__construct( $name = "TimeMap", $restriction = '', $listed = true, $function = false,
 			$file = 'default', $includable = false );
 	}
