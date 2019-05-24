@@ -526,7 +526,9 @@ abstract class TimeMapResource extends MementoResource {
 			// calculate the difference
 			// this counts the revisions BETWEEN, non-inclusive
 			$revCount = $titleObj->countRevisionsBetween( $firstId, $lastId );
-			$revCount = $revCount + 2; # for first and last
+
+			// for first and last
+			$revCount = $revCount + 2;
 
 			// if it is greater than limit then get the revision ID prior
 			// to the lowest one returned by getFullTimeMapData
@@ -576,7 +578,6 @@ abstract class TimeMapResource extends MementoResource {
 	 *
 	 */
 	public function renderPivotTimeMap() {
-
 		global $wgMementoTimemapNumberOfMementos;
 
 		$article = $this->article;
@@ -622,7 +623,9 @@ abstract class TimeMapResource extends MementoResource {
 				# this counts revisions BETWEEN, non-inclusive
 				$revCount = $titleObj->countRevisionsBetween(
 					$firstId, $earliestItem['rev_id'] );
-				$revCount = $revCount + 2; # for first and last
+
+				// for first and last
+				$revCount = $revCount + 2;
 
 				$timeMapPages = [];
 
@@ -641,7 +644,9 @@ abstract class TimeMapResource extends MementoResource {
 				# this counts revisions BETWEEN, non-inclusive
 				$revCount = $titleObj->countRevisionsBetween(
 					$latestItem['rev_id'], $lastId );
-				$revCount = $revCount + 2; # for first and last
+
+				// for first and last
+				$revCount = $revCount + 2;
 
 				# if $revCount is higher, then we've gone over the limit
 				if ( $revCount > $wgMementoTimemapNumberOfMementos ) {

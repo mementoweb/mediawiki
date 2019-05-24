@@ -6,28 +6,15 @@ This package contains the source code, build scripts, and tests for the Memento 
 
 This file also contains installation information, but more comprehensive information about the extension is at: https://www.mediawiki.org/wiki/Extension:Memento
 
-Note: the released version of this extension does not contain this file, so the target audience for this file is those who wish to build/maintain the source code.
-
-# Directory Contents
-
-* Makefile - the build script that does all of the magic
-* README.md - this file
-* TODO - list of items to address in the codebase
-* Memento/ - the source code for this extension
-* externals/ - git submodule linking to the code verification rules at https://gerrit.wikimedia.org/r/p/mediawiki/tools/codesniffer.git
-* scripts/ - command line scripts used for testing the extension by hand
-* tests/integration/ - the integration tests
-* tests/lib/ - libraries needed by the tests
-* tests/data/ - data used by the tests
-
+Note: the released version of this extension does not contain this ``README.md`` file, so the target audience for this file is those who wish to build/maintain the source code.
 
 # Installation
 
 To install this package within MediaWiki perform the following:
-* copy the Memento directory into the extensions directory of your MediaWiki installation
+* copy the ``Memento`` directory into the extensions directory of your MediaWiki installation
 * add the following to the LocalSettings.php file in your MediaWiki installation:
 ```
-    require_once "$IP/extensions/Memento/Memento.php";
+    wfLoadExtension( 'Memento' );
 ```
 
 # Configuration
@@ -38,10 +25,6 @@ This extension has sensible defaults, but also allows the following settings to 
 
 * `$wgMementoIncludeNamespaces` - is an array of MediaWiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to include for Mementofication, default is an array containing just 0 (Main); the list of MediaWiki Namespace IDs is at https://www.mediawiki.org/wiki/Manual:Namespace
 
-* `$wgMementoTimeNegotiationForThumbnails` - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.  See http://arxiv.org/pdf/1402.0928.pdf for more information on this problem in web archives.
-    * false - (default) do not attempt to match the old version of the image to the requested oldid page
-    * true - attempt to match the old version of the image to the requested oldid page
-
 # Packaging
 
 To package the Memento MediaWiki Extension, type the following 
@@ -51,7 +34,45 @@ from this directory:
 
 This serves to run everything needed to verify the code and package the zip for release.
 
-# Automated Deployment for Testing
+# Automated Deployment and Testing
+
+## Using Docker
+
+Easier testing with supported MediaWiki versions is now available via Docker. First change into the directory containing the docker-compose files:
+
+```
+cd tests/docker-image
+```
+
+
+Then decide which version of MediaWiki to test against. We currently test against:
+* 1.31.1
+* 1.32.1
+
+Run the following to start the container for 1.31.1:
+
+```
+./starttestdocker.sh 1.31.1
+```
+
+**Do not forget this step!** Run the following to load the database:
+
+```
+docker exec docker-image_database_1 /bin/bash -c /loaddb.sh
+```
+
+This extra manual step is necessary because the script does not yet know when the database has fully started.
+
+Change back to the directory at the top of the repository:
+
+```
+cd ../../
+```
+
+Run the tests as stated in the **Integration Testing** section.
+
+
+## The hard way
 
 To deploy the Memento MediaWiki Extension locally for testing, one must first indicate to the shell where MediaWiki is installed, then run the appropriate make target.
 
@@ -66,51 +87,37 @@ To remove the software from a MediaWiki instance, type:
     make undeploy
 ```
 
+# Setting Up Testing and Code Compliance
+
+If you have [composer](https://getcomposer.org/) installed, you can install this version of PHPUnit and PHP Code Sniffer by running:
+
+```
+php /path/to/composer install
+
+export PATH=$PATH:`pwd`/vendor/bin
+```
+
+If do not have [composer](https://getcomposer.org/), you will need to ensure that [PHP Unit](https://phpunit.de/) (``phpunit``) and [PHP Code Sniffer](https://pear.php.net/package/PHP_CodeSniffer) (``phpcs``) are in your ``PATH``.
+
 # Integration Testing
 
 Once the code is deployed, the integration tests can be run.
 
-Running the integration tests requires phpunit and the curl command.
-
-You will need to change the test data inside tests/integration/data to reflect your MediaWiki installation URIs and appropriate expected data.  Seeing as Mementos vary from site to site, it was decided not to come up with a "one size fits all" integration test set.  
-
-Example test data exists for our demo site in the 'demo-wiki' directory. To use that test set, the XML dump within tests/data/demo-wiki-data can be imported into a test MediaWiki installation using mwdumper, as described at https://www.mediawiki.org/wiki/Manual:MWDumper. DO NOT USE Special:Import or if you are going to use this dataset as it is, because mwdumper preserves the oldid values, which are the bulk of the value found in this data set.
+Running the integration tests requires phpunit 6.5.14 and the curl command.
 
 **For more information on the integration tests and the test data format, consult the tests/integration/integration-test-description.html and tests/integration/how-to-read-output.txt files.  Detailed test output is generated in the build/test-output directory once the integration tests are run.**
 
-Before running the tests you will need to set the following environment variables:
-* TESTDATADIR - the data directory containing the datasets for your test run
-* TESTUSERNAME - the username for logging into your MediaWiki instance, set to NOAUTH if no authentication needed
-* TESTPASSWORD - the password that goes with TESTUSERNAME, set to NOAUTH if no authentication needed
+To run integration tests, execute the following script from the root of the repository:
 
-Test output is saved to build/test-output.
-
-Because of all of the possible combinations of configuration options, the following Make targets are intended to test the following capabilities:
-
-* defaults-integration-test - test an installation with the default settings
-
-* 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install
-
-* friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output
-
-Of course, the fastest development process is:
-
-1. edit tests or change code, if necessary
-2. make undeploy && make clean package deploy
-3. run the integration test battery matching your deployment
+```
+./run_default_tests.sh
+```
 
 # Code compliance verification
 
-Running the code compliance requires phpcs.
-
-This git repository uses an external repository for coding convention rules, so we can update the coding convention rules at any time.  The git command for performing the initial import is:
+Running the code compliance requires phpcs. If you installed the development dependencies using ``composer`` then type the following to see if the code complies with MediaWiki's coding conventions:
 
 ```
-    git submodule update --init
+    phpcs --standard=vendor/mediawiki/mediawiki-codesniffer/MediaWiki Memento
 ```
 
-To see if the code complies with MediaWiki's coding conventions, run:
-
-```
-    make verify
-```
