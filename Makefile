@@ -1,5 +1,5 @@
 # This file is part of the Memento Extension to MediaWiki
-# http://www.mediawiki.org/wiki/Extension:Memento
+# https://www.mediawiki.org/wiki/Extension:Memento
 #
 # LICENSE
 # This program is free software; you can redistribute it and/or modify
@@ -94,12 +94,13 @@ clean:
 
 # run the unit tests
 # Note:  requires that phpunit be installed
-unit-test:
-	@echo ""
-	@echo "#########################"
-	phpunit --include-path "${TESTINCLUDEPATH}" tests/unit
-	@echo "#########################"
-	@echo ""
+# Unit tests fell out of use in favor of integration tests
+#unit-test:
+#	@echo ""
+#	@echo "#########################"
+#	phpunit --include-path "${TESTINCLUDEPATH}" tests/unit
+#	@echo "#########################"
+#	@echo ""
 
 
 # DEPLOY AND INTEGRATION TEST SECTION
@@ -149,7 +150,7 @@ endif
 # Pre-requisites:  export TESTHOST=<hostname of the host under test>
 #
 
-defaults-integration-test: standard-integration-test 302-style-time-negotiation-recommended-headers-integration-test friendly-error-integration-test
+defaults-integration-test: standard-integration-test 302-style-time-negotiation-recommended-headers-integration-test friendly-error-integration-test timemap-integration-test
 
 # run tests on all non-configurable items
 standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
@@ -157,7 +158,7 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running standard integration tests that apply in all cases"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group all ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group all "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
@@ -168,10 +169,22 @@ standard-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running 302-style time negotiation integration with recommended headers tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style-recommended-headers ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group 302-style-recommended-headers "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""
+
+# run all of the tests on timemaps
+timemap-integration-test: check-integration-env ${TESTOUTPUTDIR}
+	@echo "timemap-integration-test"
+	@echo ""
+	@echo "#########################"
+	@echo "Running timemap integration tests"
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group timemap "${STARTINGDIR}/../../tests/integration"
+	@echo "Done with integration tests"
+	@echo "#########################"
+	@echo ""
+
 
 # run all of the friendly error integration tests
 friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
@@ -179,7 +192,7 @@ friendly-error-integration-test: check-integration-env ${TESTOUTPUTDIR}
 	@echo ""
 	@echo "#########################"
 	@echo "Running friendly error integration tests"
-	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages ${STARTINGDIR}/../../tests/integration
+	cd ${TESTOUTPUTDIR}; phpunit --include-path "${STARTINGDIR}/../../Memento:${STARTINGDIR}/../../tests/lib:${TESTDATADIR}" --group friendlyErrorPages "${STARTINGDIR}/../../tests/integration"
 	@echo "Done with integration tests"
 	@echo "#########################"
 	@echo ""

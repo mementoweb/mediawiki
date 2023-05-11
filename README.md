@@ -1,112 +1,131 @@
-The idea of the Memento extension is it to make it as straightforward to access articles of the past as it is to access their current version.
+# Memento MediaWiki Extension
 
-The Memento framework allows you to see versions of articles as they existed at some date in the past. All you need to do is enter a URL of an article in your browser and specify the desired date in a browser plug-in. This way you can browse the Web of the past. What the Memento extension will present to you is a version of the article as it existed on or very close to the selected date. Obviously, this will only work if previous (archived) versions are available on the Web. Fortunately, MediaWiki is a Content Management System which implies that it maintains all revisions made to an article. This extension leverages this archiving functionality and provides native Memento support for MediaWiki.
+The Memento MediaWiki extension makes it as straightforward to access the past versions of MediaWiki articles as it is to access their current version.
+
+The Memento framework allows you to see versions of articles as they existed at some date in the past. With a browser plug-in, like [Memento for Chrome](https://chrome.google.com/webstore/detail/memento-time-travel/jgbfpjledahoajcppakbgilmojkaghgm?hl=en), you can enter a URL of an article in your browser and specify the desired date to view the past version of that article. This way you can browse the Web of the past. The Memento extension will present to you a version of the article as it existed on or close to the selected date. Normally, this will only work if previous (archived) versions are available on the Web. Fortunately, MediaWiki is a Content Management System which implies that it maintains all revisions made to an article. This extension leverages this archiving functionality and provides native Memento support for MediaWiki.
 
 This package contains the source code, build scripts, and tests for the Memento MediaWiki Extension.
 
-This file also contains installation information, but more comprehensive information about the extension is at:  http://www.mediawiki.org/wiki/Extension:Memento
+This file also contains installation information, but more comprehensive information about the extension is at: https://www.mediawiki.org/wiki/Extension:Memento
 
-Note: the released version of this extension does not contain this file, so the target audience for this file is those who wish to build/maintain the source code.
+The extension is also featured in the following academic work:
 
-# Directory Contents
+Jones, S.M., Nelson, M.L. & Van de Sompel, H. Avoiding spoilers: wiki time travel with Sheldon Cooper. *International Journal on Digital Libraries* (2018) 19: 77. https://doi.org/10.1007/s00799-016-0200-8
 
-* Makefile - the build script that does all of the magic
-* README.md - this file
-* TODO - list of items to address in the codebase
-* Memento/ - the source code for this extension
-* externals/ - git submodule linking to the code verification rules at https://gerrit.wikimedia.org/r/p/mediawiki/tools/codesniffer.git
-* scripts/ - command line scripts used for testing the extension by hand
-* tests/integration/ - the integration tests
-* tests/lib/ - libraries needed by the tests
-* tests/data/ - data used by the tests
+Jones, S.M. & Nelson, M.L. Avoiding Spoilers in Fan Wikis of Episodic Fiction. Norfolk, Virginia; 2015. arXiv:1506.06279. Available from: https://arxiv.org/abs/1506.06279v1
 
+Jones, S.M., Nelson, M.L., Shankar, H. & Van de Sompel, H. Bringing Web Time Travel to MediaWiki: An Assessment of the Memento MediaWiki Extension. Norfolk, Virginia; 2014. arXiv:1406.3876. Available from: https://arxiv.org/abs/1406.3876v1
 
-# Installation
+## Installation
 
-To install this package within Mediawiki perform the following:
-* copy the Memento directory into the extensions directory of your Mediawiki installation
-* add the following to the LocalSettings.php file in your Mediawiki installation:
+To install this package within MediaWiki perform the following:
+* copy the ``Memento`` directory into the extensions directory of your MediaWiki installation
+* add the following to the LocalSettings.php file in your MediaWiki installation:
 ```
-    require_once("$IP/extensions/Memento/Memento.php");
+wfLoadExtension( 'Memento' );
 ```
 
-# Configuration
+## Configuration
 
 This extension has sensible defaults, but also allows the following settings to be added to LocalSettings.php in order to alter its behavior:
 
-* $wgMementoTimemapNumberOfMementos - (default is 500) allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
+* `$wgMementoTimemapNumberOfMementos` - allows the user to alter the number of Mementos included in a TimeMap served up by this extension (default is 500)
 
-* $wgMementoExcludeNamespaces - is an array of Mediawiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to exclude from Mementofication (default is an array containing all namespaces other than Main); the list of Mediawiki Namespace IDs is at http://www.mediawiki.org/wiki/Manual:Namespace
+* `$wgMementoIncludeNamespaces` - is an array of MediaWiki Namespace IDs (e.g. the integer values for Talk, Template, etc.) to include for Mementofication, default is an array containing just 0 (Main); the list of MediaWiki Namespace IDs is at https://www.mediawiki.org/wiki/Manual:Namespace
 
-* $wgMementoTimeNegotiationForThumbnails - EXPERIMENTAL: MediaWiki, by default, does not preserve temporal coherence for its oldid pages.  In other words, and oldid (URI-M) page will not contain the version of the image that existed when that page was created.  See http://arxiv.org/pdf/1402.0928.pdf for more information on this problem in web archives.
-    * false - (default) do not attempt to match the old version of the image to the requested oldid page
-    * true - attempt to match the old version of the image to the requested oldid page
+## Packaging
 
-# Packaging
-
-To package the Memento Mediawiki Extension, type the following 
+To package the Memento MediaWiki Extension, type the following 
 from this directory:
 
-    make package
+```
+$ make package
+```
 
 This serves to run everything needed to verify the code and package the zip for release.
 
-# Automated Deployment for Testing
+## Automated Deployment and Testing
 
-To deploy the Memento Mediawiki Extension locally for testing, one must first indicate to the shell where Mediawiki is installed, then run the appropriate make target.
+### Using Docker
 
-```
-    export MWDIR=<where your Mediawiki is installed>
-    make deploy
-```
-
-To remove the software from a Mediawiki instance, type:
+Easier testing with supported MediaWiki versions is now available via Docker. First change into the directory containing the docker-compose files:
 
 ```
-    make undeploy
+$ cd tests/docker-image
 ```
 
-# Integration Testing
+
+Then decide which version of MediaWiki to test against. We currently test against:
+* 1.31.1
+* 1.32.1
+
+Run the following to start the container for 1.31.1:
+
+```
+$ ./starttestdocker.sh 1.31.1
+```
+
+**Do not forget this step!** Run the following to load the database:
+
+```
+$ docker exec docker-image_database_1 /bin/bash -c /loaddb.sh
+```
+
+This extra manual step is necessary because the script does not yet know when the database has fully started.
+
+Change back to the directory at the top of the repository:
+
+```
+$ cd ../../
+```
+
+Run the tests as stated in the **Integration Testing** section.
+
+
+### Using your own MediaWiki Installation
+
+To deploy the Memento MediaWiki Extension locally for testing, one must first indicate to the shell where MediaWiki is installed, then run the appropriate make target.
+
+```
+$ export MWDIR=<where your MediaWiki is installed>
+$ make deploy
+```
+
+To remove the software from a MediaWiki instance, type:
+
+```
+$ make undeploy
+```
+
+## Setting Up Testing and Code Compliance
+
+If you have [composer](https://getcomposer.org/) installed, you can install this version of PHPUnit and PHP Code Sniffer by running:
+
+```
+$ php /path/to/composer install
+$ export PATH=$PATH:`pwd`/vendor/bin
+```
+
+If do not have [composer](https://getcomposer.org/), you will need to ensure that [PHP Unit](https://phpunit.de/) (`phpunit`) and [PHP Code Sniffer](https://pear.php.net/package/PHP_CodeSniffer) (`phpcs`) are in your `PATH`.
+
+## Integration Testing
 
 Once the code is deployed, the integration tests can be run.
 
-Running the unit and integration tests requires phpunit.
-
-You will need to change the test data inside tests/integration/data to reflect your Mediawiki installation URIs and appropriate expected data.  Seeing as Mementos vary from site to site, it was decided not to come up with a "one size fits all" integration test set.  Example test data exists for our demo site in the 'demo-wiki' directory.
+Running the integration tests requires phpunit 6.5.14 and the curl command.
 
 **For more information on the integration tests and the test data format, consult the tests/integration/integration-test-description.html and tests/integration/how-to-read-output.txt files.  Detailed test output is generated in the build/test-output directory once the integration tests are run.**
 
-Before running the tests you will need to set the following environment variables:
-* TESTDATADIR - the data directory containing the datasets for your test run
-* TESTUSERNAME - the username for logging into your mediawiki instance
-* TESTPASSWORD - the password that goes with TESTUSERNAME
-
-Because of all of the possible combinations of configuration options, the following Make targets are intended to test the following capabilities:
-
-* defaults-integration-test - test an installation with the default settings
-
-* 302-style-time-negotiation-integration-test - test only the 302-style Time Negotiation capability of the install
-
-* friendly-error-with-302-style-integration-test - test the 302-style Time Negotiation error states with friendly output
-
-Of course, the fastest development process is:
-
-1. edit tests or change code, if necessary
-2. make undeploy && make clean unit-test package deploy
-3. run the integration test battery matching your deployment
-
-# Code compliance verification
-
-Running the code compliance requires phpcs.
-
-This git repository uses and external repository for coding convention rules, so we can update the coding convention rules at any time.  The git command for performing the initial import is:
+To run integration tests, execute the following script from the root of the repository:
 
 ```
-    git submodule update --init
+$ ./run_default_tests.sh
 ```
 
-To see if the code complies with Mediawiki's coding conventions, run:
+## Code compliance verification
+
+Running the code compliance requires phpcs. If you installed the development dependencies using ``composer`` then type the following from the root of the repository see if the code complies with MediaWiki's coding conventions:
 
 ```
-    make verify
+$ phpcs --standard=vendor/mediawiki/mediawiki-codesniffer/MediaWiki Memento
 ```

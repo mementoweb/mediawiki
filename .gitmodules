@@ -1,3 +1,0 @@
-[submodule "externals/mediawiki-codesniffer"]
-	path = externals/mediawiki-codesniffer
-	url = https://gerrit.wikimedia.org/r/p/mediawiki/tools/codesniffer.git
